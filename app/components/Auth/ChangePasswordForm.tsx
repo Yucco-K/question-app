@@ -1,0 +1,184 @@
+'use client';
+
+import { useEffect, useState } from 'react';
+import AuthLayout from '../Layout/AuthLayout';
+import Notification from '../Layout/Notification';
+
+export default function ChangePasswordForm() {
+  const [email, setEmail] = useState('');
+  const [showNotification, setShowNotification] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
+  const [isSendDisabled, setIsSendDisabled] = useState(false);
+  const [isResendDisabled, setIsResendDisabled] = useState(false);
+  const [isResendVisible, setIsResendVisible] = useState(false);
+  const [isSendVisible, setIsSendVisible] = useState(true);
+  const [attemptCount, setAttemptCount] = useState(0);
+  const [resetUrl, setResetUrl] = useState('');
+
+
+  useEffect(() => {
+    // クライアントサイドで window.location.origin を使用して URL を生成
+    const origin = window.location.origin;
+    setResetUrl(`${origin}/set-new-password`);
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      setAttemptCount(0);
+    };
+  }, []);
+
+  const handlePasswordReset = async () => {
+    setError(null);
+    setSuccess(null);
+    setIsSendDisabled(true);
+
+    setTimeout(() => {
+    setIsSendVisible(false);
+    setIsResendVisible(true);
+    }, 5000);
+
+    // const { error } = await supabase.auth.resetPasswordForEmail(email, {
+    //   redirectTo: resetUrl,
+    // });
+
+    // if (error) {
+    //   setError(error.message);
+    //   setShowNotification(true);
+    // } else {
+    //   setSuccess('パスワードリセットリンクを送信しました。受信メールをご確認ください。');
+
+    try {
+      const response = await fetch('/api/users/change-password', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, redirectTo: resetUrl }),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        // throw new Error(result.message);
+        const errorText = await response.text(); // JSONではないかもしれないので、テキストとして取得
+        console.log("Error response:", errorText);
+        throw new Error(`サーバーエラー: ${response.status}`);
+      }
+      setSuccess('パスワードリセットリンクを送信しました。受信メールをご確認ください。');
+      setShowNotification(true);
+      setAttemptCount(0);
+
+    } catch (err) {
+      setError((err as Error).message);
+      setShowNotification(true);
+    }
+  };
+
+  const handleResendClick = async () => {
+    if (attemptCount < 9) {
+      setIsResendDisabled(true);
+      setTimeout(() => {
+        setIsResendDisabled(false);
+      }, 5000);
+      setAttemptCount(attemptCount + 1);
+
+      // const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      //   redirectTo: resetUrl,
+      // });
+
+      try {
+        const response = await fetch('/api/change-password', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ email, redirectTo: resetUrl }),
+        });
+
+        const result = await response.json();
+
+          if (!response.ok) {
+            // throw new Error(result.message);
+            const errorText = await response.text(); // JSONではないかもしれないので、テキストとして取得
+            console.log("Error response:", errorText);
+            throw new Error(`サーバーエラー: ${response.status}`);
+          }
+          setSuccess('パスワードリセットリンクを送信しました。受信メールをご確認ください。');
+          setShowNotification(true);
+          setAttemptCount(0);
+
+        } catch (err) {
+          setError((err as Error).message);
+          setShowNotification(true);
+        }
+
+    } else {
+      setError('試行回数の上限を超えました。時間をおいてもう一度お試しください。');
+      setShowNotification(true);
+      setIsResendDisabled(true);
+
+      setTimeout(() => {
+        setError(null);
+        setSuccess(null);
+        setIsResendDisabled(false);
+        setAttemptCount(0);
+      }, 180000);
+    }
+  }
+
+  return (
+    <AuthLayout
+      title="パスワードリセット"
+      actionText="ログインに戻る"
+      actionHref="/login"
+      actionLinkText="こちらへ"
+    >
+      {showNotification && (error || success) && (
+        <Notification
+          message={error ?? success ?? ""}
+          type={error ? "error" : "success"}
+          onClose={() => setShowNotification(false)}
+        />
+      )}
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          handlePasswordReset();
+        }}
+        className="space-y-4"
+      >
+        <div>
+          <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email:</label>
+          <input
+            type="email"
+            id="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
+          />
+        </div>
+        {isSendVisible && (
+          <button
+            type="submit"
+            className={`w-full py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white ${isSendDisabled ? 'bg-indigo-300' : 'bg-indigo-600'}`}
+            disabled={isSendDisabled}
+          >
+            パスワードリセットリンクを送信
+          </button>
+        )}
+      </form>
+      {isResendVisible && (
+        <button
+        onClick={handleResendClick}
+        className={`w-full py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white ${isResendDisabled ? 'bg-green-300' : 'bg-green-600'}`}
+        disabled={isResendDisabled}
+      >
+        リンクを再送信
+        </button>
+      )}
+    </AuthLayout>
+  );
+}
