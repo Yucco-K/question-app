@@ -1,38 +1,98 @@
-import { NextResponse } from 'next/server';
-import supabase from '@/app/lib/supabaseClient';
+import supabase from "@/app/lib/supabaseClient";
+import { NextResponse } from "next/server";
 
 export async function POST(request: Request) {
   const { usernameOrEmail, password } = await request.json();
+  let userEmail = usernameOrEmail;
 
-  const { data, error } = await supabase.auth.signInWithPassword({ email: usernameOrEmail, password });
+  const atIndex = usernameOrEmail.indexOf('@');
+  const dotIndex = usernameOrEmail.lastIndexOf('.');
 
-  if (error) {
-    console.error('Login error:', error.message);
-    return NextResponse.json({ error: 'Unauthorized', message: error.message }, { status: 401 });
+  const isEmail = atIndex > 0 && dotIndex > atIndex + 1 && dotIndex < usernameOrEmail.length - 1;
+
+  if (isEmail) {
+    const { data, error } = await supabase.auth.signInWithPassword({ email: userEmail, password });
+
+    if (error) {
+      console.error('ログインエラー:', error.message);
+      return NextResponse.json({ error: 'Unauthorized', message: 'ログインに失敗しました。' }, { status: 401 });
+    }
+
+    const accessToken = data.session?.access_token;
+    const refreshToken = data.session?.refresh_token;
+
+    if (accessToken && refreshToken) {
+      const response = NextResponse.json({ message: 'ログインに成功しました。' });
+
+      response.cookies.set('access_token', accessToken, {
+        path: '/',
+        httpOnly: true,
+        maxAge: 60 * 60 * 24 * 7,
+        sameSite: 'lax',
+        secure: true,
+      });
+
+      response.cookies.set('refresh_token', refreshToken, {
+        path: '/',
+        httpOnly: true,
+        maxAge: 60 * 60 * 24 * 30,
+        sameSite: 'lax',
+        secure: true,
+      });
+
+      return response;
+    }
+
+    console.error('トークンの保存に失敗しました');
+    return NextResponse.json({ error: 'Server Error', message: 'トークンの保存に失敗しました。' }, { status: 500 });
   }
 
-  const accessToken = data.session?.access_token;
-  const refreshToken = data.session?.refresh_token;
+  if (!isEmail) {
+    const { data: userData, error: userError } = await supabase
+      .from('User')
+      .select('email')
+      .eq('username', usernameOrEmail)
+      .single();
 
-  if (accessToken && refreshToken) {
-    const response = NextResponse.json({ message: 'Logged in successfully' });
-    response.cookies.set('access_token', accessToken, {
-      path: '/',
-      httpOnly: false,
-      maxAge: 60 * 60 * 24 * 7, // 1 week
-      sameSite: 'none',
-      secure: false,
-    });
-    response.cookies.set('refresh_token', refreshToken, {
-      path: '/',
-      httpOnly: false,
-      maxAge: 60 * 60 * 24 * 30, // 30 days
-      sameSite: 'none',
-      secure: false,
-    });
-    return response;
+    if (userError || !userData) {
+      return NextResponse.json({ error: 'Unauthorized', message: 'ユーザー名が見つかりませんでした' }, { status: 401 });
+    }
+
+    userEmail = userData.email;
+
+    const { data, error } = await supabase.auth.signInWithPassword({ email: userEmail, password });
+
+    if (error) {
+      console.error('ログインエラー:', error.message);
+      return NextResponse.json({ error: 'Unauthorized', message: 'ログインに失敗しました。' }, { status: 401 });
+    }
+
+    const accessToken = data.session?.access_token;
+    const refreshToken = data.session?.refresh_token;
+
+    if (accessToken && refreshToken) {
+      const response = NextResponse.json({ message: 'ログインに成功しました。' });
+
+      response.cookies.set('access_token', accessToken, {
+        path: '/',
+        httpOnly: true,
+        maxAge: 60 * 60 * 24 * 7,
+        sameSite: 'lax',
+        secure: true,
+      });
+
+      response.cookies.set('refresh_token', refreshToken, {
+        path: '/',
+        httpOnly: true,
+        maxAge: 60 * 60 * 24 * 30,
+        sameSite: 'lax',
+        secure: true,
+      });
+
+      return response;
+    }
+
+    console.error('トークンの保存に失敗しました');
+    return NextResponse.json({ error: 'Server Error', message: 'トークンの保存に失敗しました。' }, { status: 500 });
   }
-
-  console.error('Failed to save tokens');
-  return NextResponse.json({ error: 'Server Error', message: 'トークンの保存に失敗しました。' }, { status: 500 });
 }
