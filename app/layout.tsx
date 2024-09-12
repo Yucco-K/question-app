@@ -4,15 +4,15 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { UserProvider } from './context/UserContext';
-// import { Noto_Sans } from "next/font/google";
-import { Noto_Serif } from "next/font/google";
+import { Noto_Sans } from "next/font/google";
+// import { Noto_Serif } from "next/font/google";
 import { ModalProvider } from './context/ModalContext';
 import Modal from './components/ui/Modal';
 
 
 const inter = Inter({ subsets: ["latin"] });
-// const notoSans = Noto_Sans({ subsets: ["latin"], weight: ["400", "700"] });
-const notoSerif = Noto_Serif({ subsets: ["latin"], weight: ["400", "700"] });
+const notoSans = Noto_Sans({ subsets: ["latin"], weight: ["400", "700"] });
+// const notoSerif = Noto_Serif({ subsets: ["latin"], weight: ["400", "700"] });
 
 export const metadata = {
   title: 'Engineer Q&A Board',
@@ -26,7 +26,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ja">
-      <body className={notoSerif.className}>
+      <body className={notoSans.className}>
         <UserProvider>
           <ModalProvider>
             <AppRouter>
