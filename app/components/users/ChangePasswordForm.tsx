@@ -1,9 +1,8 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-// import AuthLayout from '../Layout/AuthLayout';
 import UsersLayout from '../../components/layout/main/UsersLayout';
-import Notification from '../layout/Notification';
+import Notification from '../ui/Notification';
 
 export default function ChangePasswordForm() {
   const [email, setEmail] = useState('');

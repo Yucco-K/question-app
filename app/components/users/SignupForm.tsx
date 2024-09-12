@@ -4,9 +4,8 @@ import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
-import Notification from '../layout/Notification';
+import Notification from '../ui/Notification';
 import zxcvbn from 'zxcvbn';
-// import AuthLayout from '../Layout/AuthLayout';
 import UsersLayout from '../../components/layout/main/UsersLayout';
 import  supabase from '../../lib/supabaseClient';
 

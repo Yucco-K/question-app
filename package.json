@@ -10,11 +10,12 @@
     "test": "jest"
   },
   "dependencies": {
+    "@emotion/react": "^11.13.3",
     "@fortawesome/free-solid-svg-icons": "^6.6.0",
     "@fortawesome/react-fontawesome": "^0.2.2",
     "@hcaptcha/react-hcaptcha": "^1.11.0",
     "@supabase/auth-helpers-nextjs": "^0.10.0",
-    "express": "^4.19.2",
+    "express": "^5.0.0",
     "jest-environment-jsdom": "^29.7.0",
     "next": "14.2.7",
     "nodemailer": "^6.9.14",

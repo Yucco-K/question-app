@@ -66,9 +66,9 @@ const AppRouter = ({ children }: { children: React.ReactNode }) => {
     default:
       return (
         <>
-          <DefaultHeader />
+          {/* <DefaultHeader /> */}
           <DefaultLayout>{children}</DefaultLayout>
-          <DefaultFooter currentYear={new Date().getFullYear()} />
+          {/* <DefaultFooter currentYear={new Date().getFullYear()} /> */}
         </>
       );
   }

@@ -58,6 +58,8 @@ export async function POST(request: Request) {
     let errorMessage = error.message;
     if (error.message.includes("User with this email already exists")) {
       errorMessage = "このメールアドレスはすでに登録されています。";
+    } else if (error.message.includes("Database error saving new user")) {
+      errorMessage = "すでに使用されているユーザー名です。他の名前に変更してください。";
     } else if (error.message.includes("Password should contain")) {
       errorMessage = "パスワードは8文字以上、英字、数字を含めてください。";
     } else if (error.message.includes("Password should be at least 8 characters")) {

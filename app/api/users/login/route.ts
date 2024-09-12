@@ -48,11 +48,16 @@ export async function POST(request: Request) {
   }
 
   if (!isEmail) {
+
+  console.log('usernameOrEmail:', usernameOrEmail);
+
     const { data: userData, error: userError } = await supabase
       .from('User')
       .select('email')
       .eq('username', usernameOrEmail)
       .single();
+
+      console.log('userData:', userData);
 
     if (userError || !userData) {
       return NextResponse.json({ error: 'Unauthorized', message: 'ユーザー名が見つかりませんでした' }, { status: 401 });

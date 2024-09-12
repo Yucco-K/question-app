@@ -6,7 +6,7 @@ import { User } from '@supabase/supabase-js';
 import { useRouter } from 'next/navigation';
 // import AuthLayout from '../Layout/AuthLayout';
 import UsersLayout from '../../components/layout/main/UsersLayout';
-import Notification from '../layout/Notification';
+import Notification from '../ui/Notification';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import zxcvbn from 'zxcvbn';

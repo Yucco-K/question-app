@@ -2,7 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import Notification from '../layout/Notification';
+import Notification from '../ui/Notification';
 
 export default function LogoutButton() {
   const [error, setError] = useState<string | null>(null);

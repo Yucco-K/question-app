@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
+import UserInfo from '../../components/profile/UserInfo';
 
 export default function UserDetail() {
   const pathname = usePathname();
@@ -44,6 +45,7 @@ export default function UserDetail() {
     <div>
       {user ? (
         <>
+          <UserInfo />
           <h1>{user.name}さんのプロフィール</h1>
           <p>メールアドレス: {user.email}</p>
           <p>ユーザー名: {user.username}</p>

@@ -1,39 +1,56 @@
+// UserContext.ts
+
 'use client';
 
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useState, useEffect } from 'react';
 
 interface UserContextType {
-  session: string | null;
-  setSession: (session: string | null) => void;
   userId: string | null;
-  setUserId: (userId: string | null) => void;
+  username: string | null;
+  email: string | null;
   loading: boolean;
-  setLoading: (loading: boolean) => void;
   error: string | null;
-  setError: (error: string | null) => void;
 }
 
-export const UserContext = createContext<UserContextType | undefined>(undefined);
+const UserContext = createContext<UserContextType | undefined>(undefined);
 
 export const UserProvider = ({ children }: { children: React.ReactNode }) => {
-  const [session, setSession] = useState<string | null>(null);
   const [userId, setUserId] = useState<string | null>(null);
+  const [username, setUsername] = useState<string | null>(null);
+  const [email, setEmail] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  useEffect(() => {
+    const fetchUserInfo = async () => {
+      try {
+        const response = await fetch('/api/users', {
+          method: 'GET',
+          credentials: 'include',
+        });
+
+        if (!response.ok) {
+          throw new Error('ユーザー情報の取得に失敗しました');
+        }
+
+        const data = await response.json();
+        console.log('フロントエンドで取得したデータ:', data);
+        setUserId(data.userId);
+        setUsername(data.username);
+        setEmail(data.email);
+      } catch (err) {
+        console.error('エラー:', err);
+        setError('ユーザー情報の取得に失敗しました');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUserInfo();
+  }, []);
+
   return (
-    <UserContext.Provider
-      value={{
-        session,
-        setSession,
-        userId,
-        setUserId,
-        loading,
-        setLoading,
-        error,
-        setError, // Include setError in the context
-      }}
-    >
+    <UserContext.Provider value={{ userId, username, email, loading, error }}>
       {children}
     </UserContext.Provider>
   );

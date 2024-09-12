@@ -4,8 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
-import Notification from '../layout/Notification';
-// import AuthLayout from '../Layout/AuthLayout';
+import Notification from '../ui/Notification';
 import UsersLayout from '../../components/layout/main/UsersLayout';
 
 export default function LoginForm() {
@@ -17,34 +16,6 @@ export default function LoginForm() {
   const [showNotification, setShowNotification] = useState(false);
   const [usernameOrEmail, setUsernameOrEmail] = useState('');
   const router = useRouter();
-
-  // const validateEmail = () => {
-  //   const atIndex = email.indexOf('@');
-  //   const dotIndex = email.lastIndexOf('.');
-
-  //   const hasValidPrefix = atIndex > 0;
-  //   const hasValidDomain = dotIndex > atIndex + 1;
-  //   const hasValidSuffix = dotIndex < email.length - 1;
-
-  //   if (!hasValidPrefix || !hasValidDomain || !hasValidSuffix) {
-  //     setError('メールアドレスの形式ではありません');
-  //     return false;
-  //   }
-  //   return true;
-  // };
-
-  // const validatePassword = () => {
-
-  //   const hasLetter = /[a-zA-Z]/.test(password);
-  //   const hasNumber = /[0-9]/.test(password);
-
-  //   if (password.length < 8 || !hasLetter || !hasNumber) {
-  //   setError('パスワードは8文字以上、英字、数字を含めてください。');
-  //   setShowNotification(true);
-  //   return false;
-  //   }
-  //   return true;
-  // };
 
   const validateUsernameOrEmail = () => {
     const atIndex = usernameOrEmail.indexOf('@');
@@ -102,21 +73,9 @@ export default function LoginForm() {
 
         const result = await response.json();
 
-        // const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL ?? '';
-        // const projectId = new URL(supabaseUrl).hostname.split('.')[0];
-
-        // const data = await response.json();
-        // const accessTokenKey = `sb-${projectId}-${result.access_token}`;
-        // const refreshTokenKey = `sb-${projectId}-${result.refresh_token}`;
-
-        // window.localStorage.setItem(result.accessTokenKey, result.accessToken);
-        // window.localStorage.setItem(result.refreshTokenKey, result.refreshToken);
-
         console.log('Redirecting to home...');
         setSuccess('ログインに成功しました');
         setShowNotification(true);
-
-
 
         router.push('/');
       }
