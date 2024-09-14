@@ -1,8 +1,10 @@
 'use client';
 
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import Modal from '../../components/ui/Modal'; // モーダルコンポーネントをインポート
+import ButtonGroup from '../../components/ui/ButtonGroup'; // ButtonGroupコンポーネントをインポート
+import Form from '../../components/ui/Form'; // Formコンポーネントをインポート
 
 export default function AnswerDetail() {
   const pathname = usePathname();
@@ -80,26 +82,30 @@ export default function AnswerDetail() {
             isOpen={isModalOpen}
             onClose={() => setModalOpen(false)}
             title="回答を投稿"
-            buttons={[
-              <button
-                key="submit"
-                className="px-4 py-2 bg-blue-500 text-white rounded"
-                onClick={handleNewAnswerSubmit}
-              >
-                投稿
-              </button>
-            ]}
           >
-            <div className="mb-4">
-              <label className="block text-sm font-semibold">本文</label>
-              <textarea
-                value={newAnswer}
-                onChange={(e) => setNewAnswer(e.target.value)}
-                placeholder="質問の本文を入力してください。"
-                className="w-full border rounded px-3 py-2"
-              ></textarea>
-            </div>
+            {/* Formコンポーネントをインポートして使用 */}
+            <Form
+              titleLabel="回答"
+              titlePlaceholder="回答の内容を入力してください"
+              bodyLabel=""
+              bodyPlaceholder=""
+              tagLabel="タグ"
+              tagPlaceholder="追加するタグを検索できます"
+            />
           </Modal>
+
+          {/* ButtonGroupでボタンを管理 */}
+          <ButtonGroup
+            pattern={1} // 使用するボタンの配置パターン
+            buttons={[
+              {
+                label: '投稿',
+                className: 'px-4 py-2 bg-blue-500 text-white rounded',
+                onClick: handleNewAnswerSubmit, // 投稿ボタンのクリック処理
+              },
+            ]}
+            buttonsPerRow={[1]} // 各行のボタン数を配列で指定
+          />
         </>
       ) : (
         <p>回答が見つかりませんでした。</p>
