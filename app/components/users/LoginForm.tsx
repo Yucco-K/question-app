@@ -6,6 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import Notification from '../ui/Notification';
 import UsersLayout from '../../components/layout/main/UsersLayout';
+import { useLoading } from '../../context/LoadingContext';
 
 export default function LoginForm() {
   const [email, setEmail] = useState('');
@@ -16,6 +17,7 @@ export default function LoginForm() {
   const [showNotification, setShowNotification] = useState(false);
   const [usernameOrEmail, setUsernameOrEmail] = useState('');
   const router = useRouter();
+  const { isLoading, setLoading } = useLoading();
 
   const validateUsernameOrEmail = () => {
     const atIndex = usernameOrEmail.indexOf('@');
@@ -47,6 +49,9 @@ export default function LoginForm() {
   };
 
   const handleSignIn = async () => {
+
+    setShowNotification(false);
+    setLoading(true);
     setError(null);
     setSuccess(null);
 
@@ -80,8 +85,13 @@ export default function LoginForm() {
         router.push('/');
       }
     } catch (err) {
+
       setError('予期しないエラーが発生しました');
       setShowNotification(true);
+
+    }finally {
+
+    setLoading(false);
     }
   };
 

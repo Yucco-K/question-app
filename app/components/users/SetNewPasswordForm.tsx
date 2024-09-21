@@ -10,6 +10,8 @@ import Notification from '../ui/Notification';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import zxcvbn from 'zxcvbn';
+import { useLoading } from '../../context/LoadingContext';
+import { set } from 'lodash';
 
 export default function SetNewPasswordForm() {
   const [newPassword, setNewPassword] = useState('');
@@ -21,6 +23,7 @@ export default function SetNewPasswordForm() {
   const [success, setSuccess] = useState<string | null>(null);
   const [userId, setUserId] = useState<string | null>(null);
   const router = useRouter();
+  const { isLoading, setLoading } = useLoading();
 
   useEffect(() => {
     const currentUrl = window.location.href;
@@ -62,6 +65,9 @@ export default function SetNewPasswordForm() {
   }, []);
 
   const handlePasswordUpdate = async () => {
+
+    setLoading(true);
+    setShowNotification(true);
     setError(null);
     setSuccess(null);
 
@@ -118,6 +124,9 @@ export default function SetNewPasswordForm() {
       setError(error instanceof Error ? error.message : 'パスワードの変更に失敗しました。');
       setShowNotification(true);
       setSuccess(null);
+
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -147,17 +156,7 @@ export default function SetNewPasswordForm() {
         }}
         className="space-y-4"
       >
-        {/* <div>
-          <label htmlFor="new-password" className="block text-sm font-medium text-gray-700">新しいパスワード:</label>
-          <input
-            type="password"
-            id="new-password"
-            value={newPassword}
-            onChange={(e) => setNewPassword(e.target.value)}
-            required
-            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
-          />
-        </div> */}
+
         <div>
           <label htmlFor="new-password" className="block text-sm font-medium text-gray-700">
               新しいパスワード <span className='text-xs text-red-500'>必須</span>:

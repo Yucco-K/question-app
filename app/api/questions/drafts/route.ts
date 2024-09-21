@@ -1,38 +1,46 @@
 import { NextResponse } from 'next/server';
-import supabase from '../../lib/supabaseClient';
+import supabase from '@/app/lib/supabaseClient';
 
 export async function GET(request: Request) {
-  const { searchParams } = new URL(request.url);
-  const page = parseInt(searchParams.get('page') || '1', 10);
-  const limit = parseInt(searchParams.get('limit') || '10', 10);
+  try {
 
-  const start = (page - 1) * limit;
-  const end = start + limit - 1;
+    const { searchParams } = new URL(request.url);
+    const page = parseInt(searchParams.get('page') || '1', 10);
+    const limit = parseInt(searchParams.get('limit') || '10', 10);
 
-  const { data, error } = await supabase
-  .from('Question')
-  .select(`
-    *,
-    QuestionTag (
-      Tag (
-        name
-      )
-    )
-  `)
-  .eq('is_draft', false)
-  .range(start, end);
+    const start = (page - 1) * limit;
+    const end = start + limit - 1;
 
-if (error) {
-  return NextResponse.json({ error: 'Server Error', message: error.message }, { status: 500 });
+    const { data, error } = await supabase
+      .from('Question')
+      .select(`
+        *,
+        QuestionTag (
+          Tag (
+            name
+          )
+        )
+      `)
+      .eq('is_draft', true)
+      .range(start, end);
+
+    if (error) {
+      console.error('Supabase error:', error);
+      return NextResponse.json({ error: 'Drafts not found', message: error.message }, { status: 404 });
+    }
+
+    const draftsWithTags = data.map((draft: any) => {
+      const tags = draft.QuestionTag?.map((qt: any) => qt.Tag.name) || [];
+      return { ...draft, tags };
+    });
+
+    return NextResponse.json(draftsWithTags);
+  } catch (err) {
+    console.error('Server error:', err);
+    return NextResponse.json({ error: 'サーバーエラーが発生しました', message: (err as Error).message }, { status: 500 });
+  }
 }
 
-const questionsWithTags = data.map((question: any) => {
-  const tags = question.QuestionTag?.map((qt: any) => qt.Tag.name) || [];
-  return { ...question, tags };
-});
-
-return NextResponse.json(questionsWithTags);
-}
 
 export async function POST(request: Request) {
   const body = await request.json();
@@ -48,7 +56,7 @@ export async function POST(request: Request) {
 
     const { data: questionData, error: questionError } = await supabase
       .from('Question')
-      .insert([{ title, description, user_id: userId, is_draft: false }])
+      .insert([{ title, description, user_id: userId, is_draft: true }])
       .select()
       .single();
 
@@ -135,7 +143,7 @@ export async function POST(request: Request) {
     //   }
     // }
 
-    return NextResponse.json({ message: '質問が正常に投稿されました。', questionId }, { status: 201 });
+    return NextResponse.json({ message: '下書きが正常に保存されました。', questionId }, { status: 201 });
 
   } catch (error: any) {
 
@@ -143,3 +151,5 @@ export async function POST(request: Request) {
 
   }
 }
+
+

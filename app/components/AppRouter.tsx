@@ -20,18 +20,18 @@ const AppRouter = ({ children }: { children: React.ReactNode }) => {
   const pathname = usePathname();
 
   switch (true) {
-    case pathname === '/users':
+    case pathname === '/users/login'|| pathname === '/users/signup' || pathname === '/users/password-reset' || pathname === '/users/new-password':
       return (
         <>
           <UsersHeader />
-          <UsersLayout
+          {/* <UsersLayout
             title=""
             actionText=""
             actionHref=""
             actionLinkText=""
-          >
+          > */}
             {children}
-          </UsersLayout>
+          {/* </UsersLayout> */}
           <UsersFooter currentYear={new Date().getFullYear()}/>
         </>
       );

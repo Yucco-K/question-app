@@ -8,6 +8,7 @@ import Notification from '../ui/Notification';
 import zxcvbn from 'zxcvbn';
 import UsersLayout from '../../components/layout/main/UsersLayout';
 import  supabase from '../../lib/supabaseClient';
+import { useLoading } from '../../context/LoadingContext';
 
 export default function SignupForm() {
   const [username, setUsername] = useState('');
@@ -24,6 +25,7 @@ export default function SignupForm() {
   const [isSendVisible, setIsSendVisible] = useState(true);
   const [isResendVisible, setIsResendVisible] = useState(false);
   const [attemptCount, setAttemptCount] = useState(0);
+  const {isLoading, setLoading } = useLoading();
   const router = useRouter();
   const [touchedFields, setTouchedFields] = useState<{
     username: boolean;
@@ -92,8 +94,12 @@ export default function SignupForm() {
 
 
   const handleSignup = async () => {
+
+    setLoading(true);
     setError(null);
     setSuccess(null);
+    setShowNotification(false);
+
 
       const isUsernameValid = await handleBlur('username');
     if (!isUsernameValid) return;
@@ -142,6 +148,8 @@ export default function SignupForm() {
       setError('サーバーエラーが発生しました。後ほど再試行してください。');
       setShowNotification(true);
       setAttemptCount(attemptCount + 1);
+    }finally {
+      setLoading(false);
     }
   }
 

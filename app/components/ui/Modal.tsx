@@ -14,15 +14,20 @@ export default function Modal({ isOpen, onClose, title, children }: ModalProps) 
 
   return (
     <div className="fixed inset-0 flex items-center justify-center z-50 overflow-auto">
-      {/* オーバーレイ */}
-      <div className="fixed inset-0 bg-black opacity-50" onClick={onClose}></div>
 
-      {/* モーダルコンテンツ */}
-      <div className="bg-white shadow-lg z-50 p-8 mx-auto relative" style={{ width: '80%', maxHeight: '90vh', overflowY: 'auto' }}>
-        {/* タイトル */}
-        <h2 className="text-xl font-bold mb-4 text-center">{title}</h2>
+      <div className="fixed inset-0 bg-black opacity-90" onClick={onClose}></div>
 
-        {/* コンテンツ（子要素） */}
+      <div className="modal relative">
+
+        <button
+          className="absolute top-6 right-6 text-gray-500 hover:text-gray-700 text-3xl"
+          onClick={onClose}
+        >
+          ×
+        </button>
+
+        <h2 className="text-3xl text-gray-700 font-bold mt-10 mb-10 text-center">{title}</h2>
+
         <div>{children}</div>
       </div>
     </div>

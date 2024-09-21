@@ -3,6 +3,8 @@
 import { useEffect, useState } from 'react';
 import UsersLayout from '../../components/layout/main/UsersLayout';
 import Notification from '../ui/Notification';
+import { useLoading } from '../../context/LoadingContext';
+import { set } from 'lodash';
 
 export default function ChangePasswordForm() {
   const [email, setEmail] = useState('');
@@ -15,6 +17,7 @@ export default function ChangePasswordForm() {
   const [isSendVisible, setIsSendVisible] = useState(true);
   const [attemptCount, setAttemptCount] = useState(0);
   const [resetUrl, setResetUrl] = useState('');
+  const { isLoading, setLoading } = useLoading();
 
 
   useEffect(() => {
@@ -30,6 +33,13 @@ export default function ChangePasswordForm() {
   }, []);
 
   const checkEmailExists = async (email: string): Promise<boolean> => {
+
+    setError(null);
+    setSuccess(null);
+    setShowNotification(false);
+    setIsSendDisabled(true);
+    setLoading(true);
+
     try {
       const response = await fetch(`/api/users/check-email`, {
         method: 'POST',
@@ -41,16 +51,23 @@ export default function ChangePasswordForm() {
 
       const result = await response.json();
       return result.exists;
+
     } catch (err) {
       console.error('Email存在チェックエラー:', err);
       return false;
+
+    }finally {
+      setLoading(false);
     }
   };
 
   const handlePasswordReset = async () => {
+
     setError(null);
     setSuccess(null);
     setIsSendDisabled(true);
+    setShowNotification(false);
+    setLoading(true);
 
     const emailExists = await checkEmailExists(email);
     if (!emailExists) {
@@ -99,10 +116,18 @@ export default function ChangePasswordForm() {
     } catch (err) {
       setError((err as Error).message);
       setShowNotification(true);
+    }finally {
+      setLoading(false);
     }
   };
 
   const handleResendClick = async () => {
+
+    setError(null);
+    setSuccess(null);
+    setShowNotification(false);
+    setLoading(true);
+
     if (attemptCount < 9) {
       setIsResendDisabled(true);
       setTimeout(() => {
@@ -138,6 +163,8 @@ export default function ChangePasswordForm() {
         } catch (err) {
           setError((err as Error).message);
           setShowNotification(true);
+        }finally {
+          setLoading(false);
         }
 
     } else {

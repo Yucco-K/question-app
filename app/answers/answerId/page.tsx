@@ -2,9 +2,9 @@
 
 import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import Modal from '../../components/ui/Modal'; // モーダルコンポーネントをインポート
-import ButtonGroup from '../../components/ui/ButtonGroup'; // ButtonGroupコンポーネントをインポート
-import Form from '../../components/ui/Form'; // Formコンポーネントをインポート
+import Modal from '../../components/ui/Modal';
+import ButtonGroup from '../../components/ui/ButtonGroup';
+import Form from '../../components/ui/Form';
 
 export default function AnswerDetail() {
   const pathname = usePathname();
@@ -12,8 +12,10 @@ export default function AnswerDetail() {
   const [answer, setAnswer] = useState<{ content: string } | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [isModalOpen, setModalOpen] = useState(false); // モーダル用の状態管理
-  const [newAnswer, setNewAnswer] = useState(''); // 新しい回答の入力内容を管理
+  const [isModalOpen, setModalOpen] = useState(false);
+  const [newAnswer, setNewAnswer] = useState('');
+  const [initialTitle, setInitialTitle] = useState('');
+  const [initialBody, setInitialBody] = useState('');
 
   useEffect(() => {
     if (answerId) {
@@ -53,8 +55,8 @@ export default function AnswerDetail() {
         throw new Error('回答の投稿に失敗しました。');
       }
 
-      setNewAnswer(''); // 投稿成功時、テキストエリアをクリア
-      setModalOpen(false); // モーダルを閉じる
+      setNewAnswer('');
+      setModalOpen(false);
       // 再度データをフェッチするなどして表示を更新する
     } catch (err) {
       setError((err as Error).message);
@@ -77,31 +79,31 @@ export default function AnswerDetail() {
             回答を投稿
           </button>
 
-          {/* モーダルの表示 */}
           <Modal
             isOpen={isModalOpen}
             onClose={() => setModalOpen(false)}
             title="回答を投稿"
           >
-            {/* Formコンポーネントをインポートして使用 */}
             <Form
               titleLabel="回答"
               titlePlaceholder="回答の内容を入力してください"
               bodyLabel=""
-              bodyPlaceholder=""
-              tagLabel="タグ"
-              tagPlaceholder="追加するタグを検索できます"
+              bodyPlaceholder="詳細な説明を追加してください"
+              initialTitle={initialTitle}
+              initialBody={initialBody}
+              onTitleChange={(newTitle) => setInitialTitle(newTitle)}
+              onBodyChange={(newBody) => setInitialBody(newBody)}
             />
+
           </Modal>
 
-          {/* ButtonGroupでボタンを管理 */}
           <ButtonGroup
             pattern={1} // 使用するボタンの配置パターン
             buttons={[
               {
                 label: '投稿',
                 className: 'px-4 py-2 bg-blue-500 text-white rounded',
-                onClick: handleNewAnswerSubmit, // 投稿ボタンのクリック処理
+                onClick: handleNewAnswerSubmit,
               },
             ]}
             buttonsPerRow={[1]} // 各行のボタン数を配列で指定

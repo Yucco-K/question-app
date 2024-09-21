@@ -4,17 +4,22 @@
 import { useRouter } from 'next/navigation';
 import useAuth from '../lib/useAuth';
 import LogoutButton from '../components/users/LogoutButton';
-import Spinner from '../components/ui/Spinner';
-import Card from '../components/ui/Card';
+// import Card from '../components/ui/Card';
+import QuestionForm from '../components/questions/QuestionForm';
+import { useState } from 'react';
+import Modal from '../components/ui/Modal';
+import QuestionList from '../components/questions/QuestionList';
+import '../globals.css';
 // import Avatar from '../components/ui/Avatar';
 
 export default function QuestionsPage() {
   const { userId, loading } = useAuth('/users/login', false);
+  const [isModalOpen, setModalOpen] = useState(false);
   const router = useRouter();
 
-  if (loading) {
-    return <Spinner />;
-  }
+  // if (loading) {
+  //   return <Spinner />;
+  // }
 
   const tags = ['カテゴリ1', 'カテゴリ2', 'カテゴリ3']; // タグを仮で設定
 
@@ -25,7 +30,9 @@ export default function QuestionsPage() {
         <div className="flex items-center">
         </div>
         {userId ? (
-          <LogoutButton />
+          <>
+            <LogoutButton />
+          </>
         ) : (
           <button
             className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
@@ -36,54 +43,14 @@ export default function QuestionsPage() {
         )}
       </div>
 
+      <Modal isOpen={isModalOpen} onClose={() => setModalOpen(false)} title="質問を投稿">
+        <QuestionForm /> {/* 質問投稿フォームをモーダル内に表示 */}
+      </Modal>
+
       <div className="flex">
         {/* 左側の質問カード部分 */}
         <div className="flex-grow mr-8">
-          <h1 className="text-3xl font-bold mb-6">質問一覧</h1>
-
-          {/* 質問カード */}
-          <div className="space-y-4">
-            <Card
-              title="質問1: 〇〇について"
-              footer={<button className="text-blue-500">詳細を見る</button>}
-            >
-              <p>これは質問の概要です。</p>
-              {/* タグ */}
-              <div className="flex flex-wrap mt-4">
-                {tags.map((tag, index) => (
-                  <span key={index} className="bg-blue-500 text-white px-2 py-1 rounded-full mr-2 mb-2">
-                    {tag}
-                  </span>
-                ))}
-              </div>
-              {/* ユーザープロフィール */}
-              <div className="flex items-center mt-4">
-                <div className="ml-2">
-                  <p className="font-semibold">User Name</p>
-                  <p className="text-sm text-gray-500">2024/01/14 12:12</p>
-                </div>
-              </div>
-            </Card>
-
-            <Card title="質問2: 〇〇の解決方法">
-              <p>こちらは別の質問です。</p>
-              {/* タグ */}
-              <div className="flex flex-wrap mt-4">
-                {tags.map((tag, index) => (
-                  <span key={index} className="bg-blue-500 text-white px-2 py-1 rounded-full mr-2 mb-2">
-                    {tag}
-                  </span>
-                ))}
-              </div>
-              {/* ユーザープロフィール */}
-              <div className="flex items-center mt-4">
-                <div className="ml-2">
-                  <p className="font-semibold">User Name</p>
-                  <p className="text-sm text-gray-500">2024/01/14 12:12</p>
-                </div>
-              </div>
-            </Card>
-          </div>
+          <QuestionList />
         </div>
 
         {/* 右側のソート、フィルター、タグ部分 */}
@@ -139,16 +106,19 @@ export default function QuestionsPage() {
           <button className="px-4 py-2 bg-gray-200 rounded-r-lg">»</button>
         </div>
 
-        {/* 質問を投稿ボタン */}
+        {/* {userId && ( */}
+        {!isModalOpen && (
         <button
-          className="flex items-center bg-orange-400 text-white px-4 py-2 rounded-full hover:bg-orange-600 ml-60"
-          onClick={() => router.push('/questions/new')}
+          className="flex items-center bg-orange-400 text-white px-4 py-2 rounded-full hover:bg-orange-600 ml-60 post-button"
+          onClick={() => setModalOpen(true)}
         >
           <span className="bg-orange-400 text-white rounded-full w-6 h-6 flex items-center justify-center mr-2 text-3xl">
             ⊕
           </span>
           質問を投稿
         </button>
+        )}
+      {/* )} */}
       </div>
     </div>
   );

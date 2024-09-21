@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Toolbar and Plugin Comparison</title>
+</head>
+<body>
+    <script>
+        function extractToolbarPluginMatch(toolbar, plugins) {
+            const pluginSet = new Set(plugins);
+            const toolbarSet = new Set(toolbar);
+
+            // ツールバーにあってプラグインにあるもの
+            const toolbarMatch = toolbar.filter(item => pluginSet.has(item));
+
+            // プラグインにあってツールバーにあるもの
+            const pluginMatch = plugins.filter(item => toolbarSet.has(item));
+
+            return {
+                toolbarNotInPlugins: toolbarMatch,
+                pluginsNotInToolbar: pluginMatch
+            };
+        }
+
+        // const toolbarItems = [
+        //     'undo', 'redo', 'formatselect', 'bold', 'italic', 'underline', 'backcolor',
+        //     'alignleft', 'aligncenter', 'alignright', 'alignjustify', 'bullist', 'numlist',
+        //     'outdent', 'indent', 'removeformat', 'help', 'preview', 'code', 'codesample',
+        //     'emoticons', 'hr', 'anchor', 'charmap', 'image', 'media', 'table', 'wordcount',
+        //     'searchreplace', 'visualblocks', 'fullscreen', 'insertdatetime', 'print',
+        //     'forecolor', 'fontselect', 'fontsizeselect', 'cut', 'copy', 'paste',
+        //     'blockquote', 'subscript', 'superscript', 'strikethrough', 'link', 'unlink'
+        // ];
+        const toolbarItems = [ 'Premium','plugins','Accessibility','Checker','Advanced Typography','AI Assistant','Case Change','Checklist','Comments','Enhanced','Code Editor','Enhanced Media Embed','Enhanced Tables','Export to Word','Export to PDF','Footnotes','Format Painter','Inline CSS','Import from Word','Image Editing','Link Checker','Math','Markdown','Mentions','Merge Tags','MoxieManager','Page Embed','Permanent Pen','PowerPaste','Revision History','Spell Checker','Spelling Autocorrect','Templates','Table of Contents' ]
+
+        const pluginItems =[
+                  'Anchor', 'Autolink', 'Charmap', 'Codesample', 'Emoticons', 'Image', 'Link', 'Lists', 'Media', 'Searchreplace', 'Table', 'Visualblocks', 'Wordcount',
+                  'Mediaembed', 'Casechange', 'Export', 'Formatpainter', 'Pageembed', 'A11ychecker', 'Tinymcespellchecker', 'Permanentpen', 'Powerpaste', 'Advtable', 'Advcode', 'Editimage', 'Advtemplate', 'Ai', 'Tinycomments', 'Tableofcontents', 'Mergetags', 'Autocorrect', 'Typography', 'Inlinecss',
+                ]
+
+        const match = extractToolbarPluginMatch(toolbarItems, pluginItems);
+        console.log('ツールバーにあってプラグインにあるもの:', match.toolbarNotInPlugins);
+        console.log('プラグインにあってツールバーにあるもの:', match.pluginsNotInToolbar);
+    </script>
+</body>
+</html>

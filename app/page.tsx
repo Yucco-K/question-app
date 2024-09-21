@@ -1,7 +1,7 @@
 'use client';
 
 import Greeting from './components/top/Greeting';
-import MaintenanceBoard from './components/top/MaintenanceBoar';
+import MaintenanceBoard from './components/top/MaintenanceBoard';
 
 export default function HomePage() {
   return (

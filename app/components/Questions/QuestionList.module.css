@@ -1,0 +1,21 @@
+.questionList {
+  display: flex;
+  flex-direction: column;
+  gap: 20px; /* 各質問アイテム間にスペースを追加 */
+  padding: 20px; /* リスト全体に余白を追加 */
+  background-color: #f1f1f1; /* 背景色を薄いグレーに設定 */
+  border-radius: 10px; /* 角を丸める */
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* 軽いシャドウで立体感を追加 */
+}
+
+.questionBody {
+  font-size: 16px;
+  line-height: 1.6;
+  margin-top: 0px;
+  color: #333;
+  background-color: #f9f9f9;
+  padding: 10px;
+  border-radius: 5px;
+  word-wrap: break-word;
+  white-space: pre-wrap;
+}

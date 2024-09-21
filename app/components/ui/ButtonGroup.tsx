@@ -1,3 +1,5 @@
+'use client';
+
 import React from 'react';
 import CustomButton from './CustomButton';
 
@@ -50,15 +52,14 @@ const ButtonGroup: React.FC<ButtonGroupProps> = ({ pattern, buttons, buttonsPerR
       buttonIndex += buttonCount;
 
       return (
-        <div key={rowIndex} className="flex space-x-4 my-4">
+        <div key={rowIndex} className="flex space-x-4 my-8">
           {rowButtons.map((button, index) => (
             <CustomButton
               key={index}
               label={button.label}
               className={`w-full ${getButtonWidthClass(index, rowIndex)} ${button.className}`}
-              onClick={button.onClick}>
-              {button.label}
-            </CustomButton>
+              onClick={button.onClick}
+            />
           ))}
         </div>
       );
