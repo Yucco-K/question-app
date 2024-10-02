@@ -4,7 +4,6 @@
 import { useRouter } from 'next/navigation';
 import useAuth from '../lib/useAuth';
 import LogoutButton from '../components/users/LogoutButton';
-// import Card from '../components/ui/Card';
 import QuestionForm from '../components/questions/QuestionForm';
 import { useState } from 'react';
 import Modal from '../components/ui/Modal';
@@ -25,7 +24,7 @@ export default function QuestionsPage() {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      {/* ログイン/ログアウトボタン */}
+
       <div className="flex justify-between items-center mb-4">
         <div className="flex items-center">
         </div>
@@ -44,19 +43,23 @@ export default function QuestionsPage() {
       </div>
 
       <Modal isOpen={isModalOpen} onClose={() => setModalOpen(false)} title="質問を投稿">
-        <QuestionForm /> {/* 質問投稿フォームをモーダル内に表示 */}
+        <QuestionForm initialTitle={''} initialBody={''} initialTags={[]} onSubmit={function (updatedTitle: string, updatedBody: string, updatedTags: string[]): void {
+          throw new Error('Function not implemented.');
+        } } onCancel={function (): void {
+          throw new Error('Function not implemented.');
+        } } />
       </Modal>
 
       <div className="flex">
-        {/* 左側の質問カード部分 */}
+
         <div className="flex-grow mr-8">
           <QuestionList />
         </div>
 
-        {/* 右側のソート、フィルター、タグ部分 */}
+
         <div className="w-1/3">
         <div className="bg-white shadow-md border rounded-lg p-4 space-y-4">
-          {/* ソート */}
+
           <div>
             <h3 className="font-bold mb-2">ソート</h3>
             <select id="sort" className="block w-full border rounded-md p-2" title="Sort">
@@ -65,7 +68,6 @@ export default function QuestionsPage() {
             </select>
           </div>
 
-          {/* フィルター */}
           <div>
             <h3 className="font-bold mb-2">フィルター</h3>
             <select id="status" className="block w-full border rounded-md p-2" title="Status">
@@ -75,7 +77,7 @@ export default function QuestionsPage() {
             </select>
           </div>
 
-          {/* タグ */}
+
           <div>
             <h3 className="font-bold mb-2">タグ</h3>
             <input

@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useLoading } from '../../context/LoadingContext';
 
 interface HomePageProps {
   greetingTimeout?: number;
@@ -11,6 +12,7 @@ export default function Greeting() {
   const [greeting, setGreeting] = useState('');
   const [fade, setFade] = useState(false);
   const router = useRouter();
+  const [isLoading, setLoading] = useState(false);
   const greetingTimeout = 0.1 * 60 * 60 * 1000;
 
   useEffect(() => {
@@ -58,39 +60,51 @@ export default function Greeting() {
         </h1>
       </div>
 
-      <div className="flex flex-grow justify-center items-center">
-        <h1 className="text-6xl font-bold text-center animate-fade">Engineers Q&A Board</h1>
+      <div className="flex flex-grow justify-center">
+        <h1 className="text-6xl font-bold text-center animate-fade h-screen flex justify-center items-center  transform -translate-y-20">
+          Engineers Q&A Board
+        </h1>
       </div>
 
       <style jsx>{`
+        html, body {
+          height: 100%;
+          margin: 0;
+          overflow: hidden; /* スクロールを無効にする */
+        }
+
+        .container {
+          height: 100vh; /* ビューポートの高さに対応 */
+        }
+
         .animate-fade-in-out {
           animation: fadeInOut 1s ease-in-out forwards;
         }
 
         @keyframes fadeInOut {
           0% {
-            opacity: 0; /* 初期状態は透明 */
+            opacity: 0;
           }
           20% {
-            opacity: 1; /* 少し遅れてフェードイン */
+            opacity: 1;
           }
           80% {
-            opacity: 1; /* 一定時間表示状態を保つ */
+            opacity: 1;
           }
           100% {
-            opacity: 0; /* 最後にフェードアウト */
+            opacity: 0;
           }
         }
         .animate-fade {
-          animation: fadeOut 1s forwards; /* forwardsでフェードアウトした後の状態を維持 */
+          animation: fadeOut 1s forwards;
         }
 
         @keyframes fadeOut {
           0% {
-            opacity: 1; /* 初期状態は表示 */
+            opacity: 1;
           }
           100% {
-            opacity: 0; /* フェードアウトして透明になる */
+            opacity: 0;
           }
         }
       `}</style>

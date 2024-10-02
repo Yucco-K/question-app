@@ -3,11 +3,13 @@
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import Notification from '../ui/Notification';
+import { useLoading } from '../../context/LoadingContext';
 
 export default function LogoutButton() {
   const [error, setError] = useState<string | null>(null);
   const [showNotification, setShowNotification] = useState(false);
   const [success, setSuccess] = useState<string | null>(null);
+  const [isLoading, setLoading] = useState(false);
   const router = useRouter();
 
   const handleLogout = async () => {

@@ -14,6 +14,11 @@ interface FormProps {
   initialBody: string;
   onTitleChange: (newTitle: string) => void;
   onBodyChange: (newBody: string) => void;
+  showTitle?: boolean;
+  onSubmit?: (title: string, body: string) => void;
+  onCancel?: () => void;
+  initialTags?: string; // optional initialTags property
+  onTagsChange?: (tags: string) => void;
 }
 
 export default function Form({
@@ -25,6 +30,9 @@ export default function Form({
   initialBody,
   onTitleChange,
   onBodyChange,
+  showTitle = true,
+  onSubmit,
+  onCancel,
 }: FormProps) {
 
   const editorRef = useRef<any>(null);
@@ -34,6 +42,7 @@ export default function Form({
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [showNotification, setShowNotification] = useState(false);
+
 
   const openPreview = () => {
     if (editorRef.current) {
@@ -45,56 +54,6 @@ export default function Form({
     }
   };
 
-  // ファイルアップロード処理
-  // const handleFileUpload = async (file: File) => {
-  //   return new Promise(async (resolve, reject) => {
-  //   const fileExt = file.name.split('.').pop();
-  //   const fileName = `${Date.now()}.${fileExt}`;
-  //   const filePath = `editor-uploads/${fileName}`;
-
-  //   const { data, error } = await supabase.storage
-  //     .from('attachment_files')
-  //     .upload(filePath, file);
-
-  //     if (error) {
-  //       setLoading(false);
-  //       reject(error);
-  //       setError("ファイルのアップロードに失敗しました。");
-  //       setShowNotification(true);
-  //       console.error('アップロードエラー:', error.message);
-  //       return;
-  //     }
-
-  //   const { data: publicUrlData } = supabase.storage
-  //     .from('attachment_files')
-  //     .getPublicUrl(filePath);
-
-  //     const publicUrl = publicUrlData.publicUrl;
-
-  //   const { error: insertError } = await supabase
-  //     .from('File')
-  //     .insert({
-  //       name: file.name,
-  //       url: publicUrl,
-  //       fileType: file.type,  // ファイルのMIMEタイプ
-  //     });
-
-  //     if (insertError) {
-  //       setLoading(false);
-  //       reject(insertError);
-  //       setError("Fileテーブルへの挿入に失敗しました。");
-  //       setShowNotification(true);
-  //       console.error('Fileテーブルへの挿入エラー:', insertError.message);
-  //     } else {
-  //       resolve(publicUrl);
-  //       setLoading(false);
-  //       setSuccess("ファイルのアップロードに成功しました！");
-  //       setShowNotification(true);
-  //     }
-
-  //   return publicUrl;
-  //   });
-  // };
 
   const filePickerCallback = (cb: any, value: any, meta: any) => {
     const input = document.createElement('input');
@@ -185,26 +144,31 @@ export default function Form({
         />
       )}
       <form className="max-w-[1400px] mx-auto">
-
+      {showTitle && (
         <div className="mb-4">
-          <label className="block text-xl text-gray-600 font-semibold my-6">
+          <label className="block text-xl text-gray-600 font-semibold mb-6 mt-10">
             {titleLabel}
-            <span className="text-sm text-gray-600">   ※ 必須 : 2文字以上入力してください。</span>
+            <span className="text-sm text-gray-600">   ※ 必須 </span>
           </label>
           <input
             type="text"
             placeholder={titlePlaceholder}
             value={title}
-            onChange={(e) => onTitleChange(e.target.value)}
+            onChange={(e) => {
+              const newTitle = e.target.value;
+              setTitle(newTitle);
+              onTitleChange(newTitle);
+            }}
             className="w-full border border-gray-300 px-3 py-2 text-lg focus:outline-none focus:border-blue-600"
           />
         </div>
+      )}
         <div className="mb-4">
-          <label className="block text-xl text-gray-700 font-semibold my-6">
+          <label className="block text-xl text-gray-700 font-semibold mb-6 mt-10">
             {bodyLabel}
-            <span className="text-sm text-gray-600">   ※ 必須 : 10文字以上入力してください。</span>
+            <span className="text-sm text-gray-600">   ※ 必須 </span>
           </label>
-          <div className="border border-gray-300 text-l">
+          <div className="border border-gray-300 text-xl">
             <Editor
               apiKey={process.env.NEXT_PUBLIC_TINYMCE_API_KEY}
               onInit={(evt, editor) => (editorRef.current = editor)}
@@ -216,7 +180,7 @@ export default function Form({
               init={{
                 height: 1200,
                 placeholder: bodyPlaceholder,
-                content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:16px }',
+                content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:24px }',
                 plugins: [
                   "advlist", "anchor", "autolink", "charmap", "code", "fullscreen",'insertdatetime',
                   "help", "image", "insertdatetime", "link", "autolink", "lists","advlist", "media","emoticons",
@@ -238,7 +202,7 @@ export default function Form({
             />
           </div>
         </div>
-        <button type="button" onClick={openPreview} className="bg-blue-500 text-white px-4 py-2">
+        <button type="button" onClick={openPreview} className="bg-blue-500 text-white text-sm px-4 py-2">
             プレビュー
         </button>
       </form>

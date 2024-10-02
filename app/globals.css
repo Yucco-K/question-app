@@ -2,10 +2,15 @@
 @tailwind components;
 @tailwind utilities;
 
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
 body {
   padding-top: 64px;
 }
-
 
 .spinner {
   border: 4px solid rgba(0, 0, 0, 0.1);
@@ -51,7 +56,7 @@ body {
 
 .post-button {
   position: fixed;     /* 画面上に固定 */
-  bottom: 30px;        /* 画面下から20pxの位置に配置 */
+  bottom: 30px;        /* 画面下から30pxの位置に配置 */
   right: 20px;         /* 画面右から20pxの位置に配置 */
   background-color: #ff9800; /* ボタンの背景色 */
   color: white;        /* ボタンのテキスト色 */
@@ -88,5 +93,54 @@ body {
     font-size: 15px;      /* フォントサイズを少し小さく */
     /* border-radius: 4px; */
   }
+}
+
+@layer utilities {
+  .hover-rise {
+    @apply transition transform hover:-translate-y-1 hover:text-blue-500 duration-300;
+  }
+}
+
+/* マウスホバーで文字が現れるスタイル */
+.hover-show-text {
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+.hover-show-text-parent:hover .hover-show-text {
+  opacity: 1;
+}
+
+.hover-container {
+  position: relative;
+}
+
+.hover-container img {
+  width: 100%;
+  height: auto;
+}
+
+.hover-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  font-size: 1.5rem;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+.hover-container:hover .hover-text {
+  opacity: 1;
+}
+
+/* 画像の拡大スタイル */
+.hover-zoom img {
+  transition: transform 0.5s ease-in-out;
+}
+
+.hover-zoom img:hover {
+  transform: scale(1.1);
 }
 

@@ -20,7 +20,7 @@ const AppRouter = ({ children }: { children: React.ReactNode }) => {
   const pathname = usePathname();
 
   switch (true) {
-    case pathname === '/users/login'|| pathname === '/users/signup' || pathname === '/users/password-reset' || pathname === '/users/new-password':
+    case pathname === '/users/login'|| pathname === '/users/signup' || pathname === '/users/password-reset' || pathname === '/users/new-password' || pathname.startsWith('/users/set-new-password') || pathname === '/users/change-password':
       return (
         <>
           <UsersHeader />

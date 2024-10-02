@@ -34,10 +34,6 @@ export async function GET(request: Request) {
         return NextResponse.json({ error: 'Profile not found', message: 'プロフィール情報が見つかりません。' }, { status: 404 });
       }
 
-      console.log('profile:', profile);
-      console.log('user:', user);
-      console.log('userId,username', user?.id, user?.user_metadata?.username);
-
     return NextResponse.json({
       message: 'ユーザー情報を正常に取得しました。',
       userId: user.id,

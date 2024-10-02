@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react';
 import UsersLayout from '../../components/layout/main/UsersLayout';
 import Notification from '../ui/Notification';
 import { useLoading } from '../../context/LoadingContext';
-import { set } from 'lodash';
 
 export default function ChangePasswordForm() {
   const [email, setEmail] = useState('');

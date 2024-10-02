@@ -1,6 +1,23 @@
 import { NextResponse } from 'next/server';
 import supabase from '@/app/lib/supabaseClient';
 
+export async function GET(request: Request, { params }: { params: { draftId: string } }) {
+  const { draftId } = params;
+
+  const { data, error } = await supabase
+    .from('Question')
+    .select('*')
+    .eq('id', draftId)
+    .single();
+
+  if (error || !data) {
+    return NextResponse.json({ error: 'Draft not found', message: error?.message || 'No data found' }, { status: 404 });
+  }
+
+  return NextResponse.json(data, { status: 200 });
+}
+
+
 export async function PUT(request: Request, { params }: { params: { draftId: string } }) {
   const { draftId } = params;
   const body = await request.json();
@@ -8,7 +25,7 @@ export async function PUT(request: Request, { params }: { params: { draftId: str
 
   const { data, error } = await supabase
   .from('Question')
-  .update({ ...body })  // bodyの内容で更新
+  .update({ ...body })
   .eq('id', draftId)
   .single();
 

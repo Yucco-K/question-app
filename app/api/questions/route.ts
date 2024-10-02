@@ -9,50 +9,77 @@ export async function GET(request: Request) {
   const start = (page - 1) * limit;
   const end = start + limit - 1;
 
-  const { data, error } = await supabase
-  .from('Question')
-  .select(`
-    *,
-    QuestionTag (
-      Tag (
-        name
-      )
-    )
-  `)
-  .eq('is_draft', false)
-  .range(start, end);
+  const { data: questions, error: questionError } = await supabase
+    .from('Question')
+    .select(`
+      *,
+      Category (name)   // カテゴリの名前を取得
+    `)
+    .order('created_at', { ascending: false })
+    .eq('is_draft', false)
+    .range(start, end);
 
-if (error) {
-  return NextResponse.json({ error: 'Server Error', message: error.message }, { status: 500 });
+  if (questionError || !questions) {
+    return NextResponse.json({ error: 'Server Error', message: questionError?.message || 'Questions not found' }, { status: 500 });
+  }
+
+  const { data: questionTags, error: tagError } = await supabase
+    .from('QuestionTag')
+    .select(`
+      question_id,
+      tag_id,
+      Tag (name)
+    `);
+
+  if (tagError || !questionTags) {
+    return NextResponse.json({ error: 'Tag Fetch Error', message: tagError?.message || 'Question tags not found' }, { status: 500 });
+  }
+
+  const questionTagsOrEmpty = questionTags?.length > 0 ? questionTags : [];
+
+  // const questionsWithTags = questions.map((question: any) => {
+
+  //   const tagsForQuestion = questionTagsOrEmpty
+  //     .filter((qt: any) => qt?.question_id === question.id)
+  //     .map((qt: any) => qt?.Tag?.name || 'Unknown');
+
+  const questionsWithTagsAndCategory = questions.map((question: any) => {
+    const tagsForQuestion = questionTagsOrEmpty
+      .filter((qt: any) => qt?.question_id === question.id)
+      .map((qt: any) => qt?.Tag?.name || 'Unknown');
+
+  console.log('tagsForQuestion:', tagsForQuestion);
+
+  return {
+    ...question,
+    tags: tagsForQuestion,
+    category: question.Category?.name || 'カテゴリ未指定'
+  };
+  });
+
+  return NextResponse.json(questionsWithTagsAndCategory, { status: 200 });
 }
 
-const questionsWithTags = data.map((question: any) => {
-  const tags = question.QuestionTag?.map((qt: any) => qt.Tag.name) || [];
-  return { ...question, tags };
-});
-
-return NextResponse.json(questionsWithTags);
-}
 
 export async function POST(request: Request) {
   const body = await request.json();
-  const { title, description, tags, files, userId } = body;
+  const { title, description, tags, files, userId, categoryId } = body;
 
-  if (!title || !description || title.length < 2 || description.length < 10 || !tags || tags.length === 0) {
-    return NextResponse.json({ error: 'Bad Request', message: 'Title and description  and tags are required' }, { status: 400 });
+  if (!title || !description || !tags || !categoryId) {
+    return NextResponse.json({ error: 'Bad Request', message: 'Title, description, tags, and category are required' }, { status: 400 });
   }
 
   try {
-
     let uploadedFiles = files || [];
+
 
     const { data: questionData, error: questionError } = await supabase
       .from('Question')
-      .insert([{ title, description, user_id: userId, is_draft: false }])
+      .insert([{ title, description, user_id: userId, category_id: categoryId, is_draft: false }])
       .select()
       .single();
 
-    if (questionError) {
+      if (questionError) {
       throw new Error(questionError.message);
     }
 
@@ -96,13 +123,9 @@ export async function POST(request: Request) {
         throw new Error('タグが見つかりません');
       }
 
-      // console.log('questionId:', questionId);
-      // console.log('allTags:', allTags);
-      // console.log('allTags[0].id:' , allTags[0].id)
-
       const tagRelations = allTags.map((tag: any) => ({
         question_id: questionId,
-        tag_id: allTags[0].id,
+        tag_id: tag.id,
       }));
 
       const { error: tagRelationError } = await supabase
@@ -114,27 +137,6 @@ export async function POST(request: Request) {
       }
     }
 
-    // アップロードされたファイル情報をFileテーブルに挿入
-
-    // console.log('uploadedFiles:', uploadedFiles);
-
-    // if (uploadedFiles.length > 0) {
-    //   const fileInserts = uploadedFiles.map((file: { name: any; url: any; fileType: any; }) => ({
-    //     name: file.name,
-    //     url: file.url,
-    //     fileType: file.fileType,
-    //     question_id: questionId,
-    //   }));
-
-    //   const { error: fileInsertError } = await supabase
-    //     .from('File')
-    //     .insert(fileInserts);
-
-    //   if (fileInsertError) {
-    //     throw new Error(fileInsertError.message);
-    //   }
-    // }
-
     return NextResponse.json({ message: '質問が正常に投稿されました。', questionId }, { status: 201 });
 
   } catch (error: any) {
@@ -143,3 +145,4 @@ export async function POST(request: Request) {
 
   }
 }
+

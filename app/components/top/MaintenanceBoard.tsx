@@ -1,9 +1,11 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useLoading } from '../../context/LoadingContext';
 
 export default function MaintenanceBoard() {
   const [maintenanceMessage, setMaintenanceMessage] = useState('');
+  const { isLoading, setLoading } = useLoading();
 
   useEffect(() => {
     // APIまたは状態によってメンテナンス情報を取得

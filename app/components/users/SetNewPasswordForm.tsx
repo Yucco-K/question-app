@@ -11,7 +11,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import zxcvbn from 'zxcvbn';
 import { useLoading } from '../../context/LoadingContext';
-import { set } from 'lodash';
 
 export default function SetNewPasswordForm() {
   const [newPassword, setNewPassword] = useState('');
@@ -77,18 +76,22 @@ export default function SetNewPasswordForm() {
     if (newPassword.length < 8 || !hasLetter || !hasNumber) {
       setError('パスワードは8文字以上、英字、数字を含めてください。');
       setShowNotification(true);
+      setLoading(false);
       return;
+
     }
 
     if (newPassword !== confirmPassword) {
       setError("確認パスワードが一致しません。");
       setShowNotification(true);
+      setLoading(false);
       return;
     }
 
     if (!userId) {
         setError('ユーザーIDが見つかりませんでした。再度ログインしてください。');
         setShowNotification(true);
+        setLoading(false);
         return;
     }
 
