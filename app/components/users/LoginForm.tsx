@@ -8,6 +8,7 @@ import Notification from '../ui/Notification';
 import UsersLayout from '../../components/layout/main/UsersLayout';
 import { useLoading } from '../../context/LoadingContext';
 import useAuth from '../../lib/useAuth';
+import { useAuth as useAuthContext } from '../../context/AuthContext';
 
 export default function LoginForm() {
   const [email, setEmail] = useState('');
@@ -19,7 +20,8 @@ export default function LoginForm() {
   const [usernameOrEmail, setUsernameOrEmail] = useState('');
   const router = useRouter();
   const { isLoading, setLoading } = useLoading();
-  const { session, loading } = useAuth('/');
+  const { session, loading } = useAuth();
+  const { setSession } = useAuthContext();
 
   if (loading) {
     return <div>ローディング中...</div>;
@@ -83,6 +85,11 @@ export default function LoginForm() {
       } else {
 
         const result = await response.json();
+        console.log('ログイン結果:', result);
+
+        const session = result.session;
+
+        setSession(session);
 
         console.log('Redirecting to home...');
         setSuccess('ログインに成功しました');

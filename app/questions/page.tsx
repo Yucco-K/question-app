@@ -2,60 +2,92 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import useAuth from '../lib/useAuth';
-import LogoutButton from '../components/users/LogoutButton';
 import QuestionForm from '../components/questions/QuestionForm';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Modal from '../components/ui/Modal';
 import QuestionList from '../components/questions/QuestionList';
+import useAuth from '../lib/useAuth';
 import '../globals.css';
-// import Avatar from '../components/ui/Avatar';
+import { Session } from '@supabase/supabase-js';
+import { useLoading } from '../context/LoadingContext';
+import Notification from '../components/ui/Notification';
+
 
 export default function QuestionsPage() {
-  const { userId, loading } = useAuth('/users/login', false);
   const [isModalOpen, setModalOpen] = useState(false);
+  const [] = useState(false);
+  const [isLoggedIn, setLoggedIn] = useState(false);
+  const [showNotification, setShowNotification] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
+  const [localSession, setLocalSession] = useState<Session | null>(null);
+  const { isLoading, setLoading } = useLoading();
+  const { session, loading, setSession } = useAuth(true) as { session: any; loading: boolean; setSession: (session: any) => void };
   const router = useRouter();
 
-  // if (loading) {
-  //   return <Spinner />;
-  // }
+  useEffect(() => {
+
+    const fetchAndUpdateSession = async () => {
+      try {
+        const response = await fetch('/api/auth/get-session', {
+          method: 'GET',
+          credentials: 'include',
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          console.log('セッションデータを取得:', data);
+          setSession(data.session);
+        } else {
+          console.error('セッションの取得に失敗しました');
+        }
+      } catch (error) {
+        console.error('セッション更新時のエラー:', error);
+      }
+    };
+
+    if (!loading) {
+      fetchAndUpdateSession();
+    }
+
+    if (!loading && !session) {
+      router.push('/questions/public');
+    }
+  }, [loading, session, setSession, router]);
+
 
   const tags = ['カテゴリ1', 'カテゴリ2', 'カテゴリ3']; // タグを仮で設定
 
+
   return (
+    <>
+      {showNotification && (error || success) && (
+        <Notification
+          message={error ?? success ?? ""}
+          type={error ? "error" : "success"}
+          onClose={() => setShowNotification(false)}
+        />
+      )}
     <div className="container mx-auto px-4 py-8">
-
-      <div className="flex justify-between items-center mb-4">
-        <div className="flex items-center">
-        </div>
-        {userId ? (
-          <>
-            <LogoutButton />
-          </>
-        ) : (
-          <button
-            className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
-            onClick={() => router.push('/users/login')}
-          >
-            ログイン
-          </button>
-        )}
-      </div>
-
+    {/* <ProfileImageDisplay /> */}
       <Modal isOpen={isModalOpen} onClose={() => setModalOpen(false)} title="質問を投稿">
-        <QuestionForm initialTitle={''} initialBody={''} initialTags={[]} onSubmit={function (updatedTitle: string, updatedBody: string, updatedTags: string[]): void {
-          throw new Error('Function not implemented.');
-        } } onCancel={function (): void {
-          throw new Error('Function not implemented.');
-        } } />
+        <QuestionForm
+          initialTitle={''}
+          initialBody={''}
+          initialTags={[]}
+          onSubmit={function (): void {
+            throw new Error('Function not implemented.');
+          }}
+          onCancel={function (): void {
+            throw new Error('Function not implemented.');
+          }}
+        />
       </Modal>
 
       <div className="flex">
-
         <div className="flex-grow mr-8">
           <QuestionList />
         </div>
-
 
         <div className="w-1/3">
         <div className="bg-white shadow-md border rounded-lg p-4 space-y-4">
@@ -108,20 +140,22 @@ export default function QuestionsPage() {
           <button className="px-4 py-2 bg-gray-200 rounded-r-lg">»</button>
         </div>
 
-        {/* {userId && ( */}
         {!isModalOpen && (
-        <button
-          className="flex items-center bg-orange-400 text-white px-4 py-2 rounded-full hover:bg-orange-600 ml-60 post-button"
-          onClick={() => setModalOpen(true)}
-        >
-          <span className="bg-orange-400 text-white rounded-full w-6 h-6 flex items-center justify-center mr-2 text-3xl">
-            ⊕
-          </span>
-          質問を投稿
-        </button>
+          <button
+            className="flex items-center bg-orange-400 text-white px-4 py-2 rounded-full hover:bg-orange-600 ml-60 post-button"
+            onClick={() =>{
+              setModalOpen(true);
+            }}
+          >
+            <span className="bg-orange-400 text-white rounded-full w-6 h-6 flex items-center justify-center mr-2 text-2xl">
+              ⊕
+            </span>
+            質問を投稿
+          </button>
         )}
-      {/* )} */}
+
       </div>
     </div>
+    </>
   );
 }

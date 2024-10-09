@@ -10,6 +10,9 @@ import { faSync } from '@fortawesome/free-solid-svg-icons';
 import Notification from '../ui/Notification';
 import { useLoading } from '../../context/LoadingContext';
 import AnswerForm from './AnswerForm';
+import Vote from '../ui/Vote';
+import ScrollToBottomButton from '../ui/ScrollToBottomButton';
+import ProfileImageDisplay from '../profile/ProfileImageDisplay';
 
 interface Answer {
   id: string;
@@ -109,7 +112,8 @@ export default function AnswerList({ questionId, categoryId, answers: initialAns
         onClose={() => setShowNotification(false)}
       />
       )}
-      <h2 className="text-2xl my-6 flex items-center justify-center mr-10 ">
+      <ScrollToBottomButton />
+      <h2 className="text-lg my-6 flex items-center justify-center mr-10 ">
         全{answers ? answers.length : 0 }件の回答
       </h2>
       <div className="space-y-5">
@@ -136,33 +140,37 @@ export default function AnswerList({ questionId, categoryId, answers: initialAns
                     <FontAwesomeIcon icon={faSync} className="mr-2" />
                   </button>
                 </div>
-                <div className="text-blue-900 font-bold text-sm mb-1">
+                <div className="text-blue-900 text-xs mb-1">
                   回答ID: {answer.id}
                 </div>
                 <BestAnswer questionId={questionId} answerId={answer.id} />
-                <div className="flex-column flex-start items-center mb-4">
-                  <p className="font-semibold text-gray-600">
-                    {answerUser ? answerUser.username : 'ユーザー名登録なし'}
-                  </p>
 
-                  <p className="text-sm text-gray-500 my-2">
-                    {answer.created_at ? (
-                      new Date(answer.created_at).toLocaleString('ja-JP', {
-                        year: 'numeric',
-                        month: '2-digit',
-                        day: '2-digit',
-                        hour: '2-digit',
-                        minute: '2-digit',
-                        second: '2-digit',
-                      })
+                <div className="flex items-center mt-4">
+                  <ProfileImageDisplay />
 
-                    ) : (
-                      '作成日登録なし'
-                    )}
-                  </p>
+                  <div className="ml-4">
+                    <p className="text-sm text-gray-900">
+                      {answerUser ? answerUser.username : 'ユーザー名登録なし'}
+                    </p>
+                    <p className="text-xs text-gray-900 my-2">
+                      {answer.created_at ? (
+                        new Date(answer.created_at).toLocaleString('ja-JP', {
+                          year: 'numeric',
+                          month: '2-digit',
+                          day: '2-digit',
+                          hour: '2-digit',
+                          minute: '2-digit',
+                          second: '2-digit',
+                        })
+                      ) : (
+                        '作成日登録なし'
+                      )}
+                    </p>
+                  </div>
                 </div>
+
                 <hr className="my-4 border-gray-300" />
-                <div className="text-gray-700 text-2xl">
+                <div className="text-gray-700 text-md">
                   <div
                     dangerouslySetInnerHTML={{ __html: sanitizedDescription }}
                   />
@@ -178,6 +186,13 @@ export default function AnswerList({ questionId, categoryId, answers: initialAns
                   />
                 )}
 
+                <div className="flex items-center justify-end mb-4 gap-x-20">
+                  <Vote
+                    answerId={answer.id}
+                    userId={userId}
+                    answerUserId={answer.user_id}
+                  />
+
                 {/* {userId && ( */}
                 <CommentList
                   questionId={questionId}
@@ -186,6 +201,7 @@ export default function AnswerList({ questionId, categoryId, answers: initialAns
                   selectedAnswerId={selectedAnswerId}
                   setSelectedAnswerId={setSelectedAnswerId}
                 />
+              </div>
                 {/* )} */}
                 {/* <div className='flex items-center justify-center relative h-20'>
                   <button

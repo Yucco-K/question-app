@@ -49,7 +49,7 @@ interface CategoryProps {
 
   return (
     <div className="relative category-dropdown w-64 max-w-[1400px] mx-auto">
-      <label htmlFor="category" className="block text-xl text-gray-600 font-semibold my-8 flex flex-start">
+      <label htmlFor="category" className="block text-lg text-gray-600 font-semibold my-8 flex flex-start">
         カテゴリを選択
         <span className="text-sm text-gray-600">   ※ 必須 </span>
       </label>
@@ -57,7 +57,7 @@ interface CategoryProps {
       <button
         onClick={() => setIsOpen(!isOpen)}
         // className="w-full px-4 py-2 text-left bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-        className="w-full border border-gray-300 px-3 py-2 text-lg focus:outline-none focus:border-blue-600"
+        className="w-full border border-gray-300 px-3 py-2 text-md focus:outline-none focus:border-blue-600"
         >
         {selectedCategory
           ? categories.find((category) => category.id === selectedCategory)?.name || 'カテゴリを選択'

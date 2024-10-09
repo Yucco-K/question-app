@@ -7,7 +7,8 @@ import { Noto_Sans } from "next/font/google";
 // import { Noto_Serif } from "next/font/google";
 import { ModalProvider } from './context/ModalContext';
 import { LoadingProvider } from './context/LoadingContext';
-
+import CustomToastContainer from './components/ui/CustomToastContainer';
+import { AuthProvider } from './context/AuthContext';
 
 const inter = Inter({ subsets: ["latin"] });
 const notoSans = Noto_Sans({ subsets: ["latin"], weight: ["400", "700"] });
@@ -26,12 +27,17 @@ export default function RootLayout({
   return (
     <html lang="ja">
       <body className={notoSans.className}>
+
+      <CustomToastContainer />
+
         <LoadingProvider>
           <UserProvider>
             <ModalProvider>
-              <AppRouter>
-                {children}
-              </AppRouter>
+              <AuthProvider>
+                <AppRouter>
+                  {children}
+                </AppRouter>
+              </AuthProvider>
             </ModalProvider>
           </UserProvider>
         </LoadingProvider>

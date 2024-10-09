@@ -46,7 +46,7 @@ export default function TagInput({
 
   return (
     <div className="max-w-[1400px] mx-auto mb-15">
-      <label className="block text-xl font-semibold text-gray-700 m-6">
+      <label className="block text-md font-semibold text-gray-700 m-6">
         {tagLabel}
       </label>
       <div className="flex flex-wrap gap-2">
@@ -55,7 +55,7 @@ export default function TagInput({
           <button
             key={index}
             onClick={() => handleTagClick(tag)}
-            className={`px-5 py-1 m-2 rounded-full text-lg ${
+            className={`px-5 py-1 m-2 rounded-full text-sm ${
               selectedTags.includes(tag)
                 ? 'bg-blue-600 text-white'
                 : 'bg-gray-200 text-gray-700'

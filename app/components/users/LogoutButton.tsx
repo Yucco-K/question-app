@@ -3,7 +3,6 @@
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import Notification from '../ui/Notification';
-import { useLoading } from '../../context/LoadingContext';
 
 export default function LogoutButton() {
   const [error, setError] = useState<string | null>(null);
@@ -15,6 +14,7 @@ export default function LogoutButton() {
   const handleLogout = async () => {
     setError(null);
     try {
+      setLoading(true);
       const response = await fetch('/api/users/logout', {
         method: 'POST',
         headers: {
@@ -59,6 +59,8 @@ export default function LogoutButton() {
     } catch (err) {
       setError('予期しないエラーが発生しました。');
       setShowNotification(true);
+    }finally {
+      setLoading(false);
     }
   };
 
@@ -77,7 +79,7 @@ export default function LogoutButton() {
       )}
       <button
         onClick={handleLogout}
-        className="py-2 px-4 bg-red-600 text-white rounded-md hover:bg-red-700"
+        className="block w-full text-left py-2 px-4 text-gray-700 hover:bg-gray-100"
       >
         ログアウト
       </button>

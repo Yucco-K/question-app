@@ -2,6 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
+/* globals.css */
+
 * {
   box-sizing: border-box;
   margin: 0;
@@ -9,7 +11,7 @@
 }
 
 body {
-  padding-top: 64px;
+  padding-top: 40px;
 }
 
 .spinner {

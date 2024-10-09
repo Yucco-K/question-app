@@ -13,13 +13,25 @@ import { useUser } from '../../context/UserContext';
 import { useLoading } from '../../context/LoadingContext';
 import { useRouter } from 'next/navigation';
 import Category from '../ui/Category';
+import ScrollToBottomButton from '../ui/ScrollToBottomButton';
 
-export default function QuestionForm() {
+
+
+
+interface QuestionFormProps {
+  initialTitle: string;
+  initialBody: string;
+  initialTags: string[];
+  onSubmit: (updatedTitle: string, updatedBody: string, updatedTags: string[]) => void;
+  onCancel: () => void;
+}
+
+export default function QuestionForm({ initialTitle: propInitialTitle, initialBody: propInitialBody, initialTags: propInitialTags }: QuestionFormProps) {
   const { userId } = useUser();
   const router = useRouter();
-  const [initialTitle, setInitialTitle] = useState('');
-  const [initialBody, setInitialBody] = useState('');
-  const [initialTags, setInitialTags] = useState<string[]>([]);
+  const [initialTitle, setInitialTitle] = useState<string>(propInitialTitle);
+  const [initialBody, setInitialBody] = useState<string>(propInitialBody);
+  const [initialTags, setInitialTags] = useState<string[]>(propInitialTags);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [showNotification, setShowNotification] = useState(false);
@@ -27,9 +39,8 @@ export default function QuestionForm() {
   const [availableTags, setAvailableTags] = useState<string[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const { isLoading, setLoading } = useLoading();
-    // ▼ 追加: 下書きIDと下書きデータの状態を追跡する
-  const [selectedDraftId, setSelectedDraftId] = useState<string | null>(null); // 追加
-  const [draftData, setDraftData] = useState<any>(null); // 追加
+  const [selectedDraftId, setSelectedDraftId] = useState<string | null>(null);
+  const [draftData, setDraftData] = useState<any>(null);
   const [drafts, setDrafts] = useState<{ questionId: string, title: string, description: string, tags: string[],category_id: string }[]>([]);
   const [selectedDraft, setSelectedDraft] = useState<{ questionId?: string, title: string, description: string, tags: string[], category_id: string }>({
     questionId: undefined,
@@ -60,6 +71,14 @@ export default function QuestionForm() {
 
 
   const validateForm = () => {
+
+    if (!userId) {
+      setError('ログインしてください。');
+      setShowNotification(true);
+      return false;
+    }
+
+
     if (!initialTitle || initialTitle.trim() === '') {
       setError('タイトルを入力してください');
       setShowNotification(true);
@@ -132,41 +151,6 @@ export default function QuestionForm() {
     setError(null);
     setSuccess(null);
     setShowNotification(false);
-
-    // if (!userId) {
-    //   setError('ログインしてください。');
-    //   setShowNotification(true);
-    //   setLoading(false);
-    //   return;
-    // }
-
-    // if (!initialTitle) {
-    //   setError('タイトルを入力してください');
-    //   setShowNotification(true);
-    //   setLoading(false);
-    //   return;
-    // }
-
-    // if (!initialBody) {
-    //   setError('本文を入力してください');
-    //   setShowNotification(true);
-    //   setLoading(false);
-    //   return;
-    // }
-
-    // if (!initialTags || initialTags.length === 0) {
-    //   setError('タグを1つ以上指定してください');
-    //   setShowNotification(true);
-    //   setLoading(false);
-    //   return;
-    // }
-
-    // if (!selectedCategory) {
-    //   setError('カテゴリを選択してください');
-    //   setShowNotification(true);
-    //   setLoading(false);
-    //   return;
-    // }
 
 
     const uploadedFiles: any[] = [];
@@ -247,41 +231,6 @@ export default function QuestionForm() {
     setError(null);
     setSuccess(null);
     setShowNotification(false);
-
-        // if (!userId) {
-    //   setError('ログインしてください。');
-    //   setShowNotification(true);
-    //   setLoading(false);
-    //   return;
-    // }
-
-    // if (!initialTitle) {
-    //   setError('タイトルを入力してください');
-    //   setShowNotification(true);
-    //   setLoading(false);
-    //   return;
-    // }
-
-    // if (!initialBody) {
-    //   setError('本文を入力してください');
-    //   setShowNotification(true);
-    //   setLoading(false);
-    //   return;
-    // }
-
-    // if (!initialTags || initialTags.length === 0) {
-    //   setError('タグを1つ以上指定してください');
-    //   setShowNotification(true);
-    //   setLoading(false);
-    //   return;
-    // }
-
-    // if (!selectedCategory) {
-    //   setError('カテゴリを選択してください');
-    //   setShowNotification(true);
-    //   setLoading(false);
-    //   return;
-    // }
 
     const uploadedFiles: any[] = [];
 
@@ -380,15 +329,15 @@ export default function QuestionForm() {
 
   const buttonData = [
     { label: '入力内容をリセット',
-      className: 'bg-blue-800 text-white',
+      className: 'bg-blue-800 text-white text-sm',
       onClick: handleResetForm,
     },
     { label: '下書きに保存',
-      className: 'bg-blue-800 text-white',
+      className: 'bg-blue-800 text-white text-sm',
       onClick: handleDraftSubmit,
     },
     { label: '投 稿',
-      className: 'bg-blue-800 text-white',
+      className: 'bg-blue-800 text-white text-sm',
       onClick: handleSubmit,
     },
   ];
@@ -404,7 +353,6 @@ export default function QuestionForm() {
     }
   }, [selectedDraft]);
 
-    // ▼ 追加: 下書きデータをDBからフェッチする関数
     const fetchDraftData = async (draftId: string) => {
       try {
         const response = await fetch(`/api/drafts/${draftId}`);
@@ -414,7 +362,6 @@ export default function QuestionForm() {
         const data = await response.json();
         setDraftData(data);
 
-        // ▼ 下書きデータをフォームに反映
         setInitialTitle(data.title);
         setInitialBody(data.description);
         setInitialTags(data.tags);
@@ -424,7 +371,6 @@ export default function QuestionForm() {
       }
     };
 
-    // ▼ 追加: 下書きIDが選択されたときにフェッチをトリガー
     useEffect(() => {
       if (selectedDraftId) {
         fetchDraftData(selectedDraftId);
@@ -434,8 +380,8 @@ export default function QuestionForm() {
     useEffect(() => {
       if (selectedDraft) {
         setInitialTags(selectedDraft.tags);
-        console.log('selectedDraft tags:', selectedDraft.tags);  // タグが正しく反映されているか確認
-        console.log('initialTags before render:', initialTags);  // initialTags の状態を確認
+        console.log('selectedDraft tags:', selectedDraft.tags);
+        console.log('initialTags before render:', initialTags);
       }
     }, [selectedDraft]);
 
@@ -470,6 +416,7 @@ export default function QuestionForm() {
           onClose={() => setShowNotification(false)}
         />
       )}
+      <ScrollToBottomButton />
       <div className="container mx-auto px-4 py-8 relative">
         {!draftListModalOpen && (
           <div className="absolute top-5 right-20 flex items-center space-x-2 z-[100]">
@@ -483,8 +430,13 @@ export default function QuestionForm() {
           </div>
         )}
 
-      <Modal isOpen={draftListModalOpen} onClose={() => setDraftListModalOpen(false)} title="下書きリスト">
-        <DraftList onSelectDraft={handleSelectDraft} categoryId={selectedCategory ?? null} />
+      <Modal
+        isOpen={draftListModalOpen}
+        onClose={() => {setDraftListModalOpen(false);
+          router.push('/questions/public');
+        }}
+          title="下書きリスト">
+          <DraftList onSelectDraft={handleSelectDraft} categoryId={selectedCategory ?? null} />
       </Modal>
       </div>
 
@@ -498,7 +450,6 @@ export default function QuestionForm() {
         onCategorySelect={handleCategoryChange}
         initialCategoryId={selectedCategory}
       />
-
 
       <Form
         titleLabel="タイトル"

@@ -11,22 +11,22 @@ export async function POST(request: Request) {
   const isEmail = atIndex > 0 && dotIndex > atIndex + 1 && dotIndex < usernameOrEmail.length - 1;
 
   if (isEmail) {
-    const { data, error } = await supabase.auth.signInWithPassword({ email: userEmail, password });
+    const { data: { session }, error } = await supabase.auth.signInWithPassword({ email: userEmail, password });
 
     if (error) {
       console.error('ログインエラー:', error.message);
       return NextResponse.json({ error: 'Unauthorized', message: 'ログインに失敗しました。' }, { status: 401 });
     }
 
-    const accessToken = data.session?.access_token;
-    const refreshToken = data.session?.refresh_token;
+    const accessToken = session?.access_token;
+    const refreshToken = session?.refresh_token;
 
     if (accessToken && refreshToken) {
-      const response = NextResponse.json({ message: 'ログインに成功しました。' });
+      const response = NextResponse.json({ message: 'ログインに成功しました。' , session});
 
       response.cookies.set('access_token', accessToken, {
         path: '/',
-        httpOnly: true,
+        httpOnly: false,
         maxAge: 60 * 60 * 24 * 7,
         sameSite: 'lax',
         secure: true,
@@ -34,7 +34,7 @@ export async function POST(request: Request) {
 
       response.cookies.set('refresh_token', refreshToken, {
         path: '/',
-        httpOnly: true,
+        httpOnly: false,
         maxAge: 60 * 60 * 24 * 30,
         sameSite: 'lax',
         secure: true,
@@ -65,22 +65,22 @@ export async function POST(request: Request) {
 
     userEmail = userData.email;
 
-    const { data, error } = await supabase.auth.signInWithPassword({ email: userEmail, password });
+    const { data: { session }, error } = await supabase.auth.signInWithPassword({ email: userEmail, password });
 
     if (error) {
       console.error('ログインエラー:', error.message);
       return NextResponse.json({ error: 'Unauthorized', message: 'ログインに失敗しました。' }, { status: 401 });
     }
 
-    const accessToken = data.session?.access_token;
-    const refreshToken = data.session?.refresh_token;
+    const accessToken = session?.access_token;
+    const refreshToken = session?.refresh_token;
 
     if (accessToken && refreshToken) {
-      const response = NextResponse.json({ message: 'ログインに成功しました。' });
+      const response = NextResponse.json({ message: 'ログインに成功しました。' , session});
 
       response.cookies.set('access_token', accessToken, {
         path: '/',
-        httpOnly: true,
+        httpOnly: false,
         maxAge: 60 * 60 * 24 * 7,
         sameSite: 'lax',
         secure: true,
@@ -88,7 +88,7 @@ export async function POST(request: Request) {
 
       response.cookies.set('refresh_token', refreshToken, {
         path: '/',
-        httpOnly: true,
+        httpOnly: false,
         maxAge: 60 * 60 * 24 * 30,
         sameSite: 'lax',
         secure: true,

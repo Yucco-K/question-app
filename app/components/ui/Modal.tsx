@@ -26,7 +26,7 @@ export default function Modal({ isOpen, onClose, title, children }: ModalProps) 
           ×
         </button>
 
-        <h2 className="text-3xl text-gray-700 font-bold mt-20 mb-20 text-center">{title}</h2>
+        <h2 className="text-2xl text-gray-700 font-bold mt-20 mb-20 text-center">{title}</h2>
 
         <div>{children}</div>
       </div>

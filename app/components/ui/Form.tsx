@@ -146,7 +146,7 @@ export default function Form({
       <form className="max-w-[1400px] mx-auto">
       {showTitle && (
         <div className="mb-4">
-          <label className="block text-xl text-gray-600 font-semibold mb-6 mt-10">
+          <label className="block text-lg text-gray-600 font-semibold mb-6 mt-10">
             {titleLabel}
             <span className="text-sm text-gray-600">   ※ 必須 </span>
           </label>
@@ -159,16 +159,16 @@ export default function Form({
               setTitle(newTitle);
               onTitleChange(newTitle);
             }}
-            className="w-full border border-gray-300 px-3 py-2 text-lg focus:outline-none focus:border-blue-600"
+            className="w-full border border-gray-300 px-3 py-2 text-md focus:outline-none focus:border-blue-600"
           />
         </div>
       )}
         <div className="mb-4">
-          <label className="block text-xl text-gray-700 font-semibold mb-6 mt-10">
+          <label className="block text-lg text-gray-700 font-semibold mb-6 mt-10">
             {bodyLabel}
             <span className="text-sm text-gray-600">   ※ 必須 </span>
           </label>
-          <div className="border border-gray-300 text-xl">
+          <div className="border border-gray-300 text-lg">
             <Editor
               apiKey={process.env.NEXT_PUBLIC_TINYMCE_API_KEY}
               onInit={(evt, editor) => (editorRef.current = editor)}
@@ -180,7 +180,7 @@ export default function Form({
               init={{
                 height: 1200,
                 placeholder: bodyPlaceholder,
-                content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:24px }',
+                content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:18px }',
                 plugins: [
                   "advlist", "anchor", "autolink", "charmap", "code", "fullscreen",'insertdatetime',
                   "help", "image", "insertdatetime", "link", "autolink", "lists","advlist", "media","emoticons",

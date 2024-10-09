@@ -1,5 +1,3 @@
-// UserContext.ts
-
 'use client';
 
 import { createContext, useContext, useState, useEffect } from 'react';
@@ -7,6 +5,7 @@ import { createContext, useContext, useState, useEffect } from 'react';
 interface UserContextType {
   userId: string | null;
   username: string | null;
+  profileImage: string | null;
   email: string | null;
   loading: boolean;
   error: string | null;
@@ -18,10 +17,32 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
   const [userId, setUserId] = useState<string | null>(null);
   const [username, setUsername] = useState<string | null>(null);
   const [email, setEmail] = useState<string | null>(null);
+  const [profileImage, setProfileImage] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  const excludedPaths = [
+    '/',
+    // '/questions',
+    '/users/signup',
+    '/users/login',
+    '/users/change-password',
+    '/users/set-new-password',
+    '/session/test',
+  ];
+
+  const isExcludedPath = (path: string) => {
+    return excludedPaths.includes(path);
+  };
+
   useEffect(() => {
+    const pathname = window.location.pathname;
+
+    if (isExcludedPath(pathname)) {
+      setLoading(false);
+      return;
+    }
+
     const fetchUserInfo = async () => {
       try {
         const response = await fetch('/api/users', {
@@ -35,9 +56,11 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
 
         const data = await response.json();
         console.log('フロントエンドで取得したデータ:', data);
+
         setUserId(data.userId);
         setUsername(data.username);
         setEmail(data.email);
+        setProfileImage(data.profileImage);
       } catch (err) {
         console.error('エラー:', err);
         setError('ユーザー情報の取得に失敗しました');
@@ -50,7 +73,7 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
   }, []);
 
   return (
-    <UserContext.Provider value={{ userId, username, email, loading, error }}>
+    <UserContext.Provider value={{ userId, username, email, profileImage, loading, error }}>
       {children}
     </UserContext.Provider>
   );

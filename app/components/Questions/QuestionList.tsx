@@ -6,6 +6,8 @@ import styles from './QuestionList.module.css';
 import { useLoading } from '../../context/LoadingContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowDown, faSync } from '@fortawesome/free-solid-svg-icons';
+import ScrollToBottomButton from '../ui/ScrollToBottomButton';
+import ProfileImageDisplay from '../profile/ProfileImageDisplay';
 
 interface Question {
   id: string;
@@ -85,34 +87,30 @@ export default function QuestionList() {
   }, [fetchQuestions]);
 
 
-  useEffect(() => {
-    const handleScroll = () => {
-      const scrollTop = window.scrollY;
-      const documentHeight = document.documentElement.scrollHeight;
-      const windowHeight = window.innerHeight;
+  // useEffect(() => {
+  //   const handleScroll = () => {
+  //     const scrollTop = window.scrollY;
+  //     const documentHeight = document.documentElement.scrollHeight;
+  //     const windowHeight = window.innerHeight;
 
-      if (scrollTop + windowHeight >= documentHeight - 100) {
-        setIsBottomVisible(false);
-      } else {
-        setIsBottomVisible(true);
-      }
-    };
+  //     if (scrollTop + windowHeight >= documentHeight - 100) {
+  //       setIsBottomVisible(false);
+  //     } else {
+  //       setIsBottomVisible(true);
+  //     }
+  //   };
 
-    window.addEventListener('scroll', handleScroll);
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-    };
-  }, []);
-
-
-  const scrollToBottom = () => {
-    window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
-  };
+  //   window.addEventListener('scroll', handleScroll);
+  //   return () => {
+  //     window.removeEventListener('scroll', handleScroll);
+  //   };
+  // }, []);
 
 
-  if (error) {
-    return <div>エラー: {error}</div>;
-  }
+  // const scrollToBottom = () => {
+  //   window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+  // };
+
 
   return (
     <>
@@ -123,21 +121,25 @@ export default function QuestionList() {
           onClose={() => setShowNotification(false)}
         />
       )}
-      <div className="my-4 top-0">
-        <button
-          onClick={fetchQuestions}
-          className="text-gray-500 bg-gray-100 text-lg p-1 rounded hover:text-gray-900"
-          title="質問一覧を再読み込み"
-        >
-          <FontAwesomeIcon icon={faSync} className="mr-2" />
-        </button>
-      </div>
+
       <div className={styles.questionBody}>
-        <h1 className="text-3xl font-bold mb-6">質問一覧</h1>
+        <div className='flex justify-between'>
+          <h1 className="text-2xl font-bold mb-1 mx-auto flex items-center justify-center">質問一覧</h1>
+          <div className="my-2 top-0">
+          <button
+            onClick={fetchQuestions}
+            className="text-gray-500 bg-gray-100 text-md p-1 rounded hover:text-gray-900"
+            title="質問一覧を再読み込み"
+          >
+            <FontAwesomeIcon icon={faSync} className="mr-2" />
+          </button>
+          <ScrollToBottomButton />
+        </div>
+      </div>
         {questions.length === 0 ? (
           <p>質問がありません。</p>
         ) : (
-          <div className="space-y-4">
+          <div className="space-y-4 text-md">
             {questions.map((question) => {
               const sanitizedDescription = DOMPurify.sanitize(question.description);
               const username = usernames[question.user_id] || 'ユーザー名取得中...';
@@ -147,9 +149,16 @@ export default function QuestionList() {
                   key={`質問ID:${question.id}`}
                   title={question.title}
                   categoryId={question.category_id}
-                  footer={<a href={`/questions/${question.id}`} className='text-md'>詳細を見る</a>}
+                  footer={
+                  <a href={`/questions/${question.id}`}
+                    className="transition transform hover:scale-110 duration-300 ease-in-out px-3 py-1 rounded-md text-md inline-block"
+                    style={{ willChange: 'transform', transformOrigin: 'center' }}
+                  >
+                    詳細を見る
+                  </a>}
+                  showMenuButton={false}
                 >
-                  <div className='text-2xl'>
+                  <div className='text-md'>
                     <div
                       className={styles.questionBody}
                       dangerouslySetInnerHTML={{ __html: sanitizedDescription }}
@@ -157,18 +166,42 @@ export default function QuestionList() {
                   </div>
                   <div className="flex flex-wrap mt-4">
                     {question.tags?.map((tag, index) => (
-                      <span key={index} className="bg-blue-500 text-white px-4 rounded-full mr-2 mb-2">
+                      <span key={index} className="bg-blue-500 text-white text-xs py-1 px-4 rounded-full mr-2 mb-2">
                         {tag}
                       </span>
                     ))}
                   </div>
 
                   <div className="flex items-center mt-4">
-                    <div className="ml-2">
-                    <div>
-                      <p className="font-semibold">{username}</p>
+                    <ProfileImageDisplay />
+
+                    <div className="ml-4">
+                      <p className="text-sm">{username}</p>
+
+                      <div className="text-left text-xs mt-2 text-gray-900">
+                        {question.created_at ? (
+                          new Date(question.created_at).toLocaleString('ja-JP', {
+                            year: 'numeric',
+                            month: '2-digit',
+                            day: '2-digit',
+                            hour: '2-digit',
+                            minute: '2-digit',
+                            second: '2-digit',
+                          })
+                        ) : (
+                          '作成日登録なし'
+                        )}
+                      </div>
                     </div>
-                    <div className="text-left text-sm mt-2 text-gray-500">
+                  </div>
+
+                  {/* <div className="flex items-center mt-4">
+                    <div className="ml-2">
+                      <ProfileImageDisplay />
+                      <div className="ml-4">
+                      <p className="text-sm">{username}</p>
+                    </div>
+                    <div className="text-left text-sm mt-2 text-gray-900">
                         {question.created_at ? (
                           new Date(question.created_at).toLocaleString('ja-JP', {
                             year: 'numeric',
@@ -184,14 +217,14 @@ export default function QuestionList() {
                         )}
                       </div>
                       </div>
-                    </div>
+                    </div> */}
                   </Card>
               );
             })}
           </div>
         )}
         {/* スクロールボタンの追加 */}
-        {isBottomVisible && (
+        {/* {isBottomVisible && (
           <button
             onClick={scrollToBottom}
             className="fixed bottom-10 right-10 bg-white-500 text-gray-500 p-4 rounded-full shadow-lg hover:text-gray-700"
@@ -199,7 +232,7 @@ export default function QuestionList() {
           >
             <FontAwesomeIcon icon={faArrowDown} size="lg" />
           </button>
-        )}
+        )} */}
       </div>
     </>
   );

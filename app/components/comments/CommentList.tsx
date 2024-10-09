@@ -10,6 +10,8 @@ import Notification from '../ui/Notification';
 import Form from '../ui/Form';
 import ButtonGroup from '../ui/ButtonGroup';
 import Category from '../ui/Category';
+import ScrollToBottomButton from '../ui/ScrollToBottomButton';
+import ProfileImageDisplay from '../profile/ProfileImageDisplay';
 // import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
 
 interface Comment {
@@ -176,31 +178,10 @@ export default function CommentList({ questionId, answerId, categoryId, selected
     }
   }, [commentListModalOpen, questionId, answerId]);
 
-  useEffect(() => {
-    const handleScroll = () => {
-      const scrollTop = window.scrollY;
-      const documentHeight = document.documentElement.scrollHeight;
-      const windowHeight = window.innerHeight;
-
-      if (scrollTop + windowHeight >= documentHeight - 100) {
-        setIsBottomVisible(false);
-      } else {
-        setIsBottomVisible(true);
-      }
-    };
-
-    window.addEventListener('scroll', handleScroll);
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-    };
-  }, []);
-
-  const scrollToBottom = () => {
-    window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
-  };
 
   return (
     <>
+      <ScrollToBottomButton />
       {!commentListModalOpen && (
         <div className="mt-4 flex justify-end">
           <button
@@ -209,13 +190,10 @@ export default function CommentList({ questionId, answerId, categoryId, selected
               setShowNotification(false);
               // openCommentModal();
             }}
-            className="text-gray-500 px-4 py-2 rounded hover:text-gray-700"
+            className="text-green-500 px-4 py-2 rounded hover:text-green-600"
           >
-            {/* コメントアイコン */}
             <FontAwesomeIcon icon={faComments} className="mr-2" />
-            {/* <ChatBubbleOutlineIcon className="mr-2" /> */}
-            {/* コメント投稿数を表示 */}
-            {comments.length} {/* comments.length を使ってコメント数を表示 */}
+            {comments.length}
           </button>
         </div>
       )}
@@ -231,23 +209,23 @@ export default function CommentList({ questionId, answerId, categoryId, selected
               />
             )}
 
-            <button
+            {/* <button
               className="text-blue-500 hover:text-blue-700 px-4 py-2 rounded bg-gray-100 ml-20"
               onClick={() => setCommentModalOpen(true)}
             >
               コメントを投稿
-            </button>
+            </button> */}
 
             <button
               onClick={fetchComments}
-              className="text-gray-500 bg-gray-100 px-4 py-2 rounded hover:text-gray-900 ml-5"
+              className="text-gray-500 bg-gray-100 px-4 py-2 rounded hover:text-gray-900 ml-20"
               title="コメントを再読み込み"
             >
               <FontAwesomeIcon icon={faSync} className="mr-4 ml-2"/>リストを更新
             </button>
           </div>
           <div className='flex flex-col items-center mb-16'>
-            <h2 className="text-2xl mb-4">
+            <h2 className="text-lg mb-4">
               全{comments ? comments.length : 0}件のコメント
             </h2>
 
@@ -265,7 +243,7 @@ export default function CommentList({ questionId, answerId, categoryId, selected
                     onEdit={() => handleEdit(comment.id, comment.content)}
                     onDelete={() => handleDelete(comment.id)}
                   >
-                    <div className="text-sm text-bold text-blue-900 mb-2">コメントID: {comment.id}</div>
+                    <div className="text-xs text-blue-900 mb-2">コメントID: {comment.id}</div>
                     {isEditing && editingCommentId === comment.id ? (
                       <div className="px-8">
                         <Form
@@ -296,32 +274,50 @@ export default function CommentList({ questionId, answerId, categoryId, selected
                       </div>
                     ) : (
                       <div key={comment.id} className="bg-gray-100 p-2 rounded mb-2">
-                        <div className="text-gray-700 mb-4 text-2xl">
+
+                        <div className="flex items-center mt-4">
+                          <ProfileImageDisplay />
+                          <div className="ml-4">
+                            <p className="text-sm text-gray-900 mb-2">{comment.username}</p>
+                            <p className="text-xs text-gray-900">
+                              {comment.created_at ? (
+                                new Date(comment.created_at).toLocaleString('ja-JP', {
+                                  year: 'numeric',
+                                  month: '2-digit',
+                                  day: '2-digit',
+                                  hour: '2-digit',
+                                  minute: '2-digit',
+                                  second: '2-digit',
+                                })
+                              ) : (
+                                '作成日登録なし'
+                              )}
+                            </p>
+                          </div>
+                        </div>
+                        <hr className="m-4 border-gray-300" />
+                        <div className="text-gray-700 mb-4 text-md">
                           <div dangerouslySetInnerHTML={{ __html: comment.content }} />
                         </div>
-                        <p className="text-sm text-gray-500">{comment.username}</p>
-                        <p className="text-sm text-gray-500">
-                          {comment.created_at ? (
-                            new Date(comment.created_at).toLocaleString('ja-JP', {
-                              year: 'numeric',
-                              month: '2-digit',
-                              day: '2-digit',
-                              hour: '2-digit',
-                              minute: '2-digit',
-                              second: '2-digit',
-                            })
-                          ) : (
-                            '作成日登録なし'
-                          )}
-                        </p>
-                      </div>
+                    </div>
                     )}
                   </Card>
                 ))
               ) : (
                 <p>コメントはまだありません。</p>
               )}
-            </div>
+              <div className="my-6 text-right">
+                    <button
+                      className="flex items-center bg-green-500 text-white px-4 py-2 rounded-full hover:bg-green-600 ml-10 transition-transform duration-300 ease-in-out transform hover:scale-105"
+                      onClick={() => setCommentModalOpen(true)}
+                    >
+                      <span className="bg-green-500 text-white rounded-full w-6 h-6 flex items-center justify-center mr-2 text-2xl">
+                        ⊕
+                      </span>
+                      コメントを投稿
+                    </button>
+                  </div>
+              </div>
 
             {commentModalOpen && (
               <div className="fixed inset-0 flex items-center justify-center z-50 overflow-auto">
@@ -339,7 +335,7 @@ export default function CommentList({ questionId, answerId, categoryId, selected
                   </button>
 
                   {selectedAnswerId && (
-                    <div className="text-blue-900 font-bold mb-4">
+                    <div className="text-blue-900 text-sm mb-4">
                       回答ID: {selectedAnswerId}
                     </div>
                   )}
@@ -364,15 +360,6 @@ export default function CommentList({ questionId, answerId, categoryId, selected
             )}
           </div>
         </Modal>
-      )}
-      {isBottomVisible && (
-        <button
-          onClick={scrollToBottom}
-          className="fixed bottom-10 right-10 bg-white-500 text-gray-500 p-4 rounded-full shadow-lg hover:text-gray-700"
-          title="ページの下部に移動"
-        >
-          <FontAwesomeIcon icon={faArrowDown} size="lg" />
-        </button>
       )}
     </>
   );

@@ -1,49 +1,40 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation'; // ルーティング用
+import { useAuth as useAuthContext } from '../context/AuthContext'; // AuthContextのフックを使用
 
-const useAuth = (redirectUrl: string = '/', requireAuth = true) => { // デフォルトをホームページに
-  const [session, setSession] = useState(null);
-  const [userId, setUserId] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+const useAuth = (requireAuth: boolean = true, redirectUrl?: string) => {
+  const { session, loading } = useAuthContext(); // 認証状態を取得
   const router = useRouter();
 
+  const excludedPaths = [
+    '/', '/questions', '/users/change-password',
+    '/users/login', '/users/set-new-password', '/users/signup',
+  ];
+
+  const isExcludedPath = (path: string) => excludedPaths.includes(path);
+
   useEffect(() => {
-    const checkAuth = async () => {
-      try {
-        const response = await fetch('/api/users', {
-          method: 'GET',
-          credentials: 'include',
-        });
 
-        if (response.ok) {
-          const data = await response.json();
-          setSession(data.session);
-          setUserId(data.user?.id ?? null);
+    const pathname = window.location.pathname;
 
-          // セッションが存在する場合はホームページにリダイレクト
-          if (data.session) {
-            router.push(redirectUrl);  // ログイン済みならリダイレクト
-          }
-        } else if (requireAuth) {
-          router.push('/users/login');  // 認証が必要でセッションがない場合
+    if (isExcludedPath(pathname)) {
+      console.log(`認証不要のページです: ${pathname}`);
+      return;
+    }
+
+    if (!loading) {
+      if (requireAuth && !session) {
+        // redirectUrlが指定されている場合のみリダイレクト
+        if (redirectUrl) {
+          router.push(redirectUrl);
         }
-      } catch (error) {
-        setError('認証に失敗しました。');
-        if (requireAuth) {
-          router.push('/users/login');
-        }
-      } finally {
-        setLoading(false);
       }
-    };
+    }
+  }, [loading, session, requireAuth, redirectUrl, router]);
 
-    checkAuth();
-  }, [router, redirectUrl, requireAuth]);
-
-  return { session, userId, loading, error };
+  return { session, loading };
 };
 
 export default useAuth;

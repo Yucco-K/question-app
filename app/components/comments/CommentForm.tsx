@@ -6,6 +6,7 @@ import ButtonGroup from '../ui/ButtonGroup';
 import { useUser } from '../../context/UserContext';
 import Notification from '../ui/Notification';
 import { useLoading } from '../../context/LoadingContext';
+import ScrollToBottomButton from '../ui/ScrollToBottomButton';
 
 interface CommentFormProps {
   initialComment?: string;
@@ -51,12 +52,6 @@ export default function CommentForm({ questionId,
     if (initialBody) {
       setLoading(true);
       try {
-
-          console.log("質問ID: ", questionId);
-          console.log("回答ID: ", answerId);
-          console.log("コメントID: ", commentId);
-          console.log("ユーザーID: ", contextUserId);
-          console.log("コメント内容: ", initialBody);
 
         const response = await fetch('/api/comments', {
           method: 'POST',
@@ -104,12 +99,12 @@ export default function CommentForm({ questionId,
   const buttons = [
     {
       label: '送信',
-      className: 'bg-blue-500 text-white',
+      className: 'bg-blue-500 text-white text-sm',
       onClick: handleSubmit,
     },
     {
       label: 'キャンセル',
-      className: 'bg-blue-500 text-white',
+      className: 'bg-blue-500 text-white text-sm',
       onClick: handleCancel,
     },
   ];
@@ -124,6 +119,7 @@ export default function CommentForm({ questionId,
           onClose={() => setShowNotification(false)}
         />
         )}
+        <ScrollToBottomButton />
         <Form
           titleLabel="コメントタイトル"
           titlePlaceholder="コメントタイトルを入力"

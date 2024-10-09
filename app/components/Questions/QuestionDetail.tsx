@@ -13,9 +13,10 @@ import ButtonGroup from '../ui/ButtonGroup';
 import TagInput from '../ui/TagInput';
 import Modal from '../ui/Modal';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowDown, faSync } from '@fortawesome/free-solid-svg-icons';
+import { faSync } from '@fortawesome/free-solid-svg-icons';
 import { useRouter } from 'next/navigation';
-import CommentForm from '../comments/CommentForm';
+import ScrollToBottomButton from '../ui/ScrollToBottomButton';
+import ProfileImageDisplay from '../profile/ProfileImageDisplay';
 
 
 
@@ -128,7 +129,7 @@ export default function QuestionDetail({ questionId }: { questionId: string }) {
 
 
   const fetchUsername = async (userId: string) => {
-    // if (!userId || username) return;
+    if (!userId || username) return;
     console.log('User ID:', userId);
     setLoading(true);
     try {
@@ -161,8 +162,7 @@ export default function QuestionDetail({ questionId }: { questionId: string }) {
 
   const handleUpdate = async () => {
 
-    const selectedTagIds = selectedTags;
-    console.log('Selected Tags:', selectedTagIds);
+    // const selectedTagIds = selectedTags;
 
     setLoading(true);
     setError(null);
@@ -171,21 +171,21 @@ export default function QuestionDetail({ questionId }: { questionId: string }) {
 
     try {
 
-      // if (!userId) {
-      //   setQuestionModalOpen(false);
-      //   setError('ログインしてください。');
-      //   setShowNotification(true);
-      //   setLoading(false);
-      //   return;
-      // }
+      if (!userId) {
+        setQuestionModalOpen(false);
+        setError('ログインしてください。');
+        setShowNotification(true);
+        setLoading(false);
+        return;
+      }
 
-      // if (question?.user_id !== userId) {
-      //   setQuestionModalOpen(false);
-      //   setError('この投稿を編集する権限がありません。');
-      //   setShowNotification(true);
-      //   setLoading(false);
-      //   return;
-      // }
+      if (question?.user_id !== userId) {
+        setQuestionModalOpen(false);
+        setError('この投稿を編集する権限がありません。');
+        setShowNotification(true);
+        setLoading(false);
+        return;
+      }
 
       if (!newTitle) {
         setError('タイトルを入力してください');
@@ -201,7 +201,7 @@ export default function QuestionDetail({ questionId }: { questionId: string }) {
         return;
       }
 
-      if (selectedTagIds.length === 0) {
+      if (selectedTags.length === 0) {
         setError('タグを1つ以上指定してください');
 
         setShowNotification(true);
@@ -219,7 +219,7 @@ export default function QuestionDetail({ questionId }: { questionId: string }) {
         body: JSON.stringify({
           title: newTitle,
           description: newDescription,
-          tags: selectedTagIds,
+          tags: selectedTags,
         }),
       });
 
@@ -232,7 +232,6 @@ export default function QuestionDetail({ questionId }: { questionId: string }) {
         setLoading(false);
         fetchQuestionDetail();
         router.push(`/questions/${questionId}`);
-
 
       } else {
         setQuestionModalOpen(false);
@@ -285,12 +284,12 @@ export default function QuestionDetail({ questionId }: { questionId: string }) {
   const buttons = [
     {
       label: '更新',
-      className: 'bg-blue-500 text-white',
+      className: 'bg-blue-500 text-white text-sm',
       onClick: handleUpdate,
     },
     {
       label: 'キャンセル',
-      className: 'bg-blue-500 text-white',
+      className: 'bg-blue-500 text-white text-sm',
       onClick: handleCancel,
     },
   ];
@@ -313,34 +312,9 @@ export default function QuestionDetail({ questionId }: { questionId: string }) {
     console.log('Selected Tags updated:', selectedTags);
   }, [selectedTags]);
 
-  // スクロール位置を監視するエフェクト
-  useEffect(() => {
-    const handleScroll = () => {
-      const scrollTop = window.scrollY;
-      const documentHeight = document.documentElement.scrollHeight;
-      const windowHeight = window.innerHeight;
-
-      if (scrollTop + windowHeight >= documentHeight - 100) {
-        setIsBottomVisible(false); // 底に近づいたら矢印を非表示
-      } else {
-        setIsBottomVisible(true); // それ以外は表示
-      }
-    };
-
-    window.addEventListener('scroll', handleScroll);
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-    };
-  }, []);
-
-  // ページ下部にスクロールする関数
-  const scrollToBottom = () => {
-    window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
-  };
-
 
   if (!question) {
-    return <div>データを読み込んでいます...</div>;
+    return null;
   }
 
   return (
@@ -352,22 +326,19 @@ export default function QuestionDetail({ questionId }: { questionId: string }) {
           onClose={() => setShowNotification(false)}
         />
       )}
-    <h1 className="text-3xl text-center font-bold mb-6">質問詳細画面</h1>
-
-    <div className="mt-8 flex items-center justify-start">
-      <a href="/questions" className="text-blue-500 hover:underline">Top画面</a>
-      <span className="mx-2">＞</span>
-      <p>質問詳細画面</p>
-    </div>
-    <div className="my-4">
+    <div className="flex items-center justify-center my-4">
+      <h1 className="text-2xl font-bold my-6 mx-auto flex items-center justify-center">質問詳細画面</h1>
       <button
         onClick={fetchQuestionDetail}
-        className="text-gray-500 bg-gray-100 text-lg p-1 rounded hover:text-gray-900"
+        className="text-gray-500 bg-gray-100 text-md p-1 rounded hover:text-gray-900 ml-4 mr-10"
         title="質問詳細を再読み込み"
       >
-        <FontAwesomeIcon icon={faSync} className="mr-2" />
+        <FontAwesomeIcon icon={faSync} className="m-1" />
       </button>
     </div>
+
+
+    <ScrollToBottomButton />
     <div className="container mx-auto px-4 py-8 ">
 
 
@@ -397,7 +368,7 @@ export default function QuestionDetail({ questionId }: { questionId: string }) {
               console.log('Title:', title, 'Body:', body);} }
             onCancel={handleCancel} />
 
-          <div className="mx-auto w-1/2">
+          <div className="mx-auto w-3/4">
             <TagInput
               tagLabel="タグ"
               availableTags={availableTags}
@@ -422,49 +393,54 @@ export default function QuestionDetail({ questionId }: { questionId: string }) {
               }}
               onDelete={handleDelete}
             >
-              <div className="text-blue-900 text-sm font-bold mb-4">
+              <div className="text-blue-900 text-xs mb-4">
                 質問ID: {questionId}
               </div>
               <div className="flex flex-wrap mb-4">
                 {question.tags?.map((tag, index) => (
-                  <span key={index} className="bg-blue-500 text-white px-4 rounded-full mr-2 mb-2 text-lg">
+                  <span key={index} className="bg-blue-500 text-white px-4 py-1 rounded-full mr-2 mb-2 text-xs">
                     {tag.name}
                   </span>
                 ))}
               </div>
-              <div className="flex items-center">
-                <p className="font-semibold text-gray-600 text-lg">
-                {username ? username : 'ユーザー名登録なし'}
-                </p>
-              </div>
-              <div className="ml-auto text-left text-sm my-2 text-gray-500">
-              {question.created_at ? (
-                new Date(question.created_at).toLocaleString('ja-JP', {
-                  year: 'numeric',
-                  month: '2-digit',
-                  day: '2-digit',
-                  hour: '2-digit',
-                  minute: '2-digit',
-                  second: '2-digit',
-                })
-              ) : (
-                '作成日登録なし'
-              )}
-            </div>
+              <div className="flex items-center mt-4">
+                    <ProfileImageDisplay />
 
+                    <div className="ml-4">
+                      <p className="text-gray-900 text-sm">
+                        {username ? username : 'ユーザー名登録なし'}
+                      </p>
+
+                      <div className="text-left text-xs mt-2 text-gray-900">
+                      {question.created_at ? (
+                        new Date(question.created_at).toLocaleString('ja-JP', {
+                          year: 'numeric',
+                          month: '2-digit',
+                          day: '2-digit',
+                          hour: '2-digit',
+                          minute: '2-digit',
+                          second: '2-digit',
+                        })
+                        ) : (
+                          '作成日登録なし'
+                        )}
+                      </div>
+                    </div>
+                  </div>
               <hr className="my-4 border-gray-300" />
 
-              <div className="text-gray-700 text-2xl mb-4">
+              <div className="text-gray-700 text-md mb-4">
                 <div dangerouslySetInnerHTML={{ __html: sanitizedDescription }} />
               </div>
 
             </Card><div className='flex flex-start h-30'>
                 <div className="my-6 text-right">
                   <button
-                    className="flex items-center bg-orange-400 text-white px-4 py-2 rounded-full hover:bg-orange-600 ml-10"
+                    className="flex items-center bg-orange-400 text-white px-4 py-2 rounded-full hover:bg-orange-600 ml-10 transition-transform duration-300 ease-in-out transform hover:scale-105"
+
                     onClick={() => setAnswerModalOpen(true)}
                   >
-                    <span className="bg-orange-400 text-white rounded-full w-6 h-6 flex items-center justify-center mr-2 text-3xl">
+                    <span className="bg-orange-400 text-white rounded-full w-6 h-6 flex items-center justify-center mr-2 text-2xl">
                       ⊕
                     </span>
                     回答を投稿
@@ -480,55 +456,6 @@ export default function QuestionDetail({ questionId }: { questionId: string }) {
             </>
           )}
 
-        {/* {isCommentModalOpen && (
-        <div className="fixed inset-0 flex items-center justify-center z-50 overflow-auto">
-
-          <div
-            className="fixed inset-0 bg-black opacity-50 backdrop-blur-xl"
-            onClick={() => setCommentModalOpen(false)}
-          ></div>
-
-
-          <div className="bg-white p-6 rounded-lg shadow-lg w-2/3 relative">
-
-            <button
-              className="absolute top-6 right-6 text-gray-500 hover:text-gray-700 text-3xl"
-              onClick={() => setCommentModalOpen(false)}
-            >
-              ×
-            </button>
-
-            <div className="text-blue-900 font-bold mb-4">
-              質問ID: {questionId}
-            </div>
-
-            <CommentForm
-              questionId={questionId}
-              userId={userId}
-              answerId={null}
-              onSubmit={(title, body) => {
-                console.log('コメント送信:', title, body);
-                setCommentModalOpen(false);
-                setSuccess('コメントが送信されました。');
-                setShowNotification(true);
-              }}
-              onCancel={() => {
-                setCommentModalOpen(false);
-              }}
-            />
-          </div>
-        </div>
-      )} */}
-      {/* スクロールボタンの追加 */}
-      {isBottomVisible && (
-        <button
-          onClick={scrollToBottom}
-          className="fixed bottom-10 right-10 bg-white-500 text-gray-500 p-4 rounded-full shadow-lg hover:text-gray-700"
-          title="ページの下部に移動"
-        >
-          <FontAwesomeIcon icon={faArrowDown} size="lg" />
-        </button>
-      )}
     </div>
   </>
   );

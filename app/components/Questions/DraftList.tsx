@@ -9,6 +9,7 @@ import { useLoading } from '../../context/LoadingContext';
 import Category from '../ui/Category';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit } from '@fortawesome/free-solid-svg-icons';
+import ScrollToBottomButton from '../ui/ScrollToBottomButton';
 
 interface DraftItem {
   id: string;
@@ -155,7 +156,7 @@ export default function DraftList({ onSelectDraft, categoryId }: DraftListProps)
           onClose={() => setShowNotification(false)}
         />
       )}
-
+      <ScrollToBottomButton />
       <div className="className=flex flex-col items-center">
         {draftList.length === 0 && !isLoading && (
           <p className='flex items-center justify-center text-lg'>下書きがありません。</p>
@@ -165,7 +166,7 @@ export default function DraftList({ onSelectDraft, categoryId }: DraftListProps)
           const sanitizedDescription = DOMPurify.sanitize(draft.description);
 
           return (
-            <div className="my-5 mx-auto w-4/5">
+            <div key={draft.id} className="my-5 mx-auto w-4/5">
               <Card
                 key={draft.id}
                 title={draft.title}
@@ -184,7 +185,7 @@ export default function DraftList({ onSelectDraft, categoryId }: DraftListProps)
 
                 <div className="flex flex-wrap mt-4">
                   {draft.tags?.map((tag, index) => (
-                    <span key={index} className="bg-blue-500 text-white px-4 rounded-full mr-2 mb-2">
+                    <span key={index} className="bg-blue-500 text-white text-sm px-4 rounded-full mr-2 mb-2">
                       {tag}
                     </span>
                   ))}

@@ -15,6 +15,7 @@ interface CardProps {
   onEdit?: () => void;
   onDelete?: () => void;
   onClick?: () => void;
+  showMenuButton?: boolean;
 }
 
 export default function Card({
@@ -28,6 +29,7 @@ export default function Card({
   onEdit,
   onDelete,
   onClick,
+  showMenuButton = true,
 }: CardProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [categoryName, setCategoryName] = useState<string | null>(null);
@@ -90,21 +92,22 @@ export default function Card({
     <div className="relative border rounded-lg shadow-md overflow-hidden bg-white max-w-[1400px]">
       <div className="p-10">
         <div className={`card-base-styles ${className}`}>
-
-          <div className="absolute top-4 right-4 flex items-center space-x-10">
+            <div className="absolute top-4 right-4 flex items-center space-x-10 text-sm">
             <span className="text-gray-600 font-semibold">
               {categoryName || 'カテゴリなし'}
             </span>
 
-            <button
-              onClick={toggleMenu}
-              onMouseEnter={() => setIsMenuOpen(true)}
-              // onMouseLeave={() => setIsMenuOpen(false)}
-              className="text-gray-500 hover:text-gray-700 text-xl cursor-pointer"
-              title="More Options"
-            >
-              <FontAwesomeIcon icon={faEllipsisV} />
-            </button>
+            {showMenuButton && (
+              <button
+                onClick={toggleMenu}
+                onMouseEnter={() => setIsMenuOpen(true)}
+                // onMouseLeave={() => setIsMenuOpen(false)}
+                className="text-gray-500 hover:text-gray-700 text-lg cursor-pointer"
+                title="More Options"
+              >
+                <FontAwesomeIcon icon={faEllipsisV} />
+              </button>
+            )}
 
             {isMenuOpen && (
               <div className="absolute right-0 top-10 bg-white border shadow-md rounded-md">
@@ -113,7 +116,7 @@ export default function Card({
                     <li>
                       <button
                         onClick={onEdit}
-                        className="text-gray-500 hover:text-gray-700 text-xl cursor-pointer flex items-center space-x-2 p-2"
+                        className="text-gray-500 hover:text-gray-700 text-lg cursor-pointer flex items-center space-x-2 p-2"
                         title="Edit"
                       >
                         <FontAwesomeIcon icon={faEdit} />
@@ -124,7 +127,7 @@ export default function Card({
                     <li>
                       <button
                         onClick={onDelete}
-                        className="text-gray-500 hover:text-gray-700 text-xl cursor-pointer flex items-center space-x-2 p-2"
+                        className="text-gray-500 hover:text-gray-700 text-lg cursor-pointer flex items-center space-x-2 p-2"
                         title="Delete"
                       >
                         <FontAwesomeIcon icon={faTrashAlt} />
@@ -136,11 +139,11 @@ export default function Card({
             )}
           </div>
 
-          <h3 className="text-2xl font-bold mb-4">{title}</h3>
+          <h3 className="text-lg font-bold mb-4">{title}</h3>
 
-          <div className="text-xl text-gray-700 mb-4">{children}</div>
+          <div className="text-md text-gray-700 mb-4">{children}</div>
 
-          {footer && <div className="text-lg border-t pt-4">{footer}</div>}
+          {footer && <div className="text-sm border-t pt-4">{footer}</div>}
         </div>
       </div>
     </div>

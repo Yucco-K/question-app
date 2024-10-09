@@ -45,7 +45,7 @@ export default function Greeting() {
     }, 1000);
 
     setTimeout(() => {
-      router.push('/questions');
+      router.push('/questions/public');
     }, 1000);
 
     return () => clearInterval(interval);
@@ -61,7 +61,7 @@ export default function Greeting() {
       </div>
 
       <div className="flex flex-grow justify-center">
-        <h1 className="text-6xl font-bold text-center animate-fade h-screen flex justify-center items-center  transform -translate-y-20">
+        <h1 className="text-4xl font-bold text-center animate-logo h-screen flex justify-center items-center transform -translate-y-40">
           Engineers Q&A Board
         </h1>
       </div>
@@ -70,11 +70,15 @@ export default function Greeting() {
         html, body {
           height: 100%;
           margin: 0;
-          overflow: hidden; /* スクロールを無効にする */
+          overflow: hidden;
         }
 
         .container {
-          height: 100vh; /* ビューポートの高さに対応 */
+          min-height: 100vh;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
         }
 
         .animate-fade-in-out {
@@ -95,20 +99,27 @@ export default function Greeting() {
             opacity: 0;
           }
         }
-        .animate-fade {
-          animation: fadeOut 1s forwards;
+
+        .animate-logo {
+          animation: logoFadeUp 2s ease-in-out forwards;
         }
 
-        @keyframes fadeOut {
+        @keyframes logoFadeUp {
           0% {
+            opacity: 0;
+            transform: translateY(50px) scale(0.8); /* ロゴを下に少し小さく配置 */
+          }
+          50% {
             opacity: 1;
+            transform: translateY(0px) scale(1.05); /* ロゴを少し大きく */
           }
           100% {
-            opacity: 0;
+            opacity: 1;
+            transform: translateY(0px) scale(1); /* ロゴが通常サイズに戻る */
           }
         }
-      `}</style>
 
+      `}</style>
     </div>
   );
 }

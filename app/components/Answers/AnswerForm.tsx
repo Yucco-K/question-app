@@ -9,6 +9,7 @@ import Notification from '../ui/Notification';
 import { useLoading } from '../../context/LoadingContext';
 import useAuth from '../../lib/useAuth';
 import { useRouter } from 'next/navigation';
+import ScrollToBottomButton from '../ui/ScrollToBottomButton';
 
 interface AnswerFormProps {
   questionId: string;
@@ -174,8 +175,8 @@ export default function AnswerForm({
   };
 
   const buttonData = [
-    { label: isEditing ? '更新' : '投稿', className: 'bg-blue-600 text-white', onClick: handleSubmit },
-    { label: 'キャンセル', className: 'bg-gray-400 text-white', onClick: () => handleCancel() },
+    { label: isEditing ? '更新' : '投稿', className: 'bg-blue-600 text-white text-sm', onClick: handleSubmit },
+    { label: 'キャンセル', className: 'bg-gray-400 text-white text-sm', onClick: () => handleCancel() },
   ];
 
 
@@ -188,6 +189,7 @@ export default function AnswerForm({
           onClose={() => setShowNotification(false)}
         />
       )}
+      <ScrollToBottomButton />
       <Modal isOpen={answerModalOpen} onClose={() => setAnswerModalOpen(false)} title={isEditing ? '回答を編集' : '回答を投稿'}>
         <div className="px-8">
           {showNotification && (error || success) && (
