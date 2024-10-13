@@ -43,27 +43,6 @@ export async function PUT(req: Request, { params }: { params: { commentId: strin
 }
 
 
-// export async function PUT(req: Request, { params }: { params: { commentId: string } }) {
-//   const { commentId } = params;
-//   const body = await req.json();
-//   const { content } = body;
-
-//   console.log('commentId:', commentId);
-//   console.log('body:', body);
-
-//   const { error } = await supabase
-//     .from('Comment')
-//     .update({ ...body })
-//     .eq('id', commentId);
-
-//   if (error) {
-//     return NextResponse.json({ message: 'コメントの更新に失敗しました', error }, { status: 500 });
-//   }
-
-//   return NextResponse.json({ message: 'コメントが正常に更新されました' });
-// }
-
-
 export async function DELETE(req: Request, { params }: { params: { commentId: string } }) {
   const { commentId } = params;
 

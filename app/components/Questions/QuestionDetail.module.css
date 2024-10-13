@@ -1,20 +1,31 @@
-/* 質問詳細全体のコンテナ */
-.container {
-  max-width: 1200px;
-  margin: 0 auto;
+
+.questionBody {
+  font-size: 18px;
+  line-height: 1.6;
+  margin-top: 10px;
+  color: #333;
+  background-color: #f9f9f9;
   padding: 20px;
+  border-radius: 5px;
+  word-wrap: break-word;
+  white-space: pre-wrap;
 }
 
-/* 質問のタイトル */
-.title {
+
+/* .container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 20px;
+} */
+
+/* .title {
   font-size: 20px;
   font-weight: bold;
   color: #333;
   margin-bottom: 20px;
-}
+} */
 
-/* タグ */
-.tag {
+/* .tag {
   display: inline-block;
   background-color: #1e90ff;
   color: #fff;
@@ -23,68 +34,60 @@
   font-size: 0.875rem;
   margin-right: 10px;
   margin-bottom: 10px;
-}
+} */
 
-/* 質問の本文 */
-.questionBody {
+/* .questionBody {
   font-size: 20px;
   color: #555;
   line-height: 1.6;
   margin-bottom: 20px;
-}
+} */
 
-/* 質問者情報 */
-.userInfo {
+/* .userInfo {
   font-size: 0.875rem;
   color: #999;
   margin-bottom: 10px;
-}
+} */
 
-/* 回答部分のカード */
-.answerCard {
+/* .answerCard {
   border: 1px solid #ddd;
   padding: 20px;
   margin-bottom: 20px;
   border-radius: 10px;
   background-color: #fafafa;
-}
+} */
 
-/* 回答者情報 */
-.answerUserInfo {
+/* .answerUserInfo {
   font-size: 0.875rem;
   color: #777;
   margin-bottom: 10px;
-}
+} */
 
-/* 回答の本文 */
-.answerBody {
+/* .answerBody {
   font-size: 1rem;
   color: #333;
   margin-bottom: 15px;
   line-height: 1.6;
-}
+} */
 
-/* いいねボタン */
-.likeButton {
+/* .likeButton {
   display: flex;
   align-items: center;
   color: #999;
   cursor: pointer;
   transition: color 0.3s ease;
-}
+} */
 
-.likeButton:hover {
-  color: #f56565; /* ホバー時の色 */
-}
+/* .likeButton:hover {
+  color: #f56565;
+} */
 
-/* ベストアンサーラベル */
-.bestAnswerLabel {
+/* .bestAnswerLabel {
   color: #f56565;
   font-weight: bold;
-}
+} */
 
-/* 回答投稿ボタン */
-.postAnswerButton {
+/* .postAnswerButton {
   background-color: #ff9900;
   color: #fff;
   padding: 10px 20px;
@@ -93,34 +96,33 @@
   cursor: pointer;
   transition: background-color 0.3s ease;
   text-align: center;
-}
+} */
 
-.postAnswerButton:hover {
+/* .postAnswerButton:hover {
   background-color: #e68a00;
-}
+} */
 
-/* 質問一覧に戻るリンク */
-.backToList {
+/* .backToList {
   color: #1e90ff;
   font-size: 0.875rem;
   text-decoration: underline;
   cursor: pointer;
-}
+} */
 
-.backToList:hover {
+/* .backToList:hover {
   color: #0056b3;
-}
+} */
 
-.hover-container {
+/* .hover-container {
   position: relative;
-}
+} */
 
-.hover-container img {
+/* .hover-container img {
   width: 100%;
   height: auto;
-}
+} */
 
-.hover-text {
+/* .hover-text {
   position: absolute;
   top: 50%;
   left: 50%;
@@ -129,8 +131,8 @@
   font-size: 1.5rem;
   opacity: 0;
   transition: opacity 0.5s ease;
-}
+} */
 
-.hover-container:hover .hover-text {
+/* .hover-container:hover .hover-text {
   opacity: 1;
-}
+} */

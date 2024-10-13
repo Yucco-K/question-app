@@ -9,6 +9,7 @@ import { faFileAlt } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Modal from '../ui/Modal';
 import Notification from '../ui/Notification';
+import useAuth from '../../lib/useAuth';
 import { useUser } from '../../context/UserContext';
 import { useLoading } from '../../context/LoadingContext';
 import { useRouter } from 'next/navigation';
@@ -28,6 +29,7 @@ interface QuestionFormProps {
 
 export default function QuestionForm({ initialTitle: propInitialTitle, initialBody: propInitialBody, initialTags: propInitialTags }: QuestionFormProps) {
   const { userId } = useUser();
+  const { session, loading } = useAuth();
   const router = useRouter();
   const [initialTitle, setInitialTitle] = useState<string>(propInitialTitle);
   const [initialBody, setInitialBody] = useState<string>(propInitialBody);
@@ -72,7 +74,7 @@ export default function QuestionForm({ initialTitle: propInitialTitle, initialBo
 
   const validateForm = () => {
 
-    if (!userId) {
+    if (!loading && !session) {
       setError('ログインしてください。');
       setShowNotification(true);
       return false;
@@ -130,21 +132,6 @@ export default function QuestionForm({ initialTitle: propInitialTitle, initialBo
   };
 
 
-  // const handleTagsChange = (newTags: string[]) => {
-  //   const trimmedTags = newTags.map(tag => tag.trim()).filter(tag => tag !== '');
-  //   setInitialTags(trimmedTags);
-  //   if (question) {
-  //     setQuestion({
-  //       ...question,
-  //       tags: trimmedTags.map(tag => ({ id: tag, name: tag })),
-  //     });
-  //   }
-  // console.log('initialTags:', initialTags);
-  // console.log('question:', question);
-  // console.log('送信するタグ:', question?.tags.map(tag => tag.name));
-  // };
-
-
   const handleSubmit = async () => {
 
     setLoading(true);
@@ -193,7 +180,6 @@ export default function QuestionForm({ initialTitle: propInitialTitle, initialBo
           title: initialTitle,
           description: initialBody,
           tags: initialTags,
-          // uploadedFiles,
           userId: userId,
           categoryId: selectedCategory,
         }),
@@ -387,24 +373,13 @@ export default function QuestionForm({ initialTitle: propInitialTitle, initialBo
 
     useEffect(() => {
       if (selectedDraft && selectedDraft.tags) {
-        // 非同期処理が完了した後に initialTags を設定
+
         setTimeout(() => {
           setInitialTags(selectedDraft.tags || []);
-          console.log('initialTags after setting:', selectedDraft.tags);  // タグが正しく反映されているか確認
-        }, 0);  // タグのセットを遅延させることで非同期のズレを防ぐ
+          console.log('initialTags after setting:', selectedDraft.tags);
+        }, 0);  // タグのセットを遅延させることで非同期の問題を回避
       }
     }, [selectedDraft]);
-
-
-
-    // useEffect(() => {
-    //   if (selectedDraft) {
-    //     setInitialTitle(selectedDraft.title);
-    //     setInitialBody(selectedDraft.description);
-    //     setInitialTags(selectedDraft.tags);
-    //     setSelectedCategory(selectedDraft.category_id);
-    //   }
-    // }, [selectedDraft]);
 
 
   return (
@@ -416,7 +391,6 @@ export default function QuestionForm({ initialTitle: propInitialTitle, initialBo
           onClose={() => setShowNotification(false)}
         />
       )}
-      <ScrollToBottomButton />
       <div className="container mx-auto px-4 py-8 relative">
         {!draftListModalOpen && (
           <div className="absolute top-5 right-20 flex items-center space-x-2 z-[100]">
@@ -440,41 +414,47 @@ export default function QuestionForm({ initialTitle: propInitialTitle, initialBo
       </Modal>
       </div>
 
-      <p className="guidance-message max-w-[1400px] mx-auto my-10">
-        問題の内容や環境、再現方法、コードを詳しく書いて、適切なタグを選んで投稿してください。
-      </p>
+      <div className="mx-auto max-w-[1200px] ">
 
-      {/* <Category onSelect={handleCategoryChange} onCategorySelect={handleCategoryChange} /> */}
-      <Category
-        onSelect={handleCategoryChange}
-        onCategorySelect={handleCategoryChange}
-        initialCategoryId={selectedCategory}
-      />
+        <p className="guidance-message mx-auto my-10">
+          問題の内容や環境、再現方法、コードを詳しく書いて、適切なタグを選んで投稿してください。
+        </p>
 
-      <Form
-        titleLabel="タイトル"
-        titlePlaceholder="質問のタイトルを入力してください。"
-        bodyLabel="本文"
-        bodyPlaceholder="質問の本文を入力してください。"
-        initialTitle={initialTitle}
-        initialBody={initialBody}
-        onTitleChange={handleTitleChange}
-        onBodyChange={handleBodyChange}
-      />
+        <Category
+          onSelect={handleCategoryChange}
+          onCategorySelect={handleCategoryChange}
+          initialCategoryId={selectedCategory}
+        />
 
-      <TagInput
-        key={selectedDraft.questionId}  // ここで selectedDraft.questionId を key に設定
-        tagLabel="タグ"
-        availableTags={availableTags}
-        initialTags={initialTags}
-        onTagsChange={handleTagsChange}
-      />
+        <Form
+          titleLabel="タイトル"
+          titlePlaceholder="質問のタイトルを入力してください。"
+          bodyLabel="本文"
+          bodyPlaceholder="質問の本文を入力してください。"
+          initialTitle={initialTitle}
+          initialBody={initialBody}
+          onTitleChange={handleTitleChange}
+          onBodyChange={handleBodyChange}
+        />
+
+      </div>
+
+      <div className="mx-auto w-4/5">
+        <TagInput
+          key={selectedDraft.questionId}
+          tagLabel="タグ"
+          availableTags={availableTags}
+          initialTags={initialTags}
+          onTagsChange={handleTagsChange}
+          isDraft={true}
+        />
+      </div>
 
       <div className="mx-auto w-1/2">
         <ButtonGroup
-          pattern={3} // パターン番号を動的に指定
+          pattern={3}
           buttons={buttonData}
-          buttonsPerRow={[2,1]} // 1行目の個数、2行目の個数,3行目…を指定
+          buttonsPerRow={[2,1]}
         />
       </div>
     </>

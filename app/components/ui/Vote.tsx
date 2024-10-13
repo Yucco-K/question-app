@@ -1,112 +1,203 @@
-'use client';
-
 import { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faThumbsUp, faThumbsDown } from '@fortawesome/free-solid-svg-icons';
-
+import Notification from './Notification';
 
 interface VoteProps {
   answerId: string;
   userId: string;
-  answerUserId: string;  // 回答者のID
+  answerUserId: string;
 }
 
 export default function Vote({ answerId, userId, answerUserId }: VoteProps) {
-  const [voteType, setVoteType] = useState<string | null>(null);  // 'up' または 'down'
+  const [voteType, setVoteType] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [upvoteCount, setUpvoteCount] = useState<number>(0);  // いいねのカウント
-  const [downvoteCount, setDownvoteCount] = useState<number>(0);  // 反対のカウント
+  const [success, setSuccess] = useState<string | null>(null);
+  const [showNotification, setShowNotification] = useState(false);
+  const [upvoteCount, setUpvoteCount] = useState<number>(0);
+  const [downvoteCount, setDownvoteCount] = useState<number>(0);
 
   useEffect(() => {
-    // 初期状態でこのユーザーの評価状況を取得する
+
     const fetchVoteStatus = async () => {
       try {
         const response = await fetch(`/api/votes?answerId=${answerId}&userId=${userId}`);
         const data = await response.json();
         if (response.ok && data.vote) {
           setVoteType(data.vote.type);
-          setUpvoteCount(data.vote.upvoteCount || 0);  // いいね数を取得
-          setDownvoteCount(data.vote.downvoteCount || 0);  // 反対数を取得
+          setUpvoteCount(data.vote.upvoteCount || 0);
+          setDownvoteCount(data.vote.downvoteCount || 0);
+        }else{
+          setVoteType(null);
+          setUpvoteCount(0);
+          setDownvoteCount(0);
         }
       } catch (error) {
-        console.error('評価の取得に失敗しました', error);
         setError('評価の取得に失敗しました');
+        setShowNotification(true);
       }
     };
 
     fetchVoteStatus();
   }, [answerId, userId]);
 
+
   const handleVote = async (type: 'up' | 'down') => {
-    if (isLoading || userId === answerUserId) return;  // 回答者本人は投票できない
+    if (isLoading || userId === answerUserId) return;
 
     setIsLoading(true);
     setError(null);
 
     try {
-      const response = await fetch('/api/votes', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          answer_id: answerId,
-          user_id: userId,
-          type,  // 'up' か 'down'
-          answer_user_id: answerUserId,
-        }),
-      });
 
-      const data = await response.json();
+      const existingVoteResponse = await fetch(`/api/votes?answerId=${answerId}&userId=${userId}`);
+      const existingVoteData = await existingVoteResponse.json();
 
-      if (response.ok) {
-        setVoteType(type);  // 投票タイプを設定
-        if (type === 'up') {
-          setUpvoteCount((prevCount) => prevCount + 1);  // いいねのカウントを増やす
+      if (existingVoteResponse.ok && existingVoteData.vote) {
+
+        if (existingVoteData.vote.type === type) {
+          const deleteResponse = await fetch(`/api/votes/${existingVoteData.vote.id}`, {
+            method: 'DELETE',
+          });
+          const deleteResult = await deleteResponse.json();
+
+          if (deleteResponse.ok) {
+            setVoteType(null);
+            if (type === 'up') setUpvoteCount((prevCount) => Math.max(prevCount - 1, 0));
+            if (type === 'down') setDownvoteCount((prevCount) => Math.max(prevCount - 1, 0));
+          } else {
+            setError(deleteResult.message || '評価の削除に失敗しました');
+            setShowNotification(true);
+          }
         } else {
-          setDownvoteCount((prevCount) => prevCount + 1);  // 反対のカウントを増やす
+          console.log('existingVoteData:', existingVoteData);
+          console.log('existingVoteData.vote:', existingVoteData.vote);
+          console.log('existingVoteData.vote.id:', existingVoteData.vote.id);
+          console.log('type:', type);
+
+          const updateResponse = await fetch(`/api/votes/${existingVoteData.vote.id}`, {
+            method: 'PATCH',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ type }),
+          });
+          const updateResult = await updateResponse.json();
+
+          if (updateResponse.ok) {
+            setVoteType(type);
+            if (type === 'up') {
+              setUpvoteCount((prevCount) => prevCount + 1);
+              setDownvoteCount((prevCount) => Math.max(prevCount - 1, 0));
+
+            } else {
+              setDownvoteCount((prevCount) => prevCount + 1);
+              setUpvoteCount((prevCount) => Math.max(prevCount - 1, 0));
+            }
+          } else {
+            setError(updateResult.message || '評価の更新に失敗しました');
+            setShowNotification(true);
+          }
         }
       } else {
-        setError(data.message || '評価の送信に失敗しました');
+
+        const postResponse = await fetch('/api/votes', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ answer_id: answerId, user_id: userId, type, answer_user_id: answerUserId }),
+        });
+        const postResult = await postResponse.json();
+
+        if (postResponse.ok) {
+          setVoteType(type);
+          if (type === 'up') {
+            setUpvoteCount((prevCount) => prevCount + 1);
+
+          } else {
+            setDownvoteCount((prevCount) => prevCount + 1);
+          }
+        } else {
+          setError(postResult.message || '評価の送信に失敗しました');
+          setShowNotification(true);
+        }
       }
+
+      fetchVoteStatus();
+
     } catch (error) {
       setError('評価の送信中にエラーが発生しました');
+      setShowNotification(true);
     } finally {
       setIsLoading(false);
     }
   };
 
+  const fetchVoteStatus = async () => {
+    try {
+
+      const countResponse = await fetch(`/api/countVotes?answerId=${answerId}`);
+      const countData = await countResponse.json();
+
+      if (countResponse.ok && countData) {
+        setUpvoteCount(countData.upvoteCount || 0);
+        setDownvoteCount(countData.downvoteCount || 0);
+      }
+    } catch (error) {
+      setError('評価の取得に失敗しました');
+    }
+  };
+
+  useEffect(() => {
+    fetchVoteStatus();
+  }, [answerId]);
+
+
   return (
-    <div className="flex items-center space-x-8 mt-12">
-  {error && <p className="text-red-500">{error}</p>}
+    <>
+      {(error !== null || success !== null) && (
+        <Notification
+          message={error ?? success ?? ""}
+          type={error ? "error" : "success"}
+          onClose={() => setShowNotification(false)}
+        />
+      )}
 
-  {/* いいねボタンとカウント表示の間を狭く */}
-  <div className="flex items-center space-x-1 text-xs">
-    <button
-      onClick={() => handleVote('up')}
-      className={`px-4 py-2 rounded ${
-        voteType === 'up' ? 'bg-yellow-300 text-black' : 'bg-white text-black'
-      } hover:bg-gray-100`}
-      disabled={isLoading || voteType === 'up' || userId === answerUserId}
-    >
-      <FontAwesomeIcon icon={faThumbsUp} className="mr-1" /> いいね
-    </button>
-    <span className="font-semibold">{upvoteCount}</span>
-  </div>
+      <div className="flex items-center space-x-8 mt-12">
+        <div className="flex items-center space-x-1 text-sm">
+          <button
+            onClick={() => handleVote('up')}
+            className={`px-4 py-2 rounded transition-all duration-300 ease-in-out transform ${
+              voteType === 'up'
+              ? 'text-red-600 scale-125'
+              : upvoteCount >= 1
+              ? 'text-orange-600'
+              : 'text-gray-400'
+              } hover:bg-gray-100`}
+            disabled={isLoading || userId === answerUserId}
+          >
+            <FontAwesomeIcon icon={faThumbsUp} className="mr-1" /> いいね
+          </button>
+          <span className="font-semibold">{upvoteCount}</span>
+        </div>
 
-  <div className="flex items-center space-x-1 text-xs">
-    <button
-      onClick={() => handleVote('down')}
-      className={`px-4 py-2 rounded ${
-        voteType === 'down' ? 'bg-gray-300 text-black' : 'bg-white text-black'
-      } hover:bg-gray-100`}
-      disabled={isLoading || voteType === 'down' || userId === answerUserId}
-    >
-      <FontAwesomeIcon icon={faThumbsDown} className="mr-1" /> 低評価
-    </button>
-    <span className="font-semibold">{downvoteCount}</span>
-  </div>
-</div>
+        <div className="flex items-center space-x-1 text-sm">
+          <button
+            onClick={() => handleVote('down')}
+            className={`px-4 py-2 rounded ${
+              voteType === 'down'
+              ? 'text-gray-800 scale-125'
+              : 'text-gray-400'
+            } hover:bg-gray-100`}
+            disabled={isLoading || userId === answerUserId}
+          >
+            <FontAwesomeIcon icon={faThumbsDown} className="mr-1" /> 低評価
+          </button>
+          <span className="font-semibold">{downvoteCount}</span>
+        </div>
+      </div>
+    </>
   );
 }

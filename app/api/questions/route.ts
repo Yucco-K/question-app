@@ -37,12 +37,6 @@ export async function GET(request: Request) {
 
   const questionTagsOrEmpty = questionTags?.length > 0 ? questionTags : [];
 
-  // const questionsWithTags = questions.map((question: any) => {
-
-  //   const tagsForQuestion = questionTagsOrEmpty
-  //     .filter((qt: any) => qt?.question_id === question.id)
-  //     .map((qt: any) => qt?.Tag?.name || 'Unknown');
-
   const questionsWithTagsAndCategory = questions.map((question: any) => {
     const tagsForQuestion = questionTagsOrEmpty
       .filter((qt: any) => qt?.question_id === question.id)

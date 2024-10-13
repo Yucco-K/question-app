@@ -5,6 +5,7 @@ interface TagInputProps {
   availableTags: string[];
   initialTags: string[];
   onTagsChange?: (newTags: string[]) => void;
+  isDraft?: boolean;
 }
 
 export default function TagInput({
@@ -12,14 +13,27 @@ export default function TagInput({
   availableTags,
   initialTags,
   onTagsChange,
+  isDraft = false,
 }: TagInputProps) {
   const [selectedTags, setSelectedTags] = useState<string[]>(initialTags);
   const [tags, setTags] = useState(initialTags || []);
 
+
+  // useEffect(() => {
+  //   setSelectedTags(initialTags || []);
+  // }, [initialTags]);
+
+  useEffect(() => {
+    if (isDraft) {
+      setSelectedTags(initialTags || []); // 下書きの場合は selectedTags を初期化
+    }
+    setTags(initialTags || []);
+  }, [initialTags, isDraft]);
+
+
   useEffect(() => {
     setTags(initialTags || []);
   }, [initialTags]);
-
 
 
   const handleTagClick = (tag: string) => {

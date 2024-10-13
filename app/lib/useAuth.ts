@@ -1,11 +1,11 @@
 'use client';
 
 import { useEffect } from 'react';
-import { useRouter } from 'next/navigation'; // ルーティング用
-import { useAuth as useAuthContext } from '../context/AuthContext'; // AuthContextのフックを使用
+import { useRouter } from 'next/navigation';
+import { useAuth as useAuthContext } from '../context/AuthContext';
 
 const useAuth = (requireAuth: boolean = true, redirectUrl?: string) => {
-  const { session, loading } = useAuthContext(); // 認証状態を取得
+  const { session, loading } = useAuthContext();
   const router = useRouter();
 
   const excludedPaths = [
@@ -26,7 +26,6 @@ const useAuth = (requireAuth: boolean = true, redirectUrl?: string) => {
 
     if (!loading) {
       if (requireAuth && !session) {
-        // redirectUrlが指定されている場合のみリダイレクト
         if (redirectUrl) {
           router.push(redirectUrl);
         }

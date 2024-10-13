@@ -8,6 +8,7 @@ import ButtonGroup from '@/app/components/ui/ButtonGroup';
 import Notification from '@/app/components/ui/Notification';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Image from 'next/image';
 
 interface Params {
   userId: string;
@@ -71,7 +72,6 @@ export default function EditUserProfile({ userId }: EditUserProfileProps) {
   }, [userId]);
 
 
-  // 入力変更を処理する関数
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>, field: string) => {
     const value = e.target.value;
 
@@ -110,7 +110,6 @@ export default function EditUserProfile({ userId }: EditUserProfileProps) {
     return true;
   };
 
-  // 保存ボタンが押された時にバリデーションを実行する関数 ③
   const handleSave = () => {
     if (!validateField('name', name)) {
       return false;
@@ -118,7 +117,7 @@ export default function EditUserProfile({ userId }: EditUserProfileProps) {
     if (!validateField('email', email)) {
       return false;
     }
-    return true; // ④ バリデーション成功時に true を返す
+    return true;
   };
 
 
@@ -142,7 +141,6 @@ export default function EditUserProfile({ userId }: EditUserProfileProps) {
         throw new Error(errorData.error || '画像の削除に失敗しました');
       }
       setProfileImage('');
-      // setSuccess('プロフィール画像を削除しました');
       toast.success('プロフィール画像を削除しました', {
         position: "top-center",
         autoClose: 3000,
@@ -185,7 +183,6 @@ export default function EditUserProfile({ userId }: EditUserProfileProps) {
         const errorData = await response.json();
         throw new Error(errorData.error || 'アカウントの削除に失敗しました。');
       }
-      // setSuccess('アカウントが削除されました。');
       toast.success('アカウントが削除されました。', {
         position: "top-center",
         autoClose: 3000,
@@ -243,7 +240,6 @@ export default function EditUserProfile({ userId }: EditUserProfileProps) {
         const errorData = await response.json();
         throw new Error(errorData.error || 'プロフィール画像の保存に失敗しました');
       }
-      // setSuccess('プロフィール画像を保存しました');
       toast.success('プロフィール画像を保存しました', {
         position: "top-center",
         autoClose: 3000,
@@ -284,7 +280,6 @@ export default function EditUserProfile({ userId }: EditUserProfileProps) {
         throw new Error(errorData.error || 'メールアドレスの更新に失敗しました');
       }
       setError('');
-      // setSuccess('メールアドレスを更新しました');
       toast.success('メールアドレスを更新しました', {
         position: "top-center",
         autoClose: 3000,
@@ -323,7 +318,6 @@ export default function EditUserProfile({ userId }: EditUserProfileProps) {
         const errorData = await response.json();
         throw new Error(errorData.error || '名前の更新に失敗しました');
       }
-      // setSuccess('名前を更新しました');
       toast.success('名前を更新しました', {
         position: "top-center",
         autoClose: 3000,
@@ -340,10 +334,7 @@ export default function EditUserProfile({ userId }: EditUserProfileProps) {
 
   const buttonData: ButtonData[] = [
   { label: '戻る', className: 'bg-blue-800 text-white', onClick: handleCancelAndReturn },
-  // { label: '保存', className: 'bg-green-500 text-white', onClick: handleSave },
   ];
-
-  if (loading) return <div>読み込み中...</div>;
 
   return (
     <>
@@ -354,7 +345,7 @@ export default function EditUserProfile({ userId }: EditUserProfileProps) {
           onClose={() => setShowNotification(false)}
         />
       )}
-      <div className="p-8 bg-white rounded-md shadow-md w-full lg:w-2/3 mx-auto">
+      <div className="p-8 mt-10 bg-white rounded-md shadow-md w-full lg:w-2/3 mx-auto">
       <div className="flex justify-between mb-4">
         <h2 className="text-2xl font-bold text-gray-500">プロフィール</h2>
         <div className='flex flex-col gap-10'>
@@ -399,7 +390,13 @@ export default function EditUserProfile({ userId }: EditUserProfileProps) {
         >
           {profileImage ? (
             <>
-              <img src={profileImage} alt="Profile" className="w-full h-full rounded-sm" />
+              <Image
+                src={profileImage}
+                alt="Profile"
+                width={80}
+                height={80}
+                className="w-full h-full rounded-sm"
+              />
 
               {isHovered && (
                 <div

@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCrown } from '@fortawesome/free-solid-svg-icons';
 import Notification from '../ui/Notification';
+import { useUser } from '@/app/context/UserContext';
 import { useLoading } from '../../context/LoadingContext';
 
 interface BestAnswerProps {
@@ -18,17 +19,19 @@ export default function BestAnswer({ questionId, answerId }: BestAnswerProps) {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [showNotification, setShowNotification] = useState(false);
+  const [questionOwnerId, setQuestionOwnerId] = useState<string | null>(null);
+  const { userId } = useUser();
 
 
   const fetchBestAnswer = async () => {
-    setLoading(true);
     try {
+      setLoading(true);
       const response = await fetch(`/api/questions/${questionId}/best-answer`);
       const data = await response.json();
 
       if (response.ok) {
         setBestAnswerId(data.bestAnswerId);
-        setBestAnswerUserData(data.bestAnswerUserData);
+        setQuestionOwnerId(data.questionOwnerId);
       } else {
         setError(data.message || 'ベストアンサーの取得に失敗しました');
       }
@@ -36,38 +39,52 @@ export default function BestAnswer({ questionId, answerId }: BestAnswerProps) {
       setError('ベストアンサーの取得中にエラーが発生しました');
     } finally {
       setLoading(false);
+      setShowNotification(true);
     }
   };
 
   const setBestAnswer = async () => {
     try {
+      setLoading(true);
+
       const response = await fetch(`/api/questions/${questionId}/best-answer`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
         },
-
-        body: JSON.stringify({ answerId }),
+        body: JSON.stringify({ answerId, userId }),
       });
 
+      const data = await response.json();
+
       if (!response.ok) {
-        throw new Error('ベストアンサーの設定に失敗しました');
+
+        const errorMessage = data.message || 'ベストアンサーの設定に失敗しました';
+        throw new Error(errorMessage);
       }
 
-      console.log('ベストアンサーが設定されました');
+      setSuccess('ベストアンサーが設定または変更されました');
+      setBestAnswerId(answerId);
       fetchBestAnswer();
+      setTimeout(() => {
+        window.location.reload();
+      } , 1000);
+
     } catch (error) {
-      console.error('ベストアンサーの設定中にエラーが発生しました', error);
+      console.error('ベストアンサーの設定中にエラーが発生しました:', error);
+      setError((error as Error).message);
+
+    } finally {
+      setLoading(false);
+      setShowNotification(true);
     }
   };
 
-
   useEffect(() => {
     fetchBestAnswer();
-  }, [questionId]);
+  }, [questionId, answerId, userId, bestAnswerId]);
 
   if (isLoading) return <p>読み込み中...</p>;
-  if (error) return <p>{error}</p>;
 
   return (
     <>
@@ -85,11 +102,14 @@ export default function BestAnswer({ questionId, answerId }: BestAnswerProps) {
             <span className="text-green-500 text-xl font-bold">ベストアンサー</span>
           </>
         ) : (
-          <div className="mt-4">
-            <button onClick={setBestAnswer} className="text-sm text-blue-900 px-4 py-2  hover:underline">
-              ベストアンサーに選択する
-            </button>
-          </div>
+
+          userId === questionOwnerId && (
+            <div className="mt-4">
+              <button onClick={setBestAnswer} className="text-sm text-blue-900 px-4 py-2 hover:underline">
+                ベストアンサーに選択する
+              </button>
+            </div>
+          )
         )}
       </div>
     </>

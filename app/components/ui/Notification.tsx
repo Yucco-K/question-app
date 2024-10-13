@@ -16,7 +16,7 @@ export default function Notification({ message, type = 'info', onClose }: Notifi
   }, [onClose]);
 
   return (
-    <div className={`fixed top-4 left-1/2 transform -translate-x-1/2 z-50 p-4 rounded-lg shadow-lg flex items-center ${type === 'success' ? 'bg-green-600 text-white' : 'bg-red-400 text-white'}`}>
+    <div className={`fixed top-12 left-1/2 transform -translate-x-1/2 z-2000 p-4 rounded-lg shadow-lg flex items-center ${type === 'success' ? 'bg-green-600 text-white' : 'bg-red-400 text-white'}`}>
       <FontAwesomeIcon icon={faCheckCircle} className="mr-2" />
       <span>{message}</span>
       <button onClick={onClose} className="ml-4 text-white">

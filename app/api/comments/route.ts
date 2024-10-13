@@ -43,12 +43,12 @@ export async function POST(request: Request) {
   const { data, error } = await supabase
     .from('Comment')
     .insert([{ question_id, content, answer_id, user_id}])
-    .select()
+    .select('id')  // 'id' カラムを取得
     .single();
 
   if (error) {
     return NextResponse.json({ error: 'Failed to insert comment', message: error.message }, { status: 400 });
   }
 
-  return NextResponse.json(data, { status: 201 });
+  return NextResponse.json({ message: 'コメントが投稿されました', commentId: data.id }, { status: 201 });
 }

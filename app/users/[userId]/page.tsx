@@ -51,8 +51,6 @@ export default function UserProfilePage({ params }: UserProfilePageProps) {
     router.push(`/users/${userId}/edit`);
   };
 
-  if (loading) return <div>読み込み中...</div>;
-  if (error) return <div>エラー: {error}</div>;
 
   return (
     <>
@@ -63,7 +61,7 @@ export default function UserProfilePage({ params }: UserProfilePageProps) {
         onClose={() => setShowNotification(false)}
       />
     )}
-    <div className="p-8 bg-white rounded-md shadow-md mx-auto w-full lg:w-2/3 mx-auto">
+    <div className="p-8 mt-10 bg-white rounded-md shadow-md mx-auto w-full lg:w-2/3 mx-auto">
       <div className="flex justify-between mb-4">
         <h2 className="text-2xl font-bold text-gray-500">プロフィール</h2>
         <button

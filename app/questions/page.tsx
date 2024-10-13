@@ -25,35 +25,35 @@ export default function QuestionsPage() {
   const { session, loading, setSession } = useAuth(true) as { session: any; loading: boolean; setSession: (session: any) => void };
   const router = useRouter();
 
+
+    // const fetchAndUpdateSession = async () => {
+    //   try {
+    //     const response = await fetch('/api/auth/get-session', {
+    //       method: 'GET',
+    //       credentials: 'include',
+    //     });
+
+    //     if (response.ok) {
+    //       const data = await response.json();
+    //       console.log('セッションデータを取得:', data);
+    //       setSession(data.session);
+    //     } else {
+    //       console.error('セッションの取得に失敗しました');
+    //     }
+    //   } catch (error) {
+    //     console.error('セッション更新時のエラー:', error);
+    //   }
+    // };
+
+    // if (!loading) {
+    //   fetchAndUpdateSession();
+    // }
+
   useEffect(() => {
-
-    const fetchAndUpdateSession = async () => {
-      try {
-        const response = await fetch('/api/auth/get-session', {
-          method: 'GET',
-          credentials: 'include',
-        });
-
-        if (response.ok) {
-          const data = await response.json();
-          console.log('セッションデータを取得:', data);
-          setSession(data.session);
-        } else {
-          console.error('セッションの取得に失敗しました');
-        }
-      } catch (error) {
-        console.error('セッション更新時のエラー:', error);
-      }
-    };
-
-    if (!loading) {
-      fetchAndUpdateSession();
-    }
-
     if (!loading && !session) {
       router.push('/questions/public');
     }
-  }, [loading, session, setSession, router]);
+  }, [loading, session, router]);
 
 
   const tags = ['カテゴリ1', 'カテゴリ2', 'カテゴリ3']; // タグを仮で設定
@@ -85,7 +85,7 @@ export default function QuestionsPage() {
       </Modal>
 
       <div className="flex">
-        <div className="flex-grow mr-8">
+        <div className="flex-grow mr-8 w-2/3">
           <QuestionList />
         </div>
 

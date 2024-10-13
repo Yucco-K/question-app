@@ -5,9 +5,15 @@ export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const page = parseInt(searchParams.get('page') || '1', 10);
   const limit = parseInt(searchParams.get('limit') || '10', 10);
+  const userId = searchParams.get('userId');
 
   const start = (page - 1) * limit;
   const end = start + limit - 1;
+
+
+    if (!userId) {
+      return NextResponse.json({ error: 'Bad Request', message: 'User ID is required' }, { status: 400 });
+    }
 
   const { data: drafts, error: draftsError } = await supabase
     .from('Question')
@@ -16,6 +22,7 @@ export async function GET(request: Request) {
       Category (name)
     `)
     .order('created_at', { ascending: false })
+    .eq('user_id', userId)
     .eq('is_draft', true)
     .range(start, end);
 

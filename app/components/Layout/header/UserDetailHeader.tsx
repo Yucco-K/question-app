@@ -1,55 +1,106 @@
-import { useState } from 'react';
+import { useState, useEffect, use} from 'react';
+import ProfileImageDisplay from '../../profile/ProfileImageDisplay';
+import useAuth from '../../../lib/useAuth';
 import { useRouter } from 'next/navigation';
-import useAuth from '@/app/lib/useAuth';
-import Notification from '@/app/components/ui/Notification';
-import LogoutButton from '@/app/components/users/LogoutButton';
-import UserNameDisplay from '@/app/components/profile/UserNameDisplayOnly';
+import LogoutButton from '../../users/LogoutButton';
+import { useUser } from '@/app/context/UserContext';
+import CurrentUserProfileImage from '../../profile/CurrentUserProfileImage';
+import CurrentUserNameDisplay from '../../profile/CurrentUserNameDisplay';
 
 export default function UserDetailHeader() {
-  const { session, loading } = useAuth(false);
+  const [isDropdownOpen, setDropdownOpen] = useState(false);
   const router = useRouter();
-  const [showNotification, setShowNotification] = useState(false);
-  const [notificationMessage, setNotificationMessage] = useState('');
-  const [notificationType, setNotificationType] = useState<'success' | 'error' | 'info'>('info');
+  const { userId, username } = useUser();
+  const { session, loading } = useAuth();
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
+  const handleProfileClick = () => {
+    setDropdownOpen(!isDropdownOpen);
+  };
 
+  const handleAccountManagement = () => {
+    if (userId) {
+      router.push(`/users/${userId}`);
+    }
+  };
 
-  if (!session && !showNotification) {
-    setNotificationMessage('ログインが必要です。');
-    setNotificationType('info');
-    setShowNotification(true);
-  }
+  const handleClickOutside = (event: MouseEvent) => {
+    if (isDropdownOpen && event.target instanceof Element && !event.target.closest('.profile-dropdown')) {
+      setDropdownOpen(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener('click', handleClickOutside);
+    return () => {
+      document.removeEventListener('click', handleClickOutside);
+    };
+  }, [isDropdownOpen]);
+
+  const handleLogoClick = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+
+  };
+
 
   return (
-    <header className="bg-blue-900 text-white py-4 fixed top-0 left-0 w-full z-50">
-      <div className="container mx-auto">
-        <h1 className="text-xl font-bold">Profile Page</h1>
+    <header className="bg-gray-100 text-white py-1 fixed top-0 left-0 w-full z-50">
+      <div className="container mx-auto flex justify-between items-center">
 
-        {showNotification && (
-          <Notification
-            message={notificationMessage}
-            type={notificationType}
-            onClose={() => setShowNotification(false)}
-          />
-        )}
+        <div className="logo cursor-pointer" onClick={handleLogoClick}>
+          Engineers <span>Q&A</span> Board
+        </div>
 
-        {session ? (
-          <>
-            <LogoutButton />
-            <p>ようこそ、<UserNameDisplay /> さん</p>
-          </>
-        ) : (
-          <button
-            className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
-            onClick={() => router.push('/users/login')}
-          >
-            ログイン
-          </button>
-        )}
+        <div className="relative">
+          <div onClick={handleProfileClick} className="cursor-pointer">
+            <CurrentUserProfileImage />
+          </div>
+
+          {isDropdownOpen && (
+            <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-2 z-10">
+              {session && !loading ? (
+                <>
+                  {/* <button
+                    onClick={handleAccountManagement}
+                    className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100"
+                  >
+                    プロフィール管理
+                  </button> */}
+                  <div className="ml-4 my-2 text-black whitespace-nowrap">
+                    <CurrentUserNameDisplay />
+                  </div>
+
+                  <LogoutButton />
+                </>
+              ) : (
+                <button
+                  onClick={() => router.push('/users/login')}
+                  className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100"
+                >
+                  ログイン
+                </button>
+              )}
+            </div>
+          )}
+        </div>
       </div>
+
+      <style jsx>{`
+        .logo {
+          font-family: 'Exo 2', sans-serif; /* 未来感のあるフォント */
+          font-size: 1rem; /* ロゴを大きく強調 */
+          font-weight: 700;
+          color: #3290fa; /* サイバーブルーの文字色 */
+          letter-spacing: 0.1em; /* 少し文字を広げてクールさを強調 */
+          text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3); /* 軽い影で立体感を演出 */
+          position: relative;
+        }
+
+        .logo span {
+          color: #1de9b6 /* Q&Aのアクセントカラー */
+        }
+
+        }
+      `}</style>
     </header>
   );
 }

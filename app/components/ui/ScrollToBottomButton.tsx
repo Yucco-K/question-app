@@ -20,15 +20,14 @@ const ScrollToBottomButton = () => {
         setIsBottomVisible(true);
         setIsVisible(true);
       }
-    // タイマーが動作中であればクリア
+
     if (timer) {
       clearTimeout(timer);
     }
 
-    // ボタンが表示されてから3秒後に非表示にする
     timer = setTimeout(() => {
       setIsVisible(false);
-    }, 3000); // 3秒後に非表示
+    }, 2000);
     };
 
     window.addEventListener('scroll', handleScroll);
@@ -36,7 +35,7 @@ const ScrollToBottomButton = () => {
     return () => {
       window.removeEventListener('scroll', handleScroll);
       if (timer) {
-        clearTimeout(timer); // コンポーネントがアンマウントされたらタイマーをクリア
+        clearTimeout(timer);
       }
     };
   }, []);
@@ -52,7 +51,7 @@ const ScrollToBottomButton = () => {
         <button
           onClick={scrollToBottom}
           title="ページの下部に移動"
-          className={`fixed bottom-13 right-8 bg-white text-gray-500 p-4 w-8 h-8 rounded-full shadow-lg hover:text-gray-700 flex items-center justify-center
+          className={`fixed bottom-40 right-80 bg-white text-gray-500 p-4 w-8 h-8 rounded-full shadow-lg hover:text-gray-700 flex items-center justify-center
             ${isVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-90'}`}
           style={{ zIndex: 999, transition: 'opacity 0.5s ease, transform 0.5s ease' }}
         >

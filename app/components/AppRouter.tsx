@@ -18,6 +18,8 @@ import QuestionsNavigation from './layout/nav/QuestionsNavigation';
 import PublicQuestionsNavigation from './layout/nav/PublicQuestionsNavigation';
 import UserDetailLayout from './layout/main/UserDetailLayout';
 import UsersLayout from './layout/main/UsersLayout';
+import UserDetailHeader from './layout/header/UserDetailHeader';
+import QuestionHeader from './layout/header/QuestionHeader';
 
 const AppRouter = ({ children }: { children: React.ReactNode }) => {
   const pathname = usePathname();
@@ -36,7 +38,7 @@ const AppRouter = ({ children }: { children: React.ReactNode }) => {
     case pathname.startsWith('/users/'):
       return (
         <>
-          <DefaultHeader />
+          <UserDetailHeader />
           <UserDetailNav />
           <UserDetailLayout>{children}</UserDetailLayout>
           <DefaultFooter currentYear={new Date().getFullYear()} />
@@ -56,7 +58,7 @@ const AppRouter = ({ children }: { children: React.ReactNode }) => {
     case pathname === '/questions':
       return (
         <>
-          <DefaultHeader />
+          <QuestionHeader />
           <QuestionsNavigation />
           <QuestionsLayout>{children}</QuestionsLayout>
           <DefaultFooter currentYear={new Date().getFullYear()} />

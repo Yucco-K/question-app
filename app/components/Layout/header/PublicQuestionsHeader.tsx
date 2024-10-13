@@ -1,16 +1,17 @@
 import { useState, useEffect} from 'react';
-import ProfileImageDisplay from '../../profile/ProfileImageDisplay';
 import useAuth from '../../../lib/useAuth';
 import { useRouter } from 'next/navigation';
+import { faUser } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 export default function PublicQuestionsHeader() {
   const { session } = useAuth(false);
   const [isDropdownOpen, setDropdownOpen] = useState(false);
   const router = useRouter();
 
-  const handleProfileClick = () => {
-    setDropdownOpen(!isDropdownOpen);
-  };
+  // const handleProfileClick = () => {
+  //   setDropdownOpen(!isDropdownOpen);
+  // };
 
   const handleClickOutside = (event: MouseEvent) => {
     if (isDropdownOpen && event.target instanceof Element && !event.target.closest('.profile-dropdown')) {
@@ -30,18 +31,24 @@ export default function PublicQuestionsHeader() {
 
   };
 
+  useEffect(() => {
+    if (session) {
+      router.push('/app/questions');
+    }
+  }, [session, router]);
 
   return (
-    <header className="bg-gray-100 text-white py-1 fixed top-0 left-0 w-full z-50">
+    <header className="bg-gray-100 text-white py-1 fixed top-0 left-0 w-full z-50" style={{ minHeight: '40px' }}>
       <div className="container mx-auto flex justify-between items-center">
 
         <div className="logo cursor-pointer" onClick={handleLogoClick}>
           Engineers <span>Q&A</span> Board
         </div>
 
-        <div className="relative">
-          <div onClick={handleProfileClick} className="cursor-pointer">
-            <ProfileImageDisplay />
+        {/* <div className="relative">
+
+          <div onClick={handleProfileClick} className="w-10 h-10 border bg-white border-gray-300 rounded-sm flex items-center justify-center cursor-pointer">
+            <FontAwesomeIcon icon={faUser} className="text-gray-500" size="lg" />
           </div>
 
           {isDropdownOpen && (
@@ -56,7 +63,7 @@ export default function PublicQuestionsHeader() {
 
             </div>
           )}
-        </div>
+        </div> */}
       </div>
 
       <style jsx>{`

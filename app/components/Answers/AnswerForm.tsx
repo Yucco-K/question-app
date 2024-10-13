@@ -11,6 +11,12 @@ import useAuth from '../../lib/useAuth';
 import { useRouter } from 'next/navigation';
 import ScrollToBottomButton from '../ui/ScrollToBottomButton';
 
+interface Answer {
+  id: string;
+  user_id: string;
+  content: string;
+}
+
 interface AnswerFormProps {
   questionId: string;
   initialAnswer?: string;
@@ -24,6 +30,7 @@ export default function AnswerForm({
   initialAnswer = '',
   isEditing = false,
   answerId,
+  fetchAnswers,
   }: AnswerFormProps) {
 
   const [answerModalOpen, setAnswerModalOpen] = useState(true);
@@ -36,7 +43,7 @@ export default function AnswerForm({
   const router = useRouter();
   const [content, setContent] = useState('');
   const { userId, loading: userLoading, error: userError } = useUser();
-  const [answers, setAnswers] = useState([]);
+  const [answers, setAnswers] = useState<Answer[]>([]);
 
 
   useEffect(() => {
@@ -53,20 +60,20 @@ export default function AnswerForm({
   }, [isEditing, initialAnswer]);
 
 
-  const fetchAnswers = useCallback(async () => {
-    try {
-      const response = await fetch(`/api/questions/${questionId}/answers`);
-      if (response.ok) {
-        const data = await response.json();
-        setAnswers(data);
-        console.log('answers:', data);
-      } else {
-        console.error("Failed to fetch answers");
-      }
-    } catch (error) {
-      console.error("Error fetching answers:", error);
-    }
-  }, [questionId]);
+  // const fetchAnswers = useCallback(async () => {
+  //   try {
+  //     const response = await fetch(`/api/questions/${questionId}/answers`);
+  //     if (response.ok) {
+  //       const data = await response.json();
+  //       setAnswers(data);
+  //       console.log('answers:', data);
+  //     } else {
+  //       console.error("Failed to fetch answers");
+  //     }
+  //   } catch (error) {
+  //     console.error("Error fetching answers:", error);
+  //   }
+  // }, [questionId]);
 
 
   const handleBodyChange = useCallback((newBody: string) => {
@@ -75,22 +82,17 @@ export default function AnswerForm({
     }
   }, [initialBody]);
 
+
   const handleSubmit = async () => {
+
     setError(null);
     setSuccess(null);
     setShowNotification(false);
-    setLoading(true);
-
-    console.log("投稿内容: ", initialBody, "質問ID: ", questionId);
-    console.log("ユーザーID: ", userId);
-    console.log("content情報: ", initialBody);
-    console.log("answerId: ", answerId);
 
     if (!questionId) {
       console.error("質問IDが指定されていません");
       setError("質問IDが存在しません。");
       setShowNotification(true);
-      setLoading(false);
       return;
     }
 
@@ -98,15 +100,30 @@ export default function AnswerForm({
       console.error("ユーザーがログインしていません");
       setError("ログインしてください");
       setShowNotification(true);
-      setLoading(false);
       return;
     }
+
+    // if (isEditing) {
+    //   const answer = answers.find(a => a.id === answerId);
+    //   if (!answer) {
+    //     console.error("編集対象の回答が見つかりません");
+    //     setError("編集対象の回答が存在しません。");
+    //     setShowNotification(true);
+    //     return;
+    //   }
+
+
+    //   if (isEditing && answer && answer.user_id !== userId) {
+    //     setError('この投稿を編集する権限がありません。');
+    //     setShowNotification(true);
+    //     return;
+    //   }
+    // }
 
     if (!initialBody.trim()) {
       console.error("回答の内容が空です。");
       setError("回答を入力してください。");
       setShowNotification(true);
-      setLoading(false);
       return;
     }
 
@@ -114,11 +131,7 @@ export default function AnswerForm({
     const method = isEditing ? 'PUT' : 'POST';
 
     try {
-      console.log("URL: ", url);
-      console.log("メソッド: ", method);
-      console.log("質問ID: ", questionId);
-      console.log("answerId: ", answerId);
-      console.log("content: ", initialBody);
+      setLoading(true);
 
       const response = await fetch(url, {
         method,
@@ -138,32 +151,32 @@ export default function AnswerForm({
 
       if (response.ok) {
         const result = await response.json();
-        // setContent(result);
         setInitialBody(result.content);
         setLoading(false);
-        fetchAnswers();
+        await fetchAnswers();
         console.log(isEditing ? '回答が更新されました:' : '回答が保存されました:', result);
         setSuccess(isEditing ? '回答が更新されました' : '回答が保存されました');
+        // setAnswerModalOpen(false);
         setShowNotification(true);
-        setAnswerModalOpen(false);
+
         setTimeout(() =>
-        window.location.reload()
-        , 2000);
+          window.location.reload()
+        , 1000);
+
       } else {
         const error = await response.json();
         console.error("保存エラー:", error.message);
         setError(error.message);
-        setShowNotification(true);
       }
     } catch (error) {
       console.error("エラーが発生しました:", error);
       setError("エラーが発生しました");
-      setShowNotification(true);
     }finally {
       setLoading(false);
-      setAnswerModalOpen(false);
+      setShowNotification(true);
     }
   };
+
 
   const handleCancel = () => {
     setInitialBody('');
@@ -189,9 +202,12 @@ export default function AnswerForm({
           onClose={() => setShowNotification(false)}
         />
       )}
+
       <ScrollToBottomButton />
+
       <Modal isOpen={answerModalOpen} onClose={() => setAnswerModalOpen(false)} title={isEditing ? '回答を編集' : '回答を投稿'}>
         <div className="px-8">
+
           {showNotification && (error || success) && (
             <Notification
               message={error ?? success ?? ""}

@@ -9,38 +9,24 @@ export async function GET(request: Request, { params }: { params: { questionId: 
       return NextResponse.json({ error: 'Bad Request', message: 'Question ID is required' }, { status: 400 });
     }
 
-    const { data: bestAnswerId, error: bestAnswerIdError } = await supabase
+    const { data: questionData, error: questionError } = await supabase
       .from('Question')
-      .select('best_answer_id')
+      .select('best_answer_id, user_id')
       .eq('id', questionId)
       .single();
 
-    if (bestAnswerIdError || bestAnswerId?.best_answer_id === null) {
-
-      return NextResponse.json({ message: 'まだベストアンサーが選ばれていません。' }, { status: 200 });
+    if (questionError || !questionData) {
+      return NextResponse.json({ error: 'Question not found', message: questionError?.message }, { status: 404 });
     }
 
-    const { data: bestAnswerUserId, error: bestAnswerUserIdError } = await supabase
-      .from('Answer')
-      .select('user_id')
-      .eq('id', bestAnswerId.best_answer_id)
-      .single();
+    const bestAnswerId = questionData.best_answer_id;
+    const questionOwnerId = questionData.user_id;
 
-    if (bestAnswerUserIdError || !bestAnswerUserId) {
-      return NextResponse.json({ error: 'bestAnswerUserId not found', message: bestAnswerUserIdError?.message }, { status: 404 });
+    if (!bestAnswerId) {
+      return NextResponse.json({ message: 'まだベストアンサーが選ばれていません。', questionOwnerId }, { status: 200 });
     }
 
-    const { data: bestAnswerUserData, error: bestAnswerUserDataError } = await supabase
-      .from('User')
-      .select('id, username')
-      .eq('id', bestAnswerUserId.user_id)
-      .single();
-
-    if (bestAnswerUserDataError || !bestAnswerUserData) {
-      return NextResponse.json({ error: 'bestAnswerUserData not found', message: bestAnswerUserDataError?.message }, { status: 404 });
-    }
-
-    return NextResponse.json({ bestAnswerId: bestAnswerId.best_answer_id, bestAnswerUserData: bestAnswerUserData }, { status: 200 });
+    return NextResponse.json({ bestAnswerId, questionOwnerId }, { status: 200 });
 
   } catch (err) {
     console.error('エラー:', (err as Error).message);
@@ -49,15 +35,39 @@ export async function GET(request: Request, { params }: { params: { questionId: 
 }
 
 
-export async function PATCH(request: Request, { params }: { params: { questionId: string ,answerId: string} }) {
+export async function PATCH(request: Request, { params }: { params: { questionId: string } }) {
   try {
     const { questionId } = params;
-    const { answerId } = await request.json();
+    const { answerId, userId } = await request.json();
 
-    if (!questionId || !answerId) {
-      return NextResponse.json({ error: 'Bad Request', message: 'Question ID and Answer ID are required' }, { status: 400 });
+    if (!questionId || !answerId || !userId) {
+      return NextResponse.json({ error: 'Bad Request', message: '必要なパラメータが不足しています' }, { status: 400 });
     }
 
+
+    const { data: questionData, error: questionError } = await supabase
+      .from('Question')
+      .select('user_id')
+      .eq('id', questionId)
+      .single();
+
+    if (questionError || !questionData) {
+      return NextResponse.json({ error: '質問が見つかりません', message: questionError?.message }, { status: 404 });
+    }
+
+    const { data: answerData, error: answerError } = await supabase
+    .from('Answer')
+    .select('user_id')
+    .eq('id', answerId)
+    .single();
+
+    if (questionData.user_id !== userId) {
+      return NextResponse.json({ error: 'Forbidden', message: 'ベストアンサーを設定できるのは質問者のみです' }, { status: 403 });
+    }
+
+    if (!answerData || answerData.user_id === userId) {
+      return NextResponse.json({ error: 'Forbidden', message: '自分の回答をベストアンサーに選ぶことはできません' }, { status: 403 });
+    }
 
     const { error } = await supabase
       .from('Question')
@@ -68,10 +78,11 @@ export async function PATCH(request: Request, { params }: { params: { questionId
       return NextResponse.json({ error: 'Failed to set best answer', message: error.message }, { status: 500 });
     }
 
-    return NextResponse.json({ message: 'Best answer has been set successfully.' }, { status: 200 });
+    return NextResponse.json({ message: 'ベストアンサーが正常に設定されました' }, { status: 200 });
   } catch (err) {
     console.error('エラー:', (err as Error).message);
-    return NextResponse.json({ error: 'Server Error', message: (err as Error).message }, { status: 500 });
+    return NextResponse.json({ error: 'サーバーエラー', message: (err as Error).message }, { status: 500 });
   }
 }
+
 

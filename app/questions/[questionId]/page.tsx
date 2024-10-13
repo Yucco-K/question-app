@@ -19,7 +19,7 @@ export default function QuestionDetailPage() {
 
   return (
     <div>
-      {id ? <QuestionDetail questionId={id} /> : <p>Loading...</p>}
+      {id ? <QuestionDetail questionId={id} /> : null}
     </div>
   );
 }

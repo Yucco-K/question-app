@@ -1,4 +1,4 @@
-// app/api/users/[userId]/name/route.ts
+// app/api/users/[userId]/profile/route.ts
 
 import { NextResponse } from 'next/server';
 import { supabaseAdmin as supabase } from '@/app/lib/supabaseAdmin';
@@ -12,7 +12,7 @@ export async function GET(request: Request, { params }: { params: { userId: stri
 
   const { data: user, error } = await supabase
     .from('User')
-    .select('id, username')
+    .select('id, username, profileImage')
     .eq('id', userId)
     .single();
 
@@ -20,5 +20,5 @@ export async function GET(request: Request, { params }: { params: { userId: stri
     return NextResponse.json({ error: 'User not found', message: error?.message || 'No user found' }, { status: 404 });
   }
 
-  return NextResponse.json({ id: user.id, username: user.username }, { status: 200 });
+  return NextResponse.json({ id: user.id, username: user.username, profileImage: user.profileImage }, { status: 200 });
 }

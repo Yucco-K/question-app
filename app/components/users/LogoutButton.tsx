@@ -3,8 +3,14 @@
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import Notification from '../ui/Notification';
+import { FC } from 'react';
+import { toast } from 'react-toastify';
 
-export default function LogoutButton() {
+interface LogoutButtonProps {
+  className?: string;
+}
+
+const LogoutButton: FC<LogoutButtonProps> = ({ className }) => {
   const [error, setError] = useState<string | null>(null);
   const [showNotification, setShowNotification] = useState(false);
   const [success, setSuccess] = useState<string | null>(null);
@@ -49,12 +55,16 @@ export default function LogoutButton() {
         sessionStorage.removeItem(accessTokenKey);
         sessionStorage.removeItem(refreshTokenKey);
 
-        setSuccess('ログアウトしました。');
+        toast.success('ログアウトしました。', {
+          position: "top-center",
+          autoClose: 3000,
+        });
         setShowNotification(true);
 
         setTimeout(() => {
           window.location.reload();
-        }, 3100);
+          router.push('/questions/public');
+        }, 1000);
       }
     } catch (err) {
       setError('予期しないエラーが発生しました。');
@@ -79,10 +89,11 @@ export default function LogoutButton() {
       )}
       <button
         onClick={handleLogout}
-        className="block w-full text-left py-2 px-4 text-gray-700 hover:bg-gray-100"
+        className={className || "block w-full text-left py-2 px-4 text-gray-700 hover:bg-gray-100"}
       >
         ログアウト
       </button>
     </div>
   );
 }
+export default LogoutButton;

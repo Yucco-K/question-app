@@ -5,14 +5,15 @@ import Card from '../ui/Card';
 import DOMPurify from 'dompurify';
 import BestAnswer from './BestAnswer';
 import CommentList from '../comments/CommentList';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSync } from '@fortawesome/free-solid-svg-icons';
 import Notification from '../ui/Notification';
-import { useLoading } from '../../context/LoadingContext';
 import AnswerForm from './AnswerForm';
 import Vote from '../ui/Vote';
 import ScrollToBottomButton from '../ui/ScrollToBottomButton';
-import ProfileImageDisplay from '../profile/ProfileImageDisplay';
+import { useUser } from '../../context/UserContext';
+import useAuth from '@/app/lib/useAuth';
+import styles from './AnswerList.module.css';
+import UserProfileImage from '../profile/UserProfileImage';
+import UserNameDisplay from '../profile/UserNameDisplay';
 
 interface Answer {
   id: string;
@@ -30,6 +31,7 @@ interface AnswerListProps {
   questionId: string;
   categoryId: string;
   answers: Answer[];
+  fetchAnswers: () => void;
 }
 
 export default function AnswerList({ questionId, categoryId, answers: initialAnswers }: AnswerListProps){
@@ -39,15 +41,16 @@ export default function AnswerList({ questionId, categoryId, answers: initialAns
   const [error, setError] = useState<string | null>(null);
   const [selectedAnswerId, setSelectedAnswerId] = useState<string | undefined>(undefined);
   const [selectedAnswerContent, setSelectedAnswerContent] = useState<string | undefined>(undefined);
-  const [commentModalOpen, setCommentModalOpen] = useState<boolean>(false);
-  const [answerListModalOpen, setAnswerListModalOpen] = useState<boolean>(false);
+  const [answerModalOpen, setAnswerModalOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [success, setSuccess] = useState<string | null>(null);
   const [showNotification, setShowNotification] = useState<boolean>(false);
   const [editingAnswerId, setEditingAnswerId] = useState<string | undefined>(undefined);
-  const userId = "someUserId"; // Define the userId variable
+  const { userId } = useUser();
+  const { loading, session } = useAuth();
 
   const fetchAnswers = async () => {
+
     setLoading(true);
     try {
       const response = await fetch(`/api/questions/${questionId}/answers`);
@@ -61,14 +64,31 @@ export default function AnswerList({ questionId, categoryId, answers: initialAns
 
     } catch (err) {
       setError('回答の取得中にエラーが発生しました');
+      setShowNotification(true);
     } finally {
       setLoading(false);
     }
   };
 
+
   const handleDelete = async (answerId: string) => {
     console.log('Deleting answer with ID:', answerId);
+
+    if (!userId) {
+      setError('ログインしてください。');
+      setShowNotification(true);
+      return;
+    }
+
+    const answer = answers.find((a) => a.id === answerId);
+    if (!answer || answer.user_id !== userId) {
+      setError('この投稿を削除する権限がありません。');
+      return;
+    }
+
     try {
+      setLoading(true);
+
       const response = await fetch(`/api/answers/${answerId}`, {
         method: 'DELETE',
       });
@@ -77,29 +97,31 @@ export default function AnswerList({ questionId, categoryId, answers: initialAns
       }
       setAnswers(answers.filter((answer) => answer.id !== answerId));
       setSuccess('回答が削除されました');
-      setShowNotification(true);
-      fetchAnswers();
+      await fetchAnswers();
 
     } catch (err) {
+      console.error('Error deleting answer:', err);
       setError('回答の削除中にエラーが発生しました');
+    }finally {
+      setLoading(false);
+      setShowNotification(true);
     }
   };
+
 
   useEffect(() => {
     fetchAnswers();
   }, [questionId]);
+
 
   const handleEditClick = (answerId: string, content: string) => {
     console.log('Editing answer with ID:', answerId);
     setEditingAnswerId(answerId);
     setSelectedAnswerContent(content);
     setIsEditing(true);
-    setAnswerListModalOpen(true);
+    setAnswerModalOpen(true);
   }
 
-  useEffect(() => {
-    console.log('answerListModalOpen state:', answerListModalOpen);
-  }, [answerListModalOpen]);
 
   if (isLoading) return <p>読み込み中...</p>;
 
@@ -113,7 +135,7 @@ export default function AnswerList({ questionId, categoryId, answers: initialAns
       />
       )}
       <ScrollToBottomButton />
-      <h2 className="text-lg my-6 flex items-center justify-center mr-10 ">
+      <h2 className="text-lg my-4 flex items-center justify-center mr-10 text-blue-900">
         全{answers ? answers.length : 0 }件の回答
       </h2>
       <div className="space-y-5">
@@ -121,17 +143,19 @@ export default function AnswerList({ questionId, categoryId, answers: initialAns
           answers.map((answer) => {
             const sanitizedDescription = DOMPurify.sanitize(answer.content);
 
-            const answerUser = answerUsers.find((user) => user.id === answer.user_id);
             return (
               <Card
                 key={answer.id}
                 title=""
+                ownerId={answer.user_id}
                 categoryId={categoryId}
+                onRefresh={fetchAnswers}
                 onEdit={() => handleEditClick(answer.id, answer.content)}
                 onDelete={() => handleDelete(answer.id)}
+                isResolved={false}
                 className="mb-5"
               >
-                <div className="mb-4">
+                {/* <div className="mb-4">
                   <button
                     onClick={fetchAnswers}
                     className="text-gray-500 bg-gray-100 p-1 text-md rounded hover:text-gray-900"
@@ -139,20 +163,23 @@ export default function AnswerList({ questionId, categoryId, answers: initialAns
                   >
                     <FontAwesomeIcon icon={faSync} className="mr-2" />
                   </button>
-                </div>
-                <div className="text-blue-900 text-xs mb-1">
+                </div> */}
+                <div className="text-blue-900 text-sm mb-1">
                   回答ID: {answer.id}
                 </div>
-                <BestAnswer questionId={questionId} answerId={answer.id} />
+
+                {answer.user_id !== userId && (
+                  <BestAnswer questionId={questionId} answerId={answer.id} />
+                )}
 
                 <div className="flex items-center mt-4">
-                  <ProfileImageDisplay />
+                  <UserProfileImage userId={answer.user_id} />
 
                   <div className="ml-4">
-                    <p className="text-sm text-gray-900">
-                      {answerUser ? answerUser.username : 'ユーザー名登録なし'}
+                    <p className="text-sm">
+                      <UserNameDisplay userId={answer.user_id} />
                     </p>
-                    <p className="text-xs text-gray-900 my-2">
+                    <p className="text-sm my-2">
                       {answer.created_at ? (
                         new Date(answer.created_at).toLocaleString('ja-JP', {
                           year: 'numeric',
@@ -170,13 +197,14 @@ export default function AnswerList({ questionId, categoryId, answers: initialAns
                 </div>
 
                 <hr className="my-4 border-gray-300" />
-                <div className="text-gray-700 text-md">
+
+                <div className={`mt-8 mb-12 ${styles.answerBody}`}>
                   <div
                     dangerouslySetInnerHTML={{ __html: sanitizedDescription }}
                   />
                 </div>
 
-                {answerListModalOpen && (
+                {answerModalOpen && (
                   <AnswerForm
                     questionId={questionId}
                     fetchAnswers={fetchAnswers}
@@ -186,39 +214,30 @@ export default function AnswerList({ questionId, categoryId, answers: initialAns
                   />
                 )}
 
-                <div className="flex items-center justify-end mb-4 gap-x-20">
+                <div className="absolute bottom-4 right-20 flex items-center justify-end gap-x-20">
                   <Vote
                     answerId={answer.id}
-                    userId={userId}
+                    userId={userId ?? ''}
                     answerUserId={answer.user_id}
                   />
 
-                {/* {userId && ( */}
-                <CommentList
-                  questionId={questionId}
-                  answerId={answer.id}
-                  categoryId={categoryId}
-                  selectedAnswerId={selectedAnswerId}
-                  setSelectedAnswerId={setSelectedAnswerId}
-                />
-              </div>
-                {/* )} */}
-                {/* <div className='flex items-center justify-center relative h-20'>
-                  <button
-                    className="text-center text-gray-900 text-lg hover:bg-sky-100 rounded px-4 py-2 absolute bottom-0"
-                    onClick={() => {
-                      setCommentModalOpen(true);
-                      setSelectedAnswerId(answer.id);
-                    }}
-                  >
-                    この回答にコメントする
-                  </button>
-                </div> */}
+
+                    <div className="mt-6">
+                      <CommentList
+                        questionId={questionId}
+                        answerId={answer.id}
+                        categoryId={categoryId}
+                        selectedAnswerId={selectedAnswerId}
+                        setSelectedAnswerId={setSelectedAnswerId}
+                      />
+                  </div>
+                </div>
+
               </Card>
             );
           })
         ) : (
-          <p>まだ回答がありません。</p>
+          <p className='text-blue-900'>まだ回答がありません。</p>
         )}
       </div>
     </>

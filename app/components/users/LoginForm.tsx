@@ -40,7 +40,9 @@ export default function LoginForm() {
     }
 
     setError('ユーザー名またはメールアドレスの形式が正しいことを確認してください。');
-    setShowNotification(true);
+    setTimeout(() => {
+      setShowNotification(true);
+    } , 3000);
     return false;
   };
 
@@ -95,7 +97,7 @@ export default function LoginForm() {
         setSuccess('ログインに成功しました');
         setShowNotification(true);
 
-        router.push('/');
+        router.push('/questions/public');
       }
     } catch (err) {
 

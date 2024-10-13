@@ -1,12 +1,13 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Form from '../ui/Form';
 import ButtonGroup from '../ui/ButtonGroup';
 import { useUser } from '../../context/UserContext';
 import Notification from '../ui/Notification';
 import { useLoading } from '../../context/LoadingContext';
 import ScrollToBottomButton from '../ui/ScrollToBottomButton';
+import { set } from 'lodash';
 
 interface CommentFormProps {
   initialComment?: string;
@@ -17,25 +18,30 @@ interface CommentFormProps {
   onSubmit: (title: string, body: string) => void;
   onCancel: () => void;
   fetchComments?: () => void;
+  fetchCommentCount?: () => void;
   openCommentListModal?: () => void;
 }
 
 
 export default function CommentForm({ questionId,
   answerId,
-  commentId,
+  commentId: propCommentId,
   userId: propUserId,
   onCancel,
   onSubmit,
   fetchComments,
+  fetchCommentCount,
   }: CommentFormProps) {
 
   const [initialBody, setInitialBody] = useState('');
+  const [comments, setComments] = useState([]);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [showNotification, setShowNotification] = useState(false);
   const [isLoading, setLoading] = useState(false);
   const [selectedCommentId, setSelectedCommentId] = useState<string | null>(null);
+  const [commentModalOpen, setCommentModalOpen] = useState(false);
+  const [commentId, setCommentId] = useState<string | null>(null);
 
   const { userId: contextUserId } = useUser();
   const userId = propUserId || contextUserId;
@@ -47,7 +53,37 @@ export default function CommentForm({ questionId,
   };
 
 
+  const fetchCommentsData = async () => {
+    setLoading(true);
+    try {
+      const response = await fetch(`/api/comments?answerId=${answerId}`);
+      const data = await response.json();
+      if (response.ok) {
+        setComments(data.comments);
+        setError(null);
+      } else {
+        setError(data.message || 'コメントの取得に失敗しました');
+      }
+    } catch (err) {
+      setError('コメントの取得中にエラーが発生しました');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+
+
   const handleSubmit = async () => {
+    setError(null);
+    setSuccess(null);
+    setShowNotification(false);
+
+    if (!userId) {
+      console.error("ユーザーがログインしていません");
+      setError("ログインしてください");
+      setShowNotification(true);
+      return;
+    }
 
     if (initialBody) {
       setLoading(true);
@@ -67,27 +103,33 @@ export default function CommentForm({ questionId,
         });
 
           const data = await response.json();
+          console.log('APIレスポンス:', data);
 
         if (response.ok) {
 
             setLoading(false);
             setInitialBody('');
             onSubmit('', initialBody);
-            fetchComments && fetchComments();
             setSuccess('コメントが投稿されました');
-            setShowNotification(true);
+            setSelectedCommentId(null);
 
-          console.log('コメント送信', data);
+            setCommentId(data.id);
+            console.log('投稿されたコメントID:', data.commentId);
+
+            fetchComments && fetchComments();
+            fetchCommentCount && fetchCommentCount();
 
         } else {
           setError(data.message || 'コメントの投稿に失敗しました');
-          setShowNotification(true);
+
         }
       } catch (error) {
         setError('コメントの投稿中にエラーが発生しました');
-        setShowNotification(true);
+
       } finally {
         setLoading(false);
+        setShowNotification(true);
+
       }
     } else {
       setError('コメントを入力してください');
@@ -95,6 +137,18 @@ export default function CommentForm({ questionId,
 
     }
   };
+
+    // コメント投稿が成功した際にコメントリストを自動更新
+    // useEffect(() => {
+    //   if ((success || commentId) && fetchComments) {
+    //     fetchComments();
+    //   }
+    // }, [success, commentId]);
+
+  // useEffect(() => {
+  //   fetchComments && fetchCommentsData();
+  // } , [commentId, answerId, selectedCommentId, commentModalOpen, success]);
+
 
   const buttons = [
     {

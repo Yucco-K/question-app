@@ -1,15 +1,17 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import Notification from '../ui/Notification';
-import DOMPurify from 'dompurify';
 import styles from './QuestionList.module.css';
-import Card from '../ui/Card';
 import { useLoading } from '../../context/LoadingContext';
-import Category from '../ui/Category';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEdit } from '@fortawesome/free-solid-svg-icons';
-import ScrollToBottomButton from '../ui/ScrollToBottomButton';
+import useAuth from '@/app/lib/useAuth';
+import { useRouter } from 'next/navigation';
+import Notification from '../ui/Notification';
+import Card from '../ui/Card';
+import DOMPurify from 'dompurify';
+import UserNameDisplay from '../profile/UserNameDisplay';
+import { useUser } from '@/app/context/UserContext';
+import { set } from 'lodash';
+
 
 interface DraftItem {
   id: string;
@@ -37,96 +39,88 @@ export default function DraftList({ onSelectDraft, categoryId }: DraftListProps)
   const [success, setSuccess] = useState<string | null>(null);
   const [showNotification, setShowNotification] = useState(false);
   const { isLoading, setLoading } = useLoading();
+  const router = useRouter();
+  const { session, loading } = useAuth();
+  const { userId } = useUser();
+
+
+  const fetchDrafts = async () => {
+
+    if (!loading && !session) {
+      setError('ログインが必要です。');
+      setShowNotification(true);
+      router.push('/users/login');
+      return;
+    }
+
+    setError(null);
+    setSuccess(null);
+    setLoading(true);
+
+    try {
+
+      const url = `/api/questions/drafts?userId=${userId}`;
+
+      const response = await fetch(url);
+
+      if (!response.ok) {
+        throw new Error('下書きの取得に失敗しました');
+      }
+
+      const data = await response.json();
+      setDraftList(data);
+
+    } catch (err) {
+      setError('データの取得中にエラーが発生しました');
+      console.error('Error fetching drafts:', err);
+
+    } finally {
+      setLoading(false);
+      setDraftId(null);
+      setShowNotification(true);
+    }
+  };
 
 
   useEffect(() => {
-    console.log('categoryId:', categoryId);
-    setError(null);
-    setSuccess(null);
-    setShowNotification(false);
-    setLoading(true);
+    if (session) {
+      fetchDrafts();
+    }
+  }, [categoryId, session, loading, router]);
 
-    const fetchDrafts = async () => {
-      try {
-        // categoryId が渡されていれば、それを使ってフィルタリング
-        const url = categoryId ? `/api/questions/drafts?categoryId=${categoryId}` : '/api/questions/drafts';
-        const response = await fetch(url);
-
-        if (!response.ok) {
-          throw new Error('下書きの取得に失敗しました');
-        }
-
-        const data = await response.json();
-        setDraftList(data);
-
-        data.forEach((item: { category_id: any }) => {
-          console.log('Category ID:', item.category_id);  // category_idにアクセス
-        });
-      } catch (err) {
-        setError('データの取得中にエラーが発生しました');
-        setShowNotification(true);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchDrafts();
-  }, [categoryId, setLoading]); // categoryId も依存関係に追加
-
-
-//   useEffect(() => {
-
-//     console.log('categoryId:', categoryId);
-//     setError(null);
-//     setSuccess(null);
-//     setShowNotification(false);
-//     setLoading(true);
-
-//   const fetchDrafts = async () => {
-//     try {
-//       const response = await fetch('/api/questions/drafts');
-//       if (!response.ok) {
-//         throw new Error('下書きの取得に失敗しました');
-//       }
-//       const data = await response.json();
-//       setDraftList(data);
-//       console.log('data:',data);
-//       console.log('draftList:',draftList);
-
-//       data.forEach((item: { category_id: any; }) => {
-//         console.log("Category ID:", item.category_id);  // category_idにアクセス
-//       });
-
-//     } catch (err) {
-//       setError('データの取得中にエラーが発生しました');
-//       setShowNotification(true);
-
-//     }finally {
-//     setLoading(false);
-//     }
-//   };
-
-//   fetchDrafts();
-// }, [setLoading]);
 
   const handleDeleteDraft = async (id: string) => {
 
     const draftId = id;
-    console.log('Deleting draft with ID:', draftId);
 
-    setError(null);
-    setSuccess(null);
-    setShowNotification(false);
-    setLoading(true);
+    if (!userId) {
+      setError('ログインしてください。');
+      setShowNotification(true);
+      return;
+    }
+
+    const draft = draftList.find(draft => draft.id === draftId);
+    if (!draft || draft.user_id !== userId) {
+      setError('この投稿を削除する権限がありません。');
+      setShowNotification(true);
+      return;
+    }
 
     try {
+
+      setError(null);
+      setSuccess(null);
+      setShowNotification(false);
+      setLoading(true);
+
       const response = await fetch(`/api/questions/drafts/${draftId}`, {
         method: 'DELETE',
       })
 
       if (!response.ok) {
-        throw new Error('下書きの削除に失敗しました');
+        throw new Error(`サーバーエラー: ${response.statusText}`);
       }
+
 
       setDraftList(draftList.filter((draft) => draft.id !== id));
       setSuccess('下書きを削除しました');
@@ -136,7 +130,6 @@ export default function DraftList({ onSelectDraft, categoryId }: DraftListProps)
       console.error('Error deleting draft:', err);
       setError('削除中にエラーが発生しました');
       setShowNotification(true);
-
     }finally {
       setLoading(false);
     }
@@ -156,7 +149,6 @@ export default function DraftList({ onSelectDraft, categoryId }: DraftListProps)
           onClose={() => setShowNotification(false)}
         />
       )}
-      <ScrollToBottomButton />
       <div className="className=flex flex-col items-center">
         {draftList.length === 0 && !isLoading && (
           <p className='flex items-center justify-center text-lg'>下書きがありません。</p>
@@ -170,10 +162,13 @@ export default function DraftList({ onSelectDraft, categoryId }: DraftListProps)
               <Card
                 key={draft.id}
                 title={draft.title}
+                ownerId={draft.user_id}
                 categoryId={draft.category_id}
+                onRefresh={fetchDrafts}
                 className="relative"
                 onEdit={() => onSelectDraft(draft)}
                 onDelete={() => handleDeleteDraft(draft.id)}
+                isResolved={false}
               >
                 <div>
                   <p className="label"></p>
@@ -185,7 +180,7 @@ export default function DraftList({ onSelectDraft, categoryId }: DraftListProps)
 
                 <div className="flex flex-wrap mt-4">
                   {draft.tags?.map((tag, index) => (
-                    <span key={index} className="bg-blue-500 text-white text-sm px-4 rounded-full mr-2 mb-2">
+                    <span key={index} className="bg-blue-500 text-white text-sm py-1 px-4 rounded-full mr-2 mb-2">
                       {tag}
                     </span>
                   ))}
@@ -193,7 +188,7 @@ export default function DraftList({ onSelectDraft, categoryId }: DraftListProps)
 
                 <div className="flex items-center mt-4">
                   <div className="ml-2">
-                    {/* <p className="font-semibold">作成者ID: {draft.user_id}</p> */}
+                  <UserNameDisplay userId={draft.user_id} />
                     <p className="text-sm text-gray-500">
                       {draft.created_at ? (
                         new Date(draft.created_at).toLocaleString('ja-JP', {
@@ -210,29 +205,6 @@ export default function DraftList({ onSelectDraft, categoryId }: DraftListProps)
                       )}
                     </p>
                   </div>
-
-                  {/* <button
-                    title="Edit draft"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      console.log('Edit button clicked for draft ID:', draft.id);
-                      onSelectDraft(draft);
-                    }}
-                    className="ml-auto text-gray-500 hover:text-gray-700"
-                  >
-                    <FontAwesomeIcon icon={faEdit} className="text-xl" />
-                  </button>
-
-                  <button
-                    title="Delete draft"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleDeleteDraft(draft.id);
-                    }}
-                    className="absolute top-2 right-3 text-2xl text-gray-500 hover:text-gray-700"
-                  >
-                    ×
-                  </button> */}
                 </div>
               </Card>
             </div>

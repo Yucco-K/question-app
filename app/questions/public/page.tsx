@@ -10,8 +10,6 @@ import { Session } from '@supabase/supabase-js';
 import { useLoading } from '../../context/LoadingContext';
 import Notification from '../../components/ui/Notification';
 import PublicQuestionList from '@/app/components/questions/PublicQuestionList';
-import NavigationBar from '@/app/components/ui/NavigationBar';
-
 
 
 export default function PublicQuestionsPage() {
@@ -53,7 +51,6 @@ export default function PublicQuestionsPage() {
 
     useEffect(() => {
       console.log('session:', session);
-      // console.log('userId', userId) // ログイン状態を確認
     } , [session]);
 
 
@@ -79,7 +76,7 @@ export default function PublicQuestionsPage() {
         <div
           className="p-4"
           style={{
-            backgroundColor: 'rgba(255, 255, 255, 0.9)',
+            backgroundColor: 'rgb(255, 248, 220, 0.9)',
             borderRadius: '10px',
             boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
             maxWidth: '50%',
@@ -90,7 +87,7 @@ export default function PublicQuestionsPage() {
 
           <div className="flex justify-center space-x-5">
             <button
-              className="bg-blue-500 text-white px-4 py-3 m-6 rounded-md hover:bg-blue-600"
+              className="bg-orange-400 text-white px-4 py-3 m-6 rounded-md hover:bg-orange-500"
               onClick={async () => {
                 setLoginPromptOpen(false);
                 setTimeout(() => {
@@ -101,7 +98,7 @@ export default function PublicQuestionsPage() {
               ログインする
             </button>
             <button
-              className="bg-gray-500 text-white px-4 py-3 m-6 rounded-md hover:bg-gray-600"
+              className="bg-neutral-500 text-white px-4 py-3 m-6 rounded-md hover:bg-gray-600"
               onClick={handleContinueWithoutLogin}
             >
               閉じる
@@ -109,7 +106,7 @@ export default function PublicQuestionsPage() {
           </div>
           {/* <p className="mb-4 text-sm text-gray-500 font-semibold">※ 投稿にはログインが必要です。</p> */}
         </div>
-        <p className='flex justify-end text-sm text-semibold'>※ 投稿にはログインが必要です。</p>
+        <p className='flex justify-end text-sm text-semibold mt-3'>※ 投稿にはログインが必要です。</p>
       </Modal>
 
     {!isModalOpen && (
@@ -128,7 +125,7 @@ export default function PublicQuestionsPage() {
     )}
 
       <div className="flex">
-        <div className="flex-grow mr-8">
+        <div className="flex-grow mr-8 w-2/3">
           <PublicQuestionList />
         </div>
 

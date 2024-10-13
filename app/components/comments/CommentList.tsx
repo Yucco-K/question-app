@@ -1,18 +1,18 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import styles from './CommentList.module.css';
 import Modal from '../ui/Modal';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowDown, faComments, faSync } from '@fortawesome/free-solid-svg-icons';
+import { faComments } from '@fortawesome/free-solid-svg-icons';
 import Card from '../ui/Card';
 import CommentForm from './CommentForm';
 import Notification from '../ui/Notification';
 import Form from '../ui/Form';
 import ButtonGroup from '../ui/ButtonGroup';
-import Category from '../ui/Category';
 import ScrollToBottomButton from '../ui/ScrollToBottomButton';
-import ProfileImageDisplay from '../profile/ProfileImageDisplay';
-// import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
+import { useUser } from '@/app/context/UserContext';
+import UserProfileImage from '../profile/UserProfileImage';
 
 interface Comment {
   id: string;
@@ -35,6 +35,7 @@ interface CommentListProps {
 
 export default function CommentList({ questionId, answerId, categoryId, selectedAnswerId, setSelectedAnswerId }: CommentListProps) {
   const [comments, setComments] = useState<Comment[]>([]);
+  const [commentCount, setCommentCount] = useState<number>(0);
   const [commentModalOpen, setCommentModalOpen] = useState(false);
   const [selectedCommentId, setSelectedCommentId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -47,7 +48,7 @@ export default function CommentList({ questionId, answerId, categoryId, selected
   const [editingContent, setEditingContent] = useState<string>('');
   const [initialBody, setInitialBody] = useState<string>('');
   const [isBottomVisible, setIsBottomVisible] = useState(true);
-  const userId = 'someUserId';
+  const { userId } = useUser();
 
 
   const fetchComments = async () => {
@@ -86,9 +87,40 @@ export default function CommentList({ questionId, answerId, categoryId, selected
     }
   };
 
+
+  useEffect(() => {
+    const fetchCommentCount = async () => {
+
+      try {
+        const response = await fetch(`/api/comments/count?answerId=${answerId}`);
+        const data = await response.json();
+        if (response.ok) {
+          setCommentCount(data.commentCount || 0);
+          console.log('data.commentCount:', data.commentCount);
+        } else {
+          setError('コメント数の取得に失敗しました');
+        }
+      } catch (err) {
+        setError('コメント数の取得中にエラーが発生しました');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCommentCount();
+  }, [answerId]);
+
+
+  useEffect(() => {
+    if (commentListModalOpen) {
+      fetchComments();
+    }
+  }, [commentListModalOpen, questionId, answerId]);
+
+
   const fetchUsername = async (userId: string) => {
     try {
-      const response = await fetch(`/api/users/${userId}/name`);
+      const response = await fetch(`/api/users/${userId}/profile`);
       const data = await response.json();
       if (response.ok) {
         return data.username;
@@ -109,7 +141,28 @@ export default function CommentList({ questionId, answerId, categoryId, selected
   };
 
   const handleEditSubmit = async (commentId: string) => {
+      setError(null);
+      setSuccess(null);
+      setShowNotification(false);
+
+      if (!userId) {
+        console.error("ユーザーがログインしていません");
+        setError("ログインしてください");
+        setShowNotification(true);
+        return;
+      }
+
+      const comment = comments.find(c => c.id === commentId);
+
+      if (comment?.user_id !== userId) {
+        setError('この投稿を編集する権限がありません。');
+        setShowNotification(true);
+        return;
+      }
+
     try {
+      setLoading(true);
+
       const response = await fetch(`/api/comments/${commentId}`, {
         method: 'PUT',
         headers: {
@@ -127,15 +180,18 @@ export default function CommentList({ questionId, answerId, categoryId, selected
         );
         setComments(updatedComments);
         setSuccess('コメントが更新されました');
-        setShowNotification(true);
-        setIsEditing(false);
-        // setCommentListModalOpen(false);
+        fetchComments();
       } else {
         setError(data.message || 'コメントの更新に失敗しました');
-        setShowNotification(true);
       }
     } catch (err) {
       setError('エラーが発生しました');
+    }finally {
+      setLoading(false);
+      setIsEditing(false);
+      setSelectedCommentId(null);
+      setEditingContent('');
+      setInitialBody('');
       setShowNotification(true);
     }
   };
@@ -147,6 +203,20 @@ export default function CommentList({ questionId, answerId, categoryId, selected
     fetchComments();
   };
 
+  const fetchCommentCount = async () => {
+    try {
+      const response = await fetch(`/api/comments/count?answerId=${answerId}`);
+      const data = await response.json();
+      if (response.ok) {
+        setCommentCount(data.commentCount || 0);
+      } else {
+        setError('コメント数の取得に失敗しました');
+      }
+    } catch (err) {
+      setError('コメント数の取得中にエラーが発生しました');
+    }
+  };
+
   const handleDelete = async (commentId: string) => {
     try {
       const response = await fetch(`/api/comments/${commentId}`, {
@@ -156,7 +226,9 @@ export default function CommentList({ questionId, answerId, categoryId, selected
         setComments(comments.filter(comment => comment.id !== commentId));
         setSuccess('コメントが削除されました');
         setShowNotification(true);
-        // setCommentListModalOpen(false);
+        fetchCommentCount();
+        fetchComments();
+
       } else {
         setError('コメントの削除に失敗しました');
         setShowNotification(true);
@@ -188,12 +260,16 @@ export default function CommentList({ questionId, answerId, categoryId, selected
             onClick={() => {
               setCommentListModalOpen(true);
               setShowNotification(false);
-              // openCommentModal();
             }}
-            className="text-green-500 px-4 py-2 rounded hover:text-green-600"
+            className="text-green-500 text-sm px-4 py-2 rounded hover:text-green-600 transition-transform duration-300 ease-in-out transform hover:scale-105"
           >
-            <FontAwesomeIcon icon={faComments} className="mr-2" />
-            {comments.length}
+            <FontAwesomeIcon
+              icon={faComments}
+              className={`mr-2 transition-transform duration-300 ease-in-out transform ${
+                commentCount >= 1 ? 'scale-150' : 'scale-100'
+              }`}
+            />
+            {commentCount}件のコメント
           </button>
         </div>
       )}
@@ -209,41 +285,36 @@ export default function CommentList({ questionId, answerId, categoryId, selected
               />
             )}
 
-            {/* <button
-              className="text-blue-500 hover:text-blue-700 px-4 py-2 rounded bg-gray-100 ml-20"
-              onClick={() => setCommentModalOpen(true)}
-            >
-              コメントを投稿
-            </button> */}
 
-            <button
+            {/* <button
               onClick={fetchComments}
               className="text-gray-500 bg-gray-100 px-4 py-2 rounded hover:text-gray-900 ml-20"
               title="コメントを再読み込み"
             >
-              <FontAwesomeIcon icon={faSync} className="mr-4 ml-2"/>リストを更新
-            </button>
+              <FontAwesomeIcon icon={faSync} className="mr-4 ml-2 text-blue-900"/>リストを更新
+            </button> */}
           </div>
           <div className='flex flex-col items-center mb-16'>
-            <h2 className="text-lg mb-4">
+            <h2 className="text-lg mb-4 text-blue-900">
               全{comments ? comments.length : 0}件のコメント
             </h2>
 
             <div className="space-y-5 flex flex-col w-4/5">
               {isLoading ? (
-                <p>読み込み中...</p>
-              ) : error ? (
-                <p className="text-red-500">{error}</p>
+                null
               ) : comments.length > 0 ? (
                 comments.map((comment: Comment) => (
                   <Card
                     key={comment.id}
+                    ownerId={comment.user_id}
                     categoryId={categoryId}
+                    onRefresh={fetchComments}
+                    isResolved={false}
                     className="mb-5 w-full"
                     onEdit={() => handleEdit(comment.id, comment.content)}
                     onDelete={() => handleDelete(comment.id)}
                   >
-                    <div className="text-xs text-blue-900 mb-2">コメントID: {comment.id}</div>
+                    <div className="text-sm text-blue-900 mb-2">コメントID: {comment.id}</div>
                     {isEditing && editingCommentId === comment.id ? (
                       <div className="px-8">
                         <Form
@@ -273,13 +344,13 @@ export default function CommentList({ questionId, answerId, categoryId, selected
                         </div>
                       </div>
                     ) : (
-                      <div key={comment.id} className="bg-gray-100 p-2 rounded mb-2">
+                      <div key={comment.id} className="p-2 mb-2">
 
                         <div className="flex items-center mt-4">
-                          <ProfileImageDisplay />
+                        <UserProfileImage userId={comment.user_id} />
                           <div className="ml-4">
-                            <p className="text-sm text-gray-900 mb-2">{comment.username}</p>
-                            <p className="text-xs text-gray-900">
+                            <p className="text-sm mb-2">{comment.username}</p>
+                            <p className="text-sm ">
                               {comment.created_at ? (
                                 new Date(comment.created_at).toLocaleString('ja-JP', {
                                   year: 'numeric',
@@ -295,8 +366,10 @@ export default function CommentList({ questionId, answerId, categoryId, selected
                             </p>
                           </div>
                         </div>
-                        <hr className="m-4 border-gray-300" />
-                        <div className="text-gray-700 mb-4 text-md">
+
+                        <hr className="my-10 border-gray-300" />
+
+                        <div className={`mt-8 mb-12 ${styles.commentBody}`}>
                           <div dangerouslySetInnerHTML={{ __html: comment.content }} />
                         </div>
                     </div>
@@ -304,14 +377,14 @@ export default function CommentList({ questionId, answerId, categoryId, selected
                   </Card>
                 ))
               ) : (
-                <p>コメントはまだありません。</p>
+                <p className='text-blue-900'>まだコメントはありません。</p>
               )}
-              <div className="my-6 text-right">
+              <div className="fixed bottom-16 right-40 mr-20">
                     <button
                       className="flex items-center bg-green-500 text-white px-4 py-2 rounded-full hover:bg-green-600 ml-10 transition-transform duration-300 ease-in-out transform hover:scale-105"
                       onClick={() => setCommentModalOpen(true)}
                     >
-                      <span className="bg-green-500 text-white rounded-full w-6 h-6 flex items-center justify-center mr-2 text-2xl">
+                      <span className="bg-green-500 text-white rounded-full w-6 h-6 flex items-center justify-center mr-2 pt-1 text-4xl">
                         ⊕
                       </span>
                       コメントを投稿
@@ -354,6 +427,8 @@ export default function CommentList({ questionId, answerId, categoryId, selected
                       setCommentModalOpen(false);
                       setSelectedAnswerId(undefined);
                     }}
+                    fetchComments={fetchComments}
+                    fetchCommentCount={fetchCommentCount}
                   />
                 </div>
               </div>
