@@ -47,6 +47,7 @@ interface Question {
   user_id: string;
   category_id: string;
   is_resolved: boolean;
+  is_draft: boolean;
   fetchAnswers: () => void;
 }
 
@@ -411,16 +412,18 @@ export default function QuestionDetail({ questionId }: { questionId: string }) {
         <>
           <Card
             key={question.id}
+            id={question.id}
+            type="questions"
             title={question.title}
             ownerId={question.user_id}
             categoryId={question.category_id}
             onRefresh={fetchQuestionDetail}
             isResolved={question.is_resolved}
+            isDraft={question.is_draft}
             onEdit={() => {
               setQuestionModalOpen(true);
             }}
             onDelete={handleDelete}
-            // className="relative"
           >
             <div className="text-blue-900 text-sm mb-4">
               質問ID: {questionId}
@@ -491,7 +494,7 @@ export default function QuestionDetail({ questionId }: { questionId: string }) {
           </Card>
             <div className='flex flex-start h-30'>
               <div className="my-6 text-right">
-              {!question.is_resolved && (
+              {!question.is_resolved && userId !== question.user_id && (
                 <button
                   className="flex items-center bg-orange-400 text-white px-4 py-2 rounded-full hover:bg-orange-600 ml-10 transition-transform duration-300 ease-in-out transform hover:scale-105"
 
@@ -512,7 +515,7 @@ export default function QuestionDetail({ questionId }: { questionId: string }) {
 
             <AnswerList questionId={questionId} answers={answers} categoryId={categoryId} fetchAnswers={function (): void {
                 throw new Error('Function not implemented.');
-              }} />
+              }} isResolved={question.is_resolved}/>
           </>
         )}
       </div>

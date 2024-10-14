@@ -42,7 +42,7 @@ export default function LoginForm() {
     setError('ユーザー名またはメールアドレスの形式が正しいことを確認してください。');
     setTimeout(() => {
       setShowNotification(true);
-    } , 3000);
+    } , 5000);
     return false;
   };
 
@@ -52,7 +52,9 @@ export default function LoginForm() {
 
     if (password.length < 8 || !hasLetter || !hasNumber) {
       setError('パスワードは8文字以上、英字、数字を含みます。');
-      setShowNotification(true);
+      setTimeout(() => {
+        setShowNotification(true);
+      } , 3000);
       return false;
     }
     return true;

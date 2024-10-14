@@ -3,7 +3,7 @@
 import { ReactNode, useEffect, useState } from 'react';
 import Notification from './Notification';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEdit, faTrashAlt, faEllipsisV, faSync } from '@fortawesome/free-solid-svg-icons';
+import { faEdit, faTrashAlt, faEllipsisV, faSync, faEye, faBookmark } from '@fortawesome/free-solid-svg-icons';
 import { useUser } from '../../context/UserContext';
 
 interface CardProps {
@@ -24,7 +24,17 @@ interface CardProps {
   ownerId?: string;
   onRefresh?: () => void;
   isResolved: boolean;
+  isDraft: boolean;
   showReadMoreButton?: boolean;
+  viewCount?: number;
+  type: 'questions' | 'answers' | 'comments' | "drafts";
+  showViewCount?: boolean;
+  questionId?: string;
+}
+
+interface Bookmark {
+  question_id: string;
+  is_bookmark: boolean;
 }
 
 export default function Card({
@@ -36,22 +46,29 @@ export default function Card({
   className = '',
   onEdit,
   onDelete,
-  onClick,
   showMenuButton = true,
-  isPublicScreen = false,
-  onOpenLoginModal,
   ownerId,
   onRefresh,
   isResolved,
+  isDraft,
   showReadMoreButton = true,
+  viewCount = 0,
+  type,
+  id,
+  showViewCount = true,
+  questionId,
 }: CardProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [categoryName, setCategoryName] = useState<string | null>(null);
   const [showNotification, setShowNotification] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [isExpanded, setIsExpanded] = useState(false);
   const [isConfirmingDelete, setIsConfirmingDelete] = useState(false);
+  const [viewCounter, setViewCounter] = useState(viewCount);
+  const [bookmarkId, setBookmarkId] = useState(null);
+  const [bookmarks, setBookmarks] = useState<Bookmark[]>([]);
 
   const toggleMenu = () => {
     setIsMenuOpen((prev) => !prev);
@@ -59,9 +76,149 @@ export default function Card({
 
   const { userId } = useUser();
 
-    const toggleExpand = () => {
-      setIsExpanded(!isExpanded);
+
+    const fetchBookmark = async () => {
+      setLoading(true);
+      const questionId = id;
+
+      console.log('fetchBookmark');
+      console.log('id:', id);
+      console.log('userId:', userId);
+      console.log('questionId:', questionId);
+      console.log(`/api/bookmarks?question_id=${questionId}&user_id=${userId}`);
+
+      if (!loading && !userId) {
+        setError('ログインしてください。');
+        setShowNotification(true);
+        return false;
+      }
+
+      try {
+
+        const response = await fetch(`/api/bookmarks?question_id=${questionId}&user_id=${userId}`);
+        const data = await response.json();
+
+        if (data.success && data.bookmarks.length > 0) {
+          // ブックマークを配列として状態に保存
+          setBookmarks(data.bookmarks);
+          console.log('ブックマークを取得しました:', data.bookmarks);
+
+          // 各質問IDに対応するブックマークIDをオブジェクトとして保存
+          // const bookmarkMap: { [key: string]: any } = {};
+          // data.bookmarks.forEach((bookmark: { question_id: string | number; id: any; }) => {
+          //   bookmarkMap[bookmark.question_id] = bookmark.id;
+          // });
+          // setBookmarkIds(bookmarkMap);
+        } else {
+          // ブックマークがない場合、空配列として設定
+          setBookmarks([]);
+          // setBookmarkIds({});
+        }
+      } catch (error) {
+        console.error('ブックマークの取得に失敗しました:', error);
+        setError('ブックマークの取得に失敗しました');
+      }finally {
+        setLoading(false);
+        setShowNotification(true);
+      }
     };
+
+    useEffect(() => {
+        fetchBookmark();
+
+    }, [userId, questionId, id]);
+
+
+    const toggleBookmark = async () => {
+      const questionId = id;
+      setLoading(true);
+
+      if (!loading && !userId) {
+        setError('ログインしてください。');
+        setShowNotification(true);
+        return false;
+      }
+
+      console.log('toggleBookmark');
+      console.log('userId:', userId);
+      console.log('questionId:', questionId);
+
+      if (bookmarkId) {
+
+        await fetch(`/api/bookmarks/${bookmarkId}`, {
+          method: 'PATCH',
+        });
+      } else {
+
+        const response = await fetch('/api/bookmarks', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ user_id: userId, question_id: questionId }),
+        });
+
+        const data = await response.json();
+
+        console.log('APIレスポンスのデータ:', data);
+        // if (response.ok && data && data.data) {
+        //   setBookmarkId(data.data.id);
+        //   setIsBookmarked(!isBookmarked);
+        // }
+        if (data.success) {
+          // 最新のブックマーク状態を取得して更新
+          fetchBookmark();
+        }
+      }
+      setLoading(false);};
+
+
+  const fetchViewCount = async () => {
+    try {
+      const response = await fetch(`/api/${type}/${id}/increment-view`);
+
+      const data = await response.json();
+      if (response.ok) {
+        setViewCounter(data.data.view_count);
+        console.log('閲覧数を取得しました:', viewCounter);
+      } else {
+        console.error('閲覧数の取得に失敗しました');
+      }
+    } catch (error) {
+      console.error('閲覧数の取得中にエラーが発生しました:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchViewCount();
+  }, [viewCount]);
+
+
+  const incrementViewCount = async () => {
+    try {
+      const response = await fetch(`/api/${type}/${id}/increment-view`, {
+        method: 'POST',
+      });
+      if (response.ok) {
+        setViewCounter(viewCounter + 1);
+      } else {
+        console.error('閲覧数の増加に失敗しました');
+      }
+    } catch (error) {
+      console.error('閲覧数の増加中にエラーが発生しました:', error);
+    }
+  };
+
+
+  const toggleExpand = () => {
+    console.log('ここは奇数回と偶数回の両方が通ります');
+    if (!isExpanded ) {
+      incrementViewCount();
+      console.log('閲覧数を増加させました');
+      console.log('viewCounter ここは奇数回のみ通ります:', viewCounter);
+    }
+
+    setIsExpanded(!isExpanded);
+  }
+
 
   const handleDeleteClick = () => {
     setIsConfirmingDelete(true);
@@ -128,6 +285,7 @@ export default function Card({
     }
   }, [categoryId, category]);
 
+
   return (
     <>
       {showNotification && (error || success) && (
@@ -148,7 +306,7 @@ export default function Card({
               {onRefresh && (
                 <button
                   onClick={onRefresh}
-                  className="text-gray-500 bg-gray-100 p-1 text-md rounded hover:text-gray-900"
+                  className="text-gray-500 bg-gray-100 p-1 text-sm rounded hover:text-gray-900"
                   title="最新の情報を取得"
                 >
                   <FontAwesomeIcon icon={faSync} />
@@ -196,6 +354,17 @@ export default function Card({
               )}
             </div>
 
+            {type === 'questions' && (
+              <button onClick={toggleBookmark} className="absolute top-4 left-4">
+
+                {bookmarks.some(bookmark => bookmark.question_id === id && bookmark.is_bookmark) ? (
+                  <FontAwesomeIcon icon={faBookmark} className="text-blue-300" />
+                ) : (
+                  <p className="transition transform hover:scale-110 duration-300 ease-in-out px-3 py-1 rounded-md text-xs text-semibold">ブックマークに登録</p>
+                )}
+              </button>
+            )}
+
 
             {isConfirmingDelete && (
               <div
@@ -223,7 +392,6 @@ export default function Card({
               </div>
             )}
 
-
             <h3 className="text-lg mt-6 mb-4 font-bold">{title}</h3>
 
               <>
@@ -242,19 +410,27 @@ export default function Card({
                 )}
               </div>
 
-
-
                 {showReadMoreButton && (
                 <button
-                  onClick={toggleExpand}
+                  onClick={() => {
+                    toggleExpand();
+                  }}
                   className="text-gray-500 text-sm mt-2 hover: transition transform hover:scale-110 duration-300 ease-in-out px-3 py-1 rounded-md text-md text-semibold"
                 >
-                    {isExpanded ? '↑ 閉じる' : '… 続きを読む'}
+                    {isExpanded ? '折りたたむ' : '… 続きを読む'}
                 </button>
                 )}
               </>
 
-            {footer && <div className="text-sm text-bold text-blue-900 border-t pt-4">{footer}</div>}
+              {footer && <div className="text-sm text-bold text-blue-900 border-t pt-4">{footer}</div>}
+
+              {showViewCount && (
+                <div className="absolute bottom-4 right-10 flex items-center text-gray-500 text-sm">
+                  <FontAwesomeIcon icon={faEye} className="mr-2" />
+                  <span>ViewCount: {viewCounter}</span>
+                </div>
+              )}
+
           </div>
         </div>
       </div>

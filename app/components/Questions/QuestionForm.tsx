@@ -259,7 +259,7 @@ export default function QuestionForm({ initialTitle: propInitialTitle, initialBo
           tags: initialTags,
           categoryId: selectedCategory,
           userId: userId,
-          is_draft: true,  // is_draft を true に設定
+          is_draft: true,
         }),
       });
 
@@ -294,7 +294,6 @@ export default function QuestionForm({ initialTitle: propInitialTitle, initialBo
 
   const handleSelectDraft = (draft: { title: string; description: string; tags: string[]; category_id: string }) => {
 
-    // setInitialTags([]);  // タグを一度リセット
 
     setSelectedDraft({
       ...draft,

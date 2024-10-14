@@ -29,6 +29,7 @@ interface CommentListProps {
   questionId: string;
   answerId?: string;
   categoryId: string;
+  isResolved?: boolean;
   selectedAnswerId: string | undefined;
   setSelectedAnswerId: React.Dispatch<React.SetStateAction<string | undefined>>;
 }
@@ -306,6 +307,8 @@ export default function CommentList({ questionId, answerId, categoryId, selected
                 comments.map((comment: Comment) => (
                   <Card
                     key={comment.id}
+                    id={comment.id}
+                    type="comments"
                     ownerId={comment.user_id}
                     categoryId={categoryId}
                     onRefresh={fetchComments}
@@ -313,6 +316,7 @@ export default function CommentList({ questionId, answerId, categoryId, selected
                     className="mb-5 w-full"
                     onEdit={() => handleEdit(comment.id, comment.content)}
                     onDelete={() => handleDelete(comment.id)}
+                    isDraft={false}
                   >
                     <div className="text-sm text-blue-900 mb-2">コメントID: {comment.id}</div>
                     {isEditing && editingCommentId === comment.id ? (

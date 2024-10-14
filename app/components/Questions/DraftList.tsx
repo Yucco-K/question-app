@@ -161,6 +161,8 @@ export default function DraftList({ onSelectDraft, categoryId }: DraftListProps)
             <div key={draft.id} className="my-5 mx-auto w-4/5">
               <Card
                 key={draft.id}
+                id={draft.id}
+                type="drafts"
                 title={draft.title}
                 ownerId={draft.user_id}
                 categoryId={draft.category_id}
@@ -169,7 +171,7 @@ export default function DraftList({ onSelectDraft, categoryId }: DraftListProps)
                 onEdit={() => onSelectDraft(draft)}
                 onDelete={() => handleDeleteDraft(draft.id)}
                 isResolved={false}
-              >
+                showViewCount={false} isDraft={false}>
                 <div>
                   <p className="label"></p>
                   <div

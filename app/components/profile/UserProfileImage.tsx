@@ -47,7 +47,7 @@ export default function UserProfileImage({ userId }: UserProfileImageProps) {
           onClose={() => setShowNotification(false)}
         />
       )}
-      <div>
+      <div className="hover:scale-150 transition-transform duration-300 cursor-pointer">
         {profileImage ? (
           <Image
             src={profileImage}

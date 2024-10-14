@@ -45,8 +45,7 @@ export default function CurrentUserProfileImage() {
           onClose={() => setShowNotification(false)}
         />
       )}
-      <div>
-        {/* プロフィール画像を表示 */}
+      <div className="hover:scale-150 transition-transform duration-300 cursor-pointer">
         {profileImage ? (
           <Image
             src={profileImage}

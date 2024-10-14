@@ -32,9 +32,10 @@ interface AnswerListProps {
   categoryId: string;
   answers: Answer[];
   fetchAnswers: () => void;
+  isResolved: boolean;
 }
 
-export default function AnswerList({ questionId, categoryId, answers: initialAnswers }: AnswerListProps){
+export default function AnswerList({ questionId, categoryId, answers: initialAnswers, isResolved }: AnswerListProps){
   const [answers, setAnswers] = useState<Answer[]>(initialAnswers);
   const [answerUsers, setAnswerUsers] = useState<AnswerUser[]>([]);
   const [isLoading, setLoading] = useState(true);
@@ -146,24 +147,19 @@ export default function AnswerList({ questionId, categoryId, answers: initialAns
             return (
               <Card
                 key={answer.id}
+                id={answer.id}
+                type="answers"
                 title=""
                 ownerId={answer.user_id}
                 categoryId={categoryId}
                 onRefresh={fetchAnswers}
                 onEdit={() => handleEditClick(answer.id, answer.content)}
                 onDelete={() => handleDelete(answer.id)}
-                isResolved={false}
+                isResolved={isResolved}
+                isDraft={false}
                 className="mb-5"
               >
-                {/* <div className="mb-4">
-                  <button
-                    onClick={fetchAnswers}
-                    className="text-gray-500 bg-gray-100 p-1 text-md rounded hover:text-gray-900"
-                    title="コメントを再読み込み"
-                  >
-                    <FontAwesomeIcon icon={faSync} className="mr-2" />
-                  </button>
-                </div> */}
+
                 <div className="text-blue-900 text-sm mb-1">
                   回答ID: {answer.id}
                 </div>
@@ -214,13 +210,12 @@ export default function AnswerList({ questionId, categoryId, answers: initialAns
                   />
                 )}
 
-                <div className="absolute bottom-4 right-20 flex items-center justify-end gap-x-20">
+                <div className="absolute bottom-0 right-20 flex items-center justify-end gap-x-20">
                   <Vote
                     answerId={answer.id}
                     userId={userId ?? ''}
                     answerUserId={answer.user_id}
                   />
-
 
                     <div className="mt-6">
                       <CommentList
@@ -229,6 +224,7 @@ export default function AnswerList({ questionId, categoryId, answers: initialAns
                         categoryId={categoryId}
                         selectedAnswerId={selectedAnswerId}
                         setSelectedAnswerId={setSelectedAnswerId}
+                        isResolved={isResolved}
                       />
                   </div>
                 </div>

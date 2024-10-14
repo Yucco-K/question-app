@@ -29,7 +29,6 @@ export default function QuestionList() {
   const [success, setSuccess] = useState<string | null>(null);
   const [showNotification, setShowNotification] = useState(false);
   const { isLoading, setLoading } = useLoading();
-  const [isBottomVisible, setIsBottomVisible] = useState(false);
 
   const fetchQuestions = useCallback(async () => {
     setLoading(true);
@@ -97,22 +96,22 @@ export default function QuestionList() {
             return (
               <Card
                 key={`質問ID:${question.id}`}
+                id={question.id}
+                type="questions"
                 title={question.title}
                 categoryId={question.category_id}
                 onRefresh={fetchQuestions}
                 isResolved={false}
                 showReadMoreButton={false}
-                footer={
-                <a href={`/questions/${question.id}`}
-                  className="transition transform hover:scale-110 duration-300 ease-in-out px-3 py-1 rounded-md text-md text-semibold inline-block"
-                  style={{ willChange: 'transform', transformOrigin: 'center' }}
+                footer={<a href={`/questions/${question.id}`}
+                  className="hoverScale px-3 py-1 rounded-md text-md text-semibold inline-block"
                 >
                   詳細を見る
                 </a>}
                 showMenuButton={false}
-              >
+                isDraft={false}>
               {question.is_resolved && (
-                <div className="absolute top-0 right-4 font-semibold text-pink-500 px-4  transition-transform duration-300 ease-in-out transform hover:scale-105">
+                <div className="absolute top-0 right-4 font-semibold text-pink-500 px-4">
                   <FontAwesomeIcon icon={faAward} className="mr-2 text-3xl text-yellow-300" />解決済み
                 </div>
               )}

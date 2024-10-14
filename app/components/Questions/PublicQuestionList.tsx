@@ -128,29 +128,29 @@ export default function PublicQuestionList() {
               <>
                 <Card
                   key={`質問ID:${question.id}`}
+                  id={question.id}
+                  type="questions"
                   title={question.title}
                   categoryId={question.category_id}
                   onRefresh={fetchQuestions}
                   isResolved={false}
                   showReadMoreButton={false}
-                  footer={
-                    <a
-                      href="#"
-                      className={`${styles.link} transition transform hover:scale-110 duration-300 ease-in-out px-3 py-1 rounded-md text-md text-semibold inline-block`}
-                      onClick={(e) => {
-                        e.preventDefault();
-                        if (isPublicScreen) {
-                          setLoginPromptOpen(true);
-                        } else {
-                          router.push(`/questions/${question.id}`);
-                        }
-                      }}
-                    >
-                      詳細を見る
-                    </a>
-                  }
+                  footer={<a
+                    href="#"
+                    className={`${styles.link} transition transform hover:scale-110 duration-300 ease-in-out px-3 py-1 rounded-md text-md text-semibold inline-block`}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      if (isPublicScreen) {
+                        setLoginPromptOpen(true);
+                      } else {
+                        router.push(`/questions/${question.id}`);
+                      }
+                    } }
+                  >
+                    詳細を見る
+                  </a>}
                   showMenuButton={false}
-                >
+                  isDraft={false}>
 
                 {question.is_resolved && (
                   <div className="absolute top-0 right-4 font-semibold text-pink-500 px-4 transition-transform duration-300 ease-in-out transform hover:scale-105">
