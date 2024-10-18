@@ -26,9 +26,6 @@ export async function GET(req: Request) {
   const answerId = searchParams.get('answerId');
   const userId = searchParams.get('userId');
 
-  console.log('answerId:', answerId);
-  console.log('userId:', userId);
-
   if (!answerId || !userId) {
     return NextResponse.json({ message: 'answerIdとuserIdが必要です' }, { status: 400 });
   }

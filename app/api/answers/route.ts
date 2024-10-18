@@ -26,8 +26,6 @@ export async function POST(request: Request) {
     const body = await request.json();
     const { questionId, content, userId } = body;
 
-    console.log("投稿内容: ", content, "質問ID: ", questionId, "ユーザーID: ", userId);
-
     if (!questionId || !content || !userId) {
       return NextResponse.json({ error: 'Bad Request', message: 'Question ID, content, and user ID are required' }, { status: 400 });
     }
@@ -41,7 +39,7 @@ export async function POST(request: Request) {
     if (error) {
       throw new Error(error.message);
     }
-      console.log('data:', data);
+
     return NextResponse.json(data, { status: 201 });
   } catch (err) {
     console.error('エラー:', (err as Error).message);

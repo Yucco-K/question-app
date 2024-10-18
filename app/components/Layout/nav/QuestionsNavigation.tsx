@@ -29,9 +29,9 @@ export default function QuestionDetailNav() {
   };
 
   const handleSearchCategory = () => {
-    // if (userId) {
+
       router.push('/questions/search/category');
-    // }
+
   };
 
   useEffect(() => {
@@ -54,7 +54,7 @@ export default function QuestionDetailNav() {
 
   return (
     <nav
-      className={`fixed top-15 left-0 bg-white text-gray-700 px-4 py-2 shadow-md rounded-md transition-opacity duration-500 ${
+      className={`fixed top-15 left-0 bg-white text-gray-700 px-4 pt-4 pb-2 shadow-md rounded-md transition-opacity duration-500 ${
         isVisible ? 'opacity-100' : 'opacity-0'
       }`}
     >
@@ -75,14 +75,14 @@ export default function QuestionDetailNav() {
 
         <li className="text-gray-500 mx-2">＞</li>
 
-        {/* <li>
+        <li>
           <button
             className="text-blue-800 ml-2 hover:underline"
             onClick={handleAccountManagement}
           >
             マイページ
           </button>
-        </li> */}
+        </li>
 
         <li>
           <button

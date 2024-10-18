@@ -96,7 +96,7 @@ const CategorySearch: React.FC<CategorySearchProps> = ({ categoryId = null }) =>
 
               return (
                 <Card
-                  key={`質問ID:${question.id}`}
+                  key={question.id}
                   id={question.id}
                   type="questions"
                   title={question.title}

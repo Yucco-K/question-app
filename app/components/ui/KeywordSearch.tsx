@@ -15,14 +15,14 @@ const KeywordSearch: React.FC<KeywordSearchProps> = ({ data = [],  onSearchResul
         .toLowerCase()
         .trim()
         .split(/\s+/)
-        .map((word) => word.normalize('NFKC')); // 正規化して検索単語を整える
+        .map((word) => word.normalize('NFKC'));
 
         const filteredData = data.filter((item) => {
         const normalizedTitle = (item.title ?? "").normalize('NFKC').toLowerCase();
         const normalizedDescription = (item.description ?? "").normalize('NFKC').toLowerCase();
-        const normalizedId = (item.id ?? "").normalize('NFKC').toLowerCase();  // 質問IDを検索対象に含める
-        const normalizedUsername = (item.username ?? "").normalize('NFKC').toLowerCase(); // ユーザー名を検索対象に含める
-        const normalizedCategory = (item.category ?? "").normalize('NFKC').toLowerCase(); // カテゴリも検索対象に含める
+        const normalizedId = (item.id ?? "").normalize('NFKC').toLowerCase();
+        const normalizedUsername = (item.username ?? "").normalize('NFKC').toLowerCase();
+        const normalizedCategory = (item.category ?? "").normalize('NFKC').toLowerCase();
         const dateFormatted = new Date(item.created_at).toLocaleDateString('ja-JP', {
           year: 'numeric',
           month: 'long',
@@ -36,10 +36,10 @@ const KeywordSearch: React.FC<KeywordSearchProps> = ({ data = [],  onSearchResul
           return (
             regex.test(normalizedTitle) ||
             regex.test(normalizedDescription) ||
-            regex.test(normalizedId) ||  // 質問IDでの検索をサポート
-            regex.test(normalizedUsername) || // ユーザー名での検索をサポート
-            regex.test(normalizedCategory) || // カテゴリでの検索をサポート
-            regex.test(dateFormatted) // 作成日時での検索をサポート
+            regex.test(normalizedId) ||
+            regex.test(normalizedUsername) ||
+            regex.test(normalizedCategory) ||
+            regex.test(dateFormatted)
           );
         });
       });

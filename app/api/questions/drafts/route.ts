@@ -49,8 +49,6 @@ export async function GET(request: Request) {
       .filter((qt: any) => qt?.question_id === question.id)
       .map((qt: any) => qt?.Tag?.name || 'Unknown');
 
-  console.log('tagsForDraft:', tagsForDraft);
-
   return {
     ...question,
     tags: tagsForDraft,
@@ -72,7 +70,6 @@ export async function POST(request: Request) {
 
   try {
     let uploadedFiles = files || [];
-
 
     const { data: draftData, error: draftError } = await supabase
       .from('Question')

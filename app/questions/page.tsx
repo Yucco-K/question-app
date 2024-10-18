@@ -10,6 +10,7 @@ import useAuth from '../lib/useAuth';
 import '../globals.css';
 import Notification from '../components/ui/Notification';
 import TagSearch from '../components/ui/TagSearch';
+import { useUser } from '../context/UserContext';
 
 
 export default function QuestionsPage() {
@@ -20,7 +21,8 @@ export default function QuestionsPage() {
   const { session, loading, setSession } = useAuth(true) as { session: any; loading: boolean; setSession: (session: any) => void };
   const router = useRouter();
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
-
+  const isPublicScreen = false;
+  const { userId } = useUser();
 
   useEffect(() => {
     if (!loading && !session) {

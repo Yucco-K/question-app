@@ -54,7 +54,6 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
         }
 
         const data = await response.json();
-        console.log('フロントエンドで取得したデータ:', data);
 
         setUserId(data.userId);
         setUsername(data.username);

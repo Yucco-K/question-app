@@ -120,9 +120,7 @@ export default function AnswerForm({
         setInitialBody(result.content);
         setLoading(false);
         await fetchAnswers();
-        console.log(isEditing ? '回答が更新されました:' : '回答が保存されました:', result);
         setSuccess(isEditing ? '回答が更新されました' : '回答が保存されました');
-        // setAnswerModalOpen(false);
 
         setTimeout(() =>
           window.location.reload()

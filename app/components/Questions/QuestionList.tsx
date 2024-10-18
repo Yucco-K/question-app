@@ -12,7 +12,7 @@ import UserNameDisplay from '../profile/UserNameDisplay';
 import Pagination from '../ui/Pagination';
 import KeywordSearch from '../ui/KeywordSearch';
 import { useAuth } from '@/app/context/AuthContext';
-
+import { useUser } from '@/app/context/UserContext';
 
 
 interface Question {
@@ -40,6 +40,7 @@ export default function QuestionList({ selectedTags, setSelectedTags }: Question
   const [showNotification, setShowNotification] = useState(false);
   const { isLoading, setLoading } = useLoading();
   const { session } = useAuth(true);
+  const { userId } = useUser();
   const isPublic = false;
   const [filteredQuestions, setFilteredQuestions] = useState<Question[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -58,7 +59,6 @@ export default function QuestionList({ selectedTags, setSelectedTags }: Question
     try {
       const response = await fetch('/api/questions');
       const data = await response.json();
-      console.log('questions:',data);
 
       if (response.ok) {
         setQuestions(data);
@@ -141,7 +141,7 @@ export default function QuestionList({ selectedTags, setSelectedTags }: Question
 
             return (
               <Card
-                key={`質問ID:${question.id}`}
+                key={question.id}
                 id={question.id}
                 type="questions"
                 title={question.title}

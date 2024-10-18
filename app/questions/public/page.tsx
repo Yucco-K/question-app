@@ -1,4 +1,3 @@
-// QuestionsPage.tsx
 'use client';
 
 import { useRouter } from 'next/navigation';
@@ -30,7 +29,6 @@ export default function PublicQuestionsPage() {
   useEffect(() => {
     if (!loading && session) {
       setLocalSession(session);
-      console.log('AuthContextから取得したsession:', session);
 
       router.push('/questions');
     }
@@ -47,8 +45,8 @@ export default function PublicQuestionsPage() {
   };
 
 
-    const handleSearchCategory = () => {
-      router.push('/questions/search/category');
+  const handleSearchCategory = () => {
+    router.push('/questions/search/category');
   };
 
   const handleSortQuestions = () => {

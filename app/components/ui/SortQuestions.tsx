@@ -78,7 +78,7 @@ useEffect(() => {
         <h1 className="text-2xl font-bold mt-8 mb-4">質問のソート</h1>
 
         <div className="mb-4">
-          <label htmlFor="sort" className="block font-bold text-sm mb-2">ソート順を選択</label>
+          <label htmlFor="sort" className="block font-bold text-md my-4">ソート順を選択</label>
           <select
             id="sort"
             className="block w-full border rounded-md p-2"

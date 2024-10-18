@@ -38,7 +38,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       const pathname = window.location.pathname;
 
       if (isExcludedPath(pathname)) {
-        console.log(`認証不要のページです: ${pathname}`);
         setLoading(false);
         return;
       }
@@ -53,7 +52,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         if (response.ok) {
           const data = await response.json();
           setSession(data);
-          console.log('data:', data);
         } else {
           router.push('/users/login');
         }
@@ -70,7 +68,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     if (!loading && session) {
-      console.log('session:', session);
     }
   }, [session, loading]);
 

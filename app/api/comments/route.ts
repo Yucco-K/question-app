@@ -43,7 +43,7 @@ export async function POST(request: Request) {
   const { data, error } = await supabase
     .from('Comment')
     .insert([{ question_id, content, answer_id, user_id}])
-    .select('id')  // 'id' カラムを取得
+    .select('id')
     .single();
 
   if (error) {

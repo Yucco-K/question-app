@@ -99,33 +99,17 @@ export default function Card({
       return false;
     }
 
-    // if (!userId) {
-    //   setError('ログインしてください。');
-    //   setShowNotification(true);
-    //   setLoading(false);  // ローディングを停止
-    //   return false;
-    // }
-
     try {
 
       const response = await fetch(`/api/bookmarks?question_id=${questionId}&user_id=${userId}`);
       const data = await response.json();
 
       if (data.success && data.bookmarks.length > 0) {
-        // ブックマークを配列として状態に保存
-        setBookmarks(data.bookmarks);
-        console.log('ブックマークを取得しました:', data.bookmarks);
 
-        // 各質問IDに対応するブックマークIDをオブジェクトとして保存
-        // const bookmarkMap: { [key: string]: any } = {};
-        // data.bookmarks.forEach((bookmark: { question_id: string | number; id: any; }) => {
-        //   bookmarkMap[bookmark.question_id] = bookmark.id;
-        // });
-        // setBookmarkIds(bookmarkMap);
+        setBookmarks(data.bookmarks);
+
       } else {
-        // ブックマークがない場合、空配列として設定
         setBookmarks([]);
-        // setBookmarkIds({});
       }
     } catch (error) {
       console.error('ブックマークの取得に失敗しました:', error);
@@ -151,10 +135,6 @@ export default function Card({
     return false;
   }
 
-  // console.log('toggleBookmark');
-  // console.log('userId:', userId);
-  // console.log('questionId:', questionId);
-
   if (bookmarkId) {
 
     await fetch(`/api/bookmarks/${bookmarkId}`, {
@@ -170,13 +150,7 @@ export default function Card({
 
     const data = await response.json();
 
-    // console.log('APIレスポンスのデータ:', data);
-    // if (response.ok && data && data.data) {
-    //   setBookmarkId(data.data.id);
-    //   setIsBookmarked(!isBookmarked);
-    // }
     if (data.success) {
-      // 最新のブックマーク状態を取得して更新
       fetchBookmark();
     }
   }
@@ -185,14 +159,13 @@ export default function Card({
 
   const fetchViewCount = async () => {
     try {
-      const response = await fetch(`/api/${type}/${id}/increment-view`);
+      const endpoint = type === 'bookmarks' ? `/api/questions/${id}/increment-view` : `/api/${type}/${id}/increment-view`;
+      const response = await fetch(endpoint);
 
       const data = await response.json();
-      // console.log('APIレスポンス:', data);
 
       if (response.ok) {
         setViewCounter(data.data.view_count);
-        console.log('閲覧数を取得しました:', viewCounter);
       } else {
         console.error('閲覧数の取得に失敗しました');
       }
@@ -208,7 +181,8 @@ export default function Card({
 
   const incrementViewCount = async () => {
     try {
-      const response = await fetch(`/api/${type}/${id}/increment-view`, {
+      const endpoint = type === 'bookmarks' ? `/api/questions/${id}/increment-view` : `/api/${type}/${id}/increment-view`;
+      const response = await fetch(endpoint, {
         method: 'PATCH',
       });
       if (response.ok) {
@@ -223,7 +197,6 @@ export default function Card({
 
 
   const toggleExpand = () => {
-    console.log('ここは奇数回と偶数回の両方が通ります');
     if (!isExpanded && (type === 'questions' )) {
       incrementViewCount();
     }
@@ -266,7 +239,6 @@ export default function Card({
   useEffect(() => {
 
     if (!categoryId) {
-      console.log('categoryIdが指定されていません');
       return;
     }
 
@@ -279,10 +251,8 @@ export default function Card({
           },
         });
         const data = await response.json();
-        console.log('data:', data);
         if (response.ok) {
           setCategoryName(data.name);
-          console.log('カテゴリ名を取得しました:', data.name);
         } else {
           setCategoryName('カテゴリ不明');
         }

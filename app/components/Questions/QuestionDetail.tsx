@@ -19,9 +19,6 @@ import UserProfileImage from '../profile/UserProfileImage';
 import UserNameDisplay from '../profile/UserNameDisplay';
 import { faAward } from '@fortawesome/free-solid-svg-icons';
 import ConfirmationModal from '../ui/ConfirmationModal';
-import KeywordSearch from '../ui/KeywordSearch';
-import Pagination from '../ui/Pagination';
-import { set } from 'lodash';
 
 
 interface Answer {
@@ -119,7 +116,6 @@ export default function QuestionDetail({ questionId }: { questionId: string }) {
   const fetchQuestionDetail = useCallback(async () => {
 
     const tags = question?.tags?.map(tag => tag.name) || [];
-    console.log('Question ID:', questionId);
 
     setLoading(true);
     try {
@@ -225,8 +221,6 @@ export default function QuestionDetail({ questionId }: { questionId: string }) {
       if (selectedTags.length === 0) {
         setError('タグを1つ以上選び直してください');
         setShowNotification(true);
-        console.log('tags:', tags);
-        console.log('selected tags:', selectedTags);
         return;
       }
 
@@ -344,7 +338,6 @@ export default function QuestionDetail({ questionId }: { questionId: string }) {
   }, []);
 
   useEffect(() => {
-    console.log('Selected Tags updated:', selectedTags);
   }, [selectedTags]);
 
 
@@ -391,7 +384,8 @@ export default function QuestionDetail({ questionId }: { questionId: string }) {
                 setNewTitle(title);
                 setNewDescription(body);
                 console.log('Title:', title, 'Body:', body);} }
-              onCancel={handleCancel} />
+                onCancel={handleCancel}
+              />
 
             <div className="mx-auto w-4/5">
               <TagInput

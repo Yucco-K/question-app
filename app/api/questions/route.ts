@@ -3,11 +3,6 @@ import supabase from '../../lib/supabaseClient';
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
-  // const page = parseInt(searchParams.get('page') || '1', 10);
-  // const limit = parseInt(searchParams.get('limit') || '10', 10);
-
-  // const start = (page - 1) * limit;
-  // const end = start + limit - 1;
 
   const { data: questions, error: questionError } = await supabase
     .from('Question')
@@ -17,7 +12,6 @@ export async function GET(request: Request) {
     `)
     .order('created_at', { ascending: false })
     .eq('is_draft', false)
-    // .range(start, end);
 
   if (questionError || !questions) {
     return NextResponse.json({ error: 'Server Error', message: questionError?.message || 'Questions not found' }, { status: 500 });
@@ -42,7 +36,6 @@ export async function GET(request: Request) {
       .filter((qt: any) => qt?.question_id === question.id)
       .map((qt: any) => qt?.Tag?.name || 'Unknown');
 
-  console.log('tagsForQuestion:', tagsForQuestion);
 
   return {
     ...question,

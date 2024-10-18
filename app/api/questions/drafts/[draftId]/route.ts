@@ -38,7 +38,6 @@ export async function PUT(request: Request, { params }: { params: { draftId: str
 
 export async function DELETE(request: Request, { params }: { params: { draftId: string } }) {
   const { draftId } = params;
-  console.log('Received DELETE request for draftId:', draftId);
 
   const { error } = await supabase
     .from('Question')

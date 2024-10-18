@@ -90,13 +90,11 @@ export default function LoginForm() {
       } else {
 
         const result = await response.json();
-        console.log('ログイン結果:', result);
 
         const session = result.session;
 
         setSession(session);
 
-        console.log('Redirecting to home...');
         setSuccess('ログインに成功しました');
         setShowNotification(true);
 

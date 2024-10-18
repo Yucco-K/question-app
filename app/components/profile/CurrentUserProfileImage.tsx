@@ -1,4 +1,3 @@
-// app/components/profile/CurrentUserProfileImage.tsx
 
 'use client';
 

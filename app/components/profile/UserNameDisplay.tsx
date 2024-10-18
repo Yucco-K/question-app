@@ -4,9 +4,7 @@ import React, { useEffect, useState } from 'react';
 import Notification from '../ui/Notification';
 
 interface UserNameDisplayProps {
-
   userId: string;
-
 }
 
 const UserNameDisplay: React.FC<UserNameDisplayProps> = ({ userId }) => {

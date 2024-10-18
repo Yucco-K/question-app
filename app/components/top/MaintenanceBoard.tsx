@@ -8,9 +8,9 @@ export default function MaintenanceBoard() {
   const { isLoading, setLoading } = useLoading();
 
   useEffect(() => {
-    // APIまたは状態によってメンテナンス情報を取得
+
     const fetchMaintenanceInfo = async () => {
-      // 仮のメンテナンス情報
+
       const message = '現在、システムメンテナンス中です。終了予定時刻は16:00です。';
       setMaintenanceMessage(message);
     };

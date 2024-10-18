@@ -7,9 +7,6 @@ export async function GET(request: NextRequest) {
   const userId = searchParams.get('user_id');
   const questionId = searchParams.get('question_id');
 
-  console.log('bookmark userId:', userId);
-  console.log('bookmark questionId:', questionId);
-
   try {
 
     const { data: bookmarks, error } = await supabase
@@ -23,7 +20,6 @@ export async function GET(request: NextRequest) {
       throw new Error(`ブックマーク一覧の取得に失敗しました: ${error.message}`);
     }
 
-    console.log('bookmarks:', bookmarks);
     return NextResponse.json({ success: true, bookmarks }, { status: 200 });
   } catch (error: any) {
 
@@ -35,9 +31,6 @@ export async function GET(request: NextRequest) {
 export async function POST(req: NextRequest) {
   try {
     const { user_id, question_id } = await req.json();
-
-    console.log('user_id:', user_id);
-    console.log('question_id:', question_id);
 
     const { data: existingBookmark, error: selectError } = await supabase
       .from('Bookmark')

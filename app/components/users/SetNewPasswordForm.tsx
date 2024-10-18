@@ -4,7 +4,6 @@ import { useState, useEffect } from 'react';
 import supabase from '../../lib/supabaseClient';
 import { User } from '@supabase/supabase-js';
 import { useRouter } from 'next/navigation';
-// import AuthLayout from '../Layout/AuthLayout';
 import UsersLayout from '../../components/layout/main/UsersLayout';
 import Notification from '../ui/Notification';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -26,18 +25,14 @@ export default function SetNewPasswordForm() {
 
   useEffect(() => {
     const currentUrl = window.location.href;
-    console.log('Current URL:', currentUrl);
 
     const hash = window.location.hash.split("#")[1];
 
-    console.log('Current hash:', hash);
 
     const params = new URLSearchParams(hash);
     const accessToken = params.get('access_token');
     const refreshToken = params.get('refresh_token');
 
-    console.log('Access Token:', accessToken);
-    console.log('Refresh Token:', refreshToken);
 
     if (accessToken && refreshToken) {
       supabase.auth.setSession({ access_token: accessToken, refresh_token: refreshToken })

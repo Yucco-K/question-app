@@ -16,19 +16,17 @@ const Button: React.FC<ButtonProps> = ({ children, className }) => {
   );
 };
 
-// ButtonGroup のプロパティとして pattern と buttons を定義
 interface ButtonGroupProps {
   pattern: number;
   buttons: { label: string; className: string; onClick: () => void }[];
-  buttonsPerRow: number[]; // 各行のボタン数を配列で指定
+  buttonsPerRow: number[];
 }
 
 const ButtonGroup: React.FC<ButtonGroupProps> = ({ pattern, buttons, buttonsPerRow }) => {
-  // 行ごとのボタン数を基にクラスを割り当てる
-  const getButtonWidthClass = (index: number, rowIndex: number) => {
-    const buttonCountInRow = buttonsPerRow[rowIndex]; // 各行のボタン数を取得
 
-    // ボタン数に基づいた幅クラスを設定
+  const getButtonWidthClass = (index: number, rowIndex: number) => {
+    const buttonCountInRow = buttonsPerRow[rowIndex];
+
     switch (buttonCountInRow) {
       case 1:
         return 'md:w-full';
@@ -39,16 +37,15 @@ const ButtonGroup: React.FC<ButtonGroupProps> = ({ pattern, buttons, buttonsPerR
       case 4:
         return 'md:w-1/4';
       default:
-        return 'md:w-full'; // デフォルト
+        return 'md:w-full';
     }
   };
 
-  // ボタンを行ごとに分割して表示
   const renderButtons = () => {
     let buttonIndex = 0;
 
     return buttonsPerRow.map((buttonCount, rowIndex) => {
-      const rowButtons = buttons.slice(buttonIndex, buttonIndex + buttonCount); // 各行のボタンを取得
+      const rowButtons = buttons.slice(buttonIndex, buttonIndex + buttonCount);
       buttonIndex += buttonCount;
 
       return (

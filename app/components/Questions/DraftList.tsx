@@ -53,11 +53,12 @@ export default function DraftList({ onSelectDraft, categoryId }: DraftListProps)
       return;
     }
 
-    setError(null);
-    setSuccess(null);
-    setLoading(true);
+
 
     try {
+      setError(null);
+      setSuccess(null);
+      setLoading(true);
 
       const url = `/api/questions/drafts?userId=${userId}`;
 
@@ -135,10 +136,6 @@ export default function DraftList({ onSelectDraft, categoryId }: DraftListProps)
     }
   };
 
-  useEffect(() => {
-    console.log('DraftList:', draftList);
-    console.log('DraftList.category_id:', draftList.map(draft => { console.log(draft.category); }));
-  }, [draftList]);
 
   return (
     <>

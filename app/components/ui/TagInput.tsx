@@ -19,10 +19,6 @@ export default function TagInput({
   const [tags, setTags] = useState(initialTags || []);
 
 
-  // useEffect(() => {
-  //   setSelectedTags(initialTags || []);
-  // }, [initialTags]);
-
   useEffect(() => {
     if (isDraft) {
       setSelectedTags(initialTags || []); // 下書きの場合は selectedTags を初期化

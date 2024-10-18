@@ -123,7 +123,6 @@ export default function SignupForm() {
       });
 
       const result = await response.json();
-      console.log("Server response:", result);
 
       if (response.ok) {
         setSuccess('アカウントを作成しました。認証メールをご確認ください。');
@@ -159,7 +158,7 @@ export default function SignupForm() {
   };
 
     const handleResendClick = async () => {
-    if (attemptCount < 9) {
+    if (attemptCount < 7) {
       setIsResendDisabled(true);
       setTimeout(() => {
         setIsResendDisabled(false);

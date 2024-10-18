@@ -1,10 +1,9 @@
-// ui/Avatar.tsx
 'use client';
 
 import Image from 'next/image';
 
 interface AvatarProps {
-  url: string;  // アバターのURLが設定されている場合
+  url: string;
 }
 
 export default function Avatar({ url }: AvatarProps) {

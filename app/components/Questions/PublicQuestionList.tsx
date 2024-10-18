@@ -1,7 +1,7 @@
 import { MouseEvent as ReactMouseEvent, useCallback, useEffect, useState } from 'react';
 import Card from '../ui/Card';
 import Notification from '../ui/Notification';
-import Modal from '../ui/Modal'; // Add this line to import Modal
+import Modal from '../ui/Modal';
 import DOMPurify from 'dompurify';
 import styles from './QuestionList.module.css';
 import { useLoading } from '../../context/LoadingContext';
@@ -62,7 +62,6 @@ export default function PublicQuestionList({ selectedTags }: PublicQuestionListP
     try {
       const response = await fetch('/api/questions');
       const data = await response.json();
-      console.log('questions:',data);
 
       if (response.ok) {
         setQuestions(data);
@@ -168,7 +167,7 @@ export default function PublicQuestionList({ selectedTags }: PublicQuestionListP
             return (
               <>
                 <Card
-                  key={`質問ID:${question.id}`}
+                  key={question.id}
                   id={question.id}
                   type="questions"
                   title={question.title}

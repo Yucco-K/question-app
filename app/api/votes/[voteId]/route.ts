@@ -53,9 +53,6 @@ export async function PATCH(request: Request, { params }: { params: { voteId: st
   const { voteId } = params;
   const body = await request.json();
 
-  console.log('PATCH /api/votes/[voteId]', body);
-
-
   const { data, error } = await supabase
     .from('Vote')
     .update(body)

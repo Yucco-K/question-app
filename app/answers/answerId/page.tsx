@@ -59,7 +59,7 @@ export default function AnswerDetail() {
 
       setNewAnswer('');
       setModalOpen(false);
-      // 再度データをフェッチするなどして表示を更新する
+
     } catch (err) {
       setError((err as Error).message);
     }
@@ -100,7 +100,7 @@ export default function AnswerDetail() {
           </Modal>
 
           <ButtonGroup
-            pattern={1} // 使用するボタンの配置パターン
+            pattern={1}
             buttons={[
               {
                 label: '投稿',
@@ -108,7 +108,7 @@ export default function AnswerDetail() {
                 onClick: handleNewAnswerSubmit,
               },
             ]}
-            buttonsPerRow={[1]} // 各行のボタン数を配列で指定
+            buttonsPerRow={[1]}
           />
         </>
       ) : (

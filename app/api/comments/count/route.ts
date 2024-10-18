@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server';
 import supabase from '@/app/lib/supabaseClient';
 
-// コメント数をカウントするAPI
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
   const answerId = searchParams.get('answerId');

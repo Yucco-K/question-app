@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import FilteredQuestions from '../../components/ui/FilteredQuestions';
 import Pagination from '@/app/components/ui/Pagination';
+import ScrollToBottomButton from '@/app/components/ui/ScrollToBottomButton';
 
 export default function FilteredQuestionsPage() {
   const [filter, setFilter] = useState<string>('all');
@@ -71,6 +72,7 @@ export default function FilteredQuestionsPage() {
       </div>
 
       <FilteredQuestions questions={paginatedQuestions} isLoading={isLoading} error={error} />
+      <ScrollToBottomButton />
 
       <Pagination
         currentPage={currentPage}

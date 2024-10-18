@@ -11,8 +11,8 @@ import UserNameDisplay from '@/app/components/profile/UserNameDisplay';
 import DOMPurify from 'dompurify';
 import { useParams } from 'next/navigation';
 import { useRouter } from 'next/navigation';
-import { useLoading } from '@/app/context/LoadingContext';
 import Pagination from '@/app/components/ui/Pagination';
+import ScrollToBottomButton from '@/app/components/ui/ScrollToBottomButton';
 
 
 interface UserData {
@@ -61,10 +61,9 @@ export default function MyPage() {
     tags: any;
     user_id: string;
     created_at: any; question_id: string
-}[]>([]);
+  }[]>([]);
 
   const [userData, setUserData] = useState<UserData | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [profileImage, setProfileImage] = useState('');
   const [showNotification, setShowNotification] = useState(false);
@@ -87,41 +86,41 @@ export default function MyPage() {
 
 
   const [questionCurrentPage, setQuestionCurrentPage] = useState(1);
-const [questionTotalPages, setQuestionTotalPages] = useState(1);
-const questionsPerPage = 2;
+  const [questionTotalPages, setQuestionTotalPages] = useState(1);
+  const questionsPerPage = 2;
 
-const [bookmarkCurrentPage, setBookmarkCurrentPage] = useState(1);
-const [bookmarkTotalPages, setBookmarkTotalPages] = useState(1);
-const bookmarksPerPage = 2;
-
-
-const paginatedQuestions = questions.slice(
-  (questionCurrentPage - 1) * questionsPerPage,
-  questionCurrentPage * questionsPerPage
-);
-
-const paginatedBookmarks = bookmarks.slice(
-  (bookmarkCurrentPage - 1) * bookmarksPerPage,
-  bookmarkCurrentPage * bookmarksPerPage
-);
+  const [bookmarkCurrentPage, setBookmarkCurrentPage] = useState(1);
+  const [bookmarkTotalPages, setBookmarkTotalPages] = useState(1);
+  const bookmarksPerPage = 2;
 
 
-useEffect(() => {
-  setQuestionTotalPages(Math.ceil(questions.length / questionsPerPage));
-}, [questions]);
+  const paginatedQuestions = questions.slice(
+    (questionCurrentPage - 1) * questionsPerPage,
+    questionCurrentPage * questionsPerPage
+  );
 
-useEffect(() => {
-  setBookmarkTotalPages(Math.ceil(bookmarks.length / bookmarksPerPage));
-}, [bookmarks]);
+  const paginatedBookmarks = bookmarks.slice(
+    (bookmarkCurrentPage - 1) * bookmarksPerPage,
+    bookmarkCurrentPage * bookmarksPerPage
+  );
 
 
-const handleQuestionPageChange = (page: number) => {
-  setQuestionCurrentPage(page);
-};
+  useEffect(() => {
+    setQuestionTotalPages(Math.ceil(questions.length / questionsPerPage));
+  }, [questions]);
 
-const handleBookmarkPageChange = (page: number) => {
-  setBookmarkCurrentPage(page);
-};
+  useEffect(() => {
+    setBookmarkTotalPages(Math.ceil(bookmarks.length / bookmarksPerPage));
+  }, [bookmarks]);
+
+
+  const handleQuestionPageChange = (page: number) => {
+    setQuestionCurrentPage(page);
+  };
+
+  const handleBookmarkPageChange = (page: number) => {
+    setBookmarkCurrentPage(page);
+  };
 
 
   const fetchUserData = async () => {
@@ -153,13 +152,6 @@ const handleBookmarkPageChange = (page: number) => {
     }
   };
 
-  useEffect(() => {
-    fetchUserStatistics();
-    fetchUserData();
-    fetchPostHistory();
-    fetchBookmarks();
-  }, [userId]);
-
 
   const fetchPostHistory = async () => {
     try {
@@ -175,7 +167,6 @@ const handleBookmarkPageChange = (page: number) => {
     try {
       const response = await fetch(`/api/users/${userId}/bookmarks`);
       const data = await response.json();
-      console.log('bookmarks data', data);
       setBookmarks(Array.isArray(data.bookmarks) ? data.bookmarks : []);
     } catch (error) {
       console.error('ブックマークの取得に失敗しました:', error);
@@ -200,11 +191,6 @@ const handleBookmarkPageChange = (page: number) => {
   };
 
 
-  useEffect(() => {
-    console.log('Selected Tags updated:', selectedTags);
-  }, [selectedTags]);
-
-
   return (
 
     <div className="container mx-auto p-6">
@@ -216,7 +202,7 @@ const handleBookmarkPageChange = (page: number) => {
         />
       )}
 
-      <section className="mb-8">
+      <section className="my-8">
         <div className="p-8 bg-white rounded-md shadow-md w-full lg:w-2/3 mx-auto">
           <div className="flex justify-between mb-4">
             <p className="text-xl font-bold text-gray-500">プロフィール</p>
@@ -276,80 +262,46 @@ const handleBookmarkPageChange = (page: number) => {
 
 
       <section className="mb-8">
-  <div
-    className="cursor-pointer w-full lg:w-2/3 mx-auto bg-blue-900 text-white rounded-t-lg p-4 flex justify-between items-center"
-    onClick={togglePostHistory}
-  ><p className="text-md font-semibold">投稿履歴</p>
-  <FontAwesomeIcon
-    icon={isPostHistoryOpen ? faChevronUp : faChevronDown}
-    className="text-lg"
-  />
-  </div>
+        <div
+          className="cursor-pointer w-full lg:w-2/3 mx-auto bg-blue-900 text-white rounded-t-lg p-4 flex justify-between items-center"
+          onClick={togglePostHistory}
+        ><p className="text-md font-semibold">投稿履歴</p>
+        <FontAwesomeIcon
+          icon={isPostHistoryOpen ? faChevronUp : faChevronDown}
+          className="text-lg"
+        />
+        </div>
 
-  {isPostHistoryOpen && (
-    <div className="space-y-8 w-full lg:w-2/3 mx-auto">
-      {paginatedQuestions.length > 0 ? (
-        <>
-          <div className="flex justify-center">
-            <h3 className="text-xl text-center my-4 font-bold text-gray-500">質問</h3>
-            <p className="ml-2 font-bold text-gray-500 my-4">( 全 {questions.length} 件 )</p>
-          </div>
-          {paginatedQuestions.map((question) => {
-            const sanitizedDescription = DOMPurify.sanitize(question.description);
+      {isPostHistoryOpen && (
+        <div className="space-y-8 w-full lg:w-2/3 mx-auto">
+          {paginatedQuestions.length > 0 ? (
+            <>
+              <div className="flex justify-center">
+                <h3 className="text-xl text-center my-4 font-bold text-gray-500">質問</h3>
+                <p className="ml-2 font-bold text-gray-500 my-4">( 全 {questions.length} 件 )</p>
+              </div>
+              {paginatedQuestions.map((question) => {
+                const sanitizedDescription = DOMPurify.sanitize(question.description);
 
-            return (
-              <Card
-                key={`質問ID:${question.id}`}
-                id={question.id}
-                type="questions"
-                title={question.title}
-                categoryId={question.category_id}
-                onRefresh={fetchPostHistory}
-                isResolved={question.is_resolved}
-                showReadMoreButton={false}
-                footer={<a href={`/questions/${question.id}`} className="hoverScale px-3 py-1 rounded-md text-md text-semibold inline-block">詳細を見る</a>}
-                showMenuButton={false}
-                isDraft={question.is_draft}
-              >
-                <div className="text-blue-900 text-sm mb-4">
-                  質問ID: {question.id}
-                </div>
-                <div className="text-blue-900 text-sm mb-4">
-                  投稿日時: {question.created_at ? new Date(question.created_at).toLocaleString('ja-JP', {
-                    year: 'numeric',
-                    month: '2-digit',
-                    day: '2-digit',
-                    hour: '2-digit',
-                    minute: '2-digit',
-                    second: '2-digit'
-                  }) : '作成日登録なし'}
-                </div>
-                {question.is_resolved && (
-                  <div className="absolute top-0 right-4 font-semibold text-pink-500 px-4">
-                    <FontAwesomeIcon icon={faAward} className="mr-2 text-3xl text-yellow-300" />解決済み
-                  </div>
-                )}
-
-                <div className='my-10'>
-                  <div
-                    className={styles.questionBody}
-                    dangerouslySetInnerHTML={{ __html: sanitizedDescription }}
-                  />
-                </div>
-                <div className="flex flex-wrap mt-4">
-                  {question.tags?.map((tag, index) => (
-                    <span key={index} className="bg-blue-500 text-white text-sm py-1 px-4 rounded-full mr-2 mb-2">
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-
-                <div className="flex items-center mt-4">
-                  <UserProfileImage userId={question.user_id} />
-                  <div className="ml-4">
-                    <UserNameDisplay userId={question.user_id} />
-                    <div className="text-left text-sm mt-2">
-                      {question.created_at ? new Date(question.created_at).toLocaleString('ja-JP', {
+                return (
+                  <Card
+                    key={question.id}
+                    id={question.id}
+                    type="questions"
+                    title={question.title}
+                    categoryId={question.category_id}
+                    onRefresh={fetchPostHistory}
+                    isResolved={question.is_resolved}
+                    showReadMoreButton={false}
+                    footer={<a href={`/questions/${question.id}`} className="hoverScale px-3 py-1 rounded-md text-md text-semibold inline-block">詳細を見る</a>}
+                    showMenuButton={false}
+                    isDraft={question.is_draft}
+                  >
+                    <div className="text-blue-900 text-sm mb-4">
+                      質問ID: {question.id}
+                    </div>
+                    <div className="text-blue-900 text-sm mb-4">
+                      投稿日時: {question.created_at ? new Date(question.created_at).toLocaleString('ja-JP', {
                         year: 'numeric',
                         month: '2-digit',
                         day: '2-digit',
@@ -358,23 +310,58 @@ const handleBookmarkPageChange = (page: number) => {
                         second: '2-digit'
                       }) : '作成日登録なし'}
                     </div>
-                  </div>
-                </div>
-              </Card>
-            );
-          })}
-        </>
-        ) : (
-        <p className="text-blue-900">質問がありません。</p>
+                    {question.is_resolved && (
+                      <div className="absolute top-0 right-4 font-semibold text-pink-500 px-4">
+                        <FontAwesomeIcon icon={faAward} className="mr-2 text-3xl text-yellow-300" />解決済み
+                      </div>
+                    )}
+
+                    <div className='my-10'>
+                      <div
+                        className={styles.questionBody}
+                        dangerouslySetInnerHTML={{ __html: sanitizedDescription }}
+                      />
+                    </div>
+                    <div className="flex flex-wrap mt-4">
+                      {question.tags?.map((tag, index) => (
+                        <span key={index} className="bg-blue-500 text-white text-sm py-1 px-4 rounded-full mr-2 mb-2">
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+
+                    <div className="flex items-center mt-4">
+                      <UserProfileImage userId={question.user_id} />
+                      <div className="ml-4">
+                        <UserNameDisplay userId={question.user_id} />
+                        <div className="text-left text-sm mt-2">
+                          {question.created_at ? new Date(question.created_at).toLocaleString('ja-JP', {
+                            year: 'numeric',
+                            month: '2-digit',
+                            day: '2-digit',
+                            hour: '2-digit',
+                            minute: '2-digit',
+                            second: '2-digit'
+                          }) : '作成日登録なし'}
+                        </div>
+                      </div>
+                    </div>
+                  </Card>
+                );
+              })}
+            </>
+            ) : (
+            <p className="text-blue-900">質問がありません。</p>
+          )}
+          <Pagination
+            currentPage={questionCurrentPage}
+            totalPages={questionTotalPages}
+            onPageChange={handleQuestionPageChange}
+          />
+          <ScrollToBottomButton />
+        </div>
       )}
-      <Pagination
-        currentPage={questionCurrentPage}
-        totalPages={questionTotalPages}
-        onPageChange={handleQuestionPageChange}
-      />
-    </div>
-  )}
-</section>
+    </section>
 
     <section className="mb-8">
       <div
@@ -388,7 +375,7 @@ const handleBookmarkPageChange = (page: number) => {
           />
         </div>
 
-      {isBookmarksOpen && (
+        {isBookmarksOpen && (
         <>
           <p className="text-md font-bold text-gray-500 items-center text-center mt-2 mb-4">
             ( 全 {bookmarks.length} 件 )
@@ -408,7 +395,7 @@ const handleBookmarkPageChange = (page: number) => {
                     isResolved={bookmark.is_resolved}
                     isDraft={bookmark.is_draft}
                     showReadMoreButton={false}
-                    showViewCount={false}
+                    showViewCount={true}
                     footer={
                       <a
                         href={`/questions/${bookmark.id}`}
@@ -476,15 +463,15 @@ const handleBookmarkPageChange = (page: number) => {
             ) : (
               <p className="text-blue-900">ブックマークがありません。</p>
             )}
-          <Pagination
-            currentPage={bookmarkCurrentPage}
-            totalPages={bookmarkTotalPages}
-            onPageChange={handleBookmarkPageChange}
-          />
-          </div>
-        </>
-      )}
-    </section>
+            <Pagination
+              currentPage={bookmarkCurrentPage}
+              totalPages={bookmarkTotalPages}
+              onPageChange={handleBookmarkPageChange}
+            />
+            </div>
+          </>
+        )}
+      </section>
     </div>
   );
 }

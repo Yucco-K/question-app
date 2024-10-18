@@ -34,12 +34,6 @@ const LogoutButton: FC<LogoutButtonProps> = ({ className }) => {
         setShowNotification(true);
       } else {
 
-        // setTimeout(() => {
-        //   router.push('/users/login');
-        // }, 3000);
-        // localStorage.removeItem('sb-access-token');
-        // localStorage.removeItem('sb-refresh-token');
-        // Supabase URLからプロジェクトIDを取得
         const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL ?? '';
         const projectId = new URL(supabaseUrl).hostname.split('.')[0]; // プロジェクトIDを取得
 

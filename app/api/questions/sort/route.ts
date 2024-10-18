@@ -5,7 +5,6 @@ export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const sort = searchParams.get('sort') || 'newest';
 
-  // 質問データの取得
   let query = supabase
     .from('Question')
     .select('*')
@@ -38,7 +37,6 @@ export async function GET(request: Request) {
 
       const bookmarkCount = bookmarkData ? bookmarkData.length : 0;
 
-      // bookmark_count を question に追加
       return {
         ...question,
         bookmark_count: bookmarkCount,

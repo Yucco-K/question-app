@@ -1,5 +1,3 @@
-// Button.tsx
-
 'use client';
 interface CustomButtonProps {
   label: string;

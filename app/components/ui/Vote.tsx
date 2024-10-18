@@ -71,10 +71,6 @@ export default function Vote({ answerId, userId, answerUserId }: VoteProps) {
             setShowNotification(true);
           }
         } else {
-          console.log('existingVoteData:', existingVoteData);
-          console.log('existingVoteData.vote:', existingVoteData.vote);
-          console.log('existingVoteData.vote.id:', existingVoteData.vote.id);
-          console.log('type:', type);
 
           const updateResponse = await fetch(`/api/votes/${existingVoteData.vote.id}`, {
             method: 'PATCH',

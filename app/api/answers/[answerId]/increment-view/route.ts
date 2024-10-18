@@ -53,7 +53,7 @@ export async function GET(reqest: Request, { params }: { params: { answerId: str
   const { answerId } = params;
 
   try {
-    // view_countを取得
+
     const { data: answerData, error } = await supabase
       .from('Answer')
       .select('view_count')
@@ -64,7 +64,6 @@ export async function GET(reqest: Request, { params }: { params: { answerId: str
       throw new Error(`閲覧数の取得に失敗しました: ${error.message}`);
     }
 
-    // 取得したview_countを返す
     return NextResponse.json({ viewCount: answerData.view_count }, { status: 200 });
   } catch (error: any) {
     return NextResponse.json({ message: error.message }, { status: 500 });

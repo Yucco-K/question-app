@@ -73,7 +73,6 @@ export default function AnswerList({ questionId, categoryId, answers: initialAns
 
 
   const handleDelete = async (answerId: string) => {
-    console.log('Deleting answer with ID:', answerId);
 
     if (!userId) {
       setError('ログインしてください。');
@@ -116,7 +115,6 @@ export default function AnswerList({ questionId, categoryId, answers: initialAns
 
 
   const handleEditClick = (answerId: string, content: string) => {
-    console.log('Editing answer with ID:', answerId);
     setEditingAnswerId(answerId);
     setSelectedAnswerContent(content);
     setIsEditing(true);

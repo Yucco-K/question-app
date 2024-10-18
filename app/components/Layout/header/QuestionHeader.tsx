@@ -3,8 +3,8 @@ import useAuth from '../../../lib/useAuth';
 import { useRouter } from 'next/navigation';
 import LogoutButton from '../../users/LogoutButton';
 import { useUser } from '@/app/context/UserContext';
-// import CurrentUserProfileImage from '../../profile/CurrentUserProfileImage';
-// import CurrentUserNameDisplay from '../../profile/CurrentUserNameDisplay';
+import CurrentUserNameDisplay from '../../profile/CurrentUserNameDisplay';
+import CurrentUserProfileImage from '../../profile/CurrentUserProfileImage';
 
 export default function DefaultHeader() {
   const [isDropdownOpen, setDropdownOpen] = useState(false);
@@ -12,28 +12,28 @@ export default function DefaultHeader() {
   const { userId, username } = useUser();
   const { session, loading } = useAuth();
 
-  // const handleProfileClick = () => {
-  //   setDropdownOpen(!isDropdownOpen);
-  // };
+  const handleProfileClick = () => {
+    setDropdownOpen(!isDropdownOpen);
+  };
 
-  // const handleAccountManagement = () => {
-  //   if (userId) {
-  //     router.push(`/users/${userId}`);
-  //   }
-  // };
+  const handleAccountManagement = () => {
+    if (userId) {
+      router.push(`/users/${userId}`);
+    }
+  };
 
-  // const handleClickOutside = (event: MouseEvent) => {
-  //   if (isDropdownOpen && event.target instanceof Element && !event.target.closest('.profile-dropdown')) {
-  //     setDropdownOpen(false);
-  //   }
-  // };
+  const handleClickOutside = (event: MouseEvent) => {
+    if (isDropdownOpen && event.target instanceof Element && !event.target.closest('.profile-dropdown')) {
+      setDropdownOpen(false);
+    }
+  };
 
-  // useEffect(() => {
-  //   document.addEventListener('click', handleClickOutside);
-  //   return () => {
-  //     document.removeEventListener('click', handleClickOutside);
-  //   };
-  // }, [isDropdownOpen]);
+  useEffect(() => {
+    document.addEventListener('click', handleClickOutside);
+    return () => {
+      document.removeEventListener('click', handleClickOutside);
+    };
+  }, [isDropdownOpen]);
 
   const handleLogoClick = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -43,13 +43,13 @@ export default function DefaultHeader() {
 
   return (
     <header className="bg-gray-100 text-white py-1 fixed top-0 left-0 w-full z-50">
-      <div className="container mx-auto py-2 flex justify-between items-center">
+      <div className="container mx-auto flex justify-between items-center">
 
         <div className="logo cursor-pointer" onClick={handleLogoClick}>
           Engineers <span>Q&A</span> Board
         </div>
 
-        {/* <div className="relative">
+        <div className="relative">
           <div onClick={handleProfileClick} className="cursor-pointer">
             <CurrentUserProfileImage />
           </div>
@@ -65,7 +65,7 @@ export default function DefaultHeader() {
                     onClick={handleAccountManagement}
                     className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100"
                   >
-                    プロフィール管理
+                    マイページ
                   </button>
 
                   <LogoutButton />
@@ -80,7 +80,7 @@ export default function DefaultHeader() {
               )}
             </div>
           )}
-        </div> */}
+        </div>
       </div>
 
       <style jsx>{`

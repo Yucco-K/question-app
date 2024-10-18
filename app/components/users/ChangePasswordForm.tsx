@@ -81,15 +81,6 @@ export default function ChangePasswordForm() {
     setIsResendVisible(true);
     }, 10000);
 
-    // const { error } = await supabase.auth.resetPasswordForEmail(email, {
-    //   redirectTo: resetUrl,
-    // });
-
-    // if (error) {
-    //   setError(error.message);
-    //   setShowNotification(true);
-    // } else {
-    //   setSuccess('パスワードリセットリンクを送信しました。受信メールをご確認ください。');
 
     try {
       const response = await fetch('/api/users/change-password', {
@@ -103,7 +94,7 @@ export default function ChangePasswordForm() {
       const result = await response.json();
 
       if (!response.ok) {
-        // throw new Error(result.message);
+
         const errorText = await response.text(); // JSONではないかもしれないので、テキストとして取得
         console.log("Error response:", errorText);
         throw new Error(`サーバーエラー: ${response.status}`);
@@ -134,9 +125,6 @@ export default function ChangePasswordForm() {
       }, 10000);
       setAttemptCount(attemptCount + 1);
 
-      // const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      //   redirectTo: resetUrl,
-      // });
 
       try {
         const response = await fetch('/api/users/change-password', {
@@ -150,7 +138,7 @@ export default function ChangePasswordForm() {
         const result = await response.json();
 
           if (!response.ok) {
-            // throw new Error(result.message);
+
             const errorText = await response.text(); // JSONではないかもしれないので、テキストとして取得
             console.log("Error response:", errorText);
             throw new Error(`サーバーエラー: ${response.status}`);

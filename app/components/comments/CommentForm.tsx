@@ -7,7 +7,6 @@ import { useUser } from '../../context/UserContext';
 import Notification from '../ui/Notification';
 import { useLoading } from '../../context/LoadingContext';
 import ScrollToBottomButton from '../ui/ScrollToBottomButton';
-import { set } from 'lodash';
 
 interface CommentFormProps {
   initialComment?: string;
@@ -71,8 +70,6 @@ export default function CommentForm({ questionId,
     }
   };
 
-
-
   const handleSubmit = async () => {
     setError(null);
     setSuccess(null);
@@ -103,7 +100,6 @@ export default function CommentForm({ questionId,
         });
 
           const data = await response.json();
-          console.log('APIレスポンス:', data);
 
         if (response.ok) {
 
@@ -114,7 +110,6 @@ export default function CommentForm({ questionId,
             setSelectedCommentId(null);
 
             setCommentId(data.id);
-            console.log('投稿されたコメントID:', data.commentId);
 
             fetchComments && fetchComments();
             fetchCommentCount && fetchCommentCount();
@@ -137,17 +132,6 @@ export default function CommentForm({ questionId,
 
     }
   };
-
-    // コメント投稿が成功した際にコメントリストを自動更新
-    // useEffect(() => {
-    //   if ((success || commentId) && fetchComments) {
-    //     fetchComments();
-    //   }
-    // }, [success, commentId]);
-
-  // useEffect(() => {
-  //   fetchComments && fetchCommentsData();
-  // } , [commentId, answerId, selectedCommentId, commentModalOpen, success]);
 
 
   const buttons = [

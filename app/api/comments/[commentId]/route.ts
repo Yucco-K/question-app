@@ -1,13 +1,11 @@
 import { NextResponse } from 'next/server';
-import supabase from '../../../lib/supabaseClient'; // Supabase クライアントをインポート
+import supabase from '../../../lib/supabaseClient';
 
-// コメントを取得・編集・削除するエンドポイント
 export async function GET(req: Request, { params }: { params: { commentId: string } }) {
   const { commentId } = params;
 
-  // コメント取得
   const { data, error } = await supabase
-    .from('Comment')  // テーブル名を変更
+    .from('Comment')
     .select('*')
     .eq('id', commentId)
     .single();
@@ -25,10 +23,7 @@ export async function PUT(req: Request, { params }: { params: { commentId: strin
   const body = await req.json();
   const { newContent } = body;
 
-  console.log('commentId:', commentId);
-  console.log('body:', body);
 
-  // Supabase のストアドプロシージャを呼び出す
   const { data, error } = await supabase.rpc('update_comment_content', {
     p_comment_id: commentId,
     p_content: newContent,

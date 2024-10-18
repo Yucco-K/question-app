@@ -17,7 +17,7 @@ interface FormProps {
   showTitle?: boolean;
   onSubmit?: (title: string, body: string) => void;
   onCancel?: () => void;
-  initialTags?: string; // optional initialTags property
+  initialTags?: string;
   onTagsChange?: (tags: string) => void;
 }
 
@@ -102,21 +102,7 @@ export default function Form({
         setLoading(false);
       }
     }
-      // if (file) {
-      //   setLoading(true);
 
-      //     const publicUrl = await handleFileUpload(file);
-      //     if (publicUrl) {
-      //       if (meta.filetype === 'image') {
-      //         cb(publicUrl, { alt: file.name });
-      //       } else if (meta.filetype === 'media') {
-      //         cb(publicUrl, { title: file.name });
-      //       }else{
-      //         cb(publicUrl, { text: file.name });
-      //     }
-      //   }
-      //   setLoading(false);
-      // }
     };
     input.click();
   };

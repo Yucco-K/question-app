@@ -1,4 +1,3 @@
-// app/api/users/change-password/route.ts
 import { NextResponse } from 'next/server';
 import supabase from '../../../lib/supabaseClient';
 

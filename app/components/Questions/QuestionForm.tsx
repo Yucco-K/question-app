@@ -113,8 +113,6 @@ export default function QuestionForm({ initialTitle: propInitialTitle, initialBo
     }
   }, [initialTitle]);
 
-  console.log('initialTitle:', initialTitle);
-
   const handleBodyChange = useCallback((newBody: string) => {
     if (newBody !== initialBody) {
       setInitialBody(newBody);
@@ -262,7 +260,6 @@ export default function QuestionForm({ initialTitle: propInitialTitle, initialBo
       });
 
       const result = await response.json();
-      console.log('レスポンス内容:', result);
 
       if (!response.ok) {
         setError(result.message || '下書きの保存に失敗しました');
@@ -271,7 +268,6 @@ export default function QuestionForm({ initialTitle: propInitialTitle, initialBo
         return;
       }
 
-      console.log('Fetched Drafts:', result);
       setDrafts(result);
 
       setSuccess('質問の下書きが保存されました！');
@@ -297,7 +293,6 @@ export default function QuestionForm({ initialTitle: propInitialTitle, initialBo
       ...draft,
       category_id: draft.category_id,
     });
-    console.log('Selected draft:', draft);
     setInitialTitle(draft.title);
     setInitialBody(draft.description);
     setInitialTags(draft.tags);

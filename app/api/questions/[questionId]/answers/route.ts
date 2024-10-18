@@ -19,11 +19,11 @@ export async function GET(request: Request, { params }: { params: { questionId: 
     }
 
     const userIds = answerUsersId
-    .filter((answer) => answer.user_id !== null) // user_id が null の場合を除外
+    .filter((answer) => answer.user_id !== null)
     .map((answer) => answer.user_id);
 
     if (answerUsersId.length === 0) {
-      // 回答がない場合のレスポンス
+
       return NextResponse.json({ message: 'No answers found for this question.' }, { status: 200 });
     }
 
@@ -32,7 +32,7 @@ export async function GET(request: Request, { params }: { params: { questionId: 
     const { data: answerUsersData, error: answerUsersDataError } = await supabase
       .from('User')
       .select('id, username')
-      .in('id', userIds);  // 修正: in() で userIds 配列を使用
+      .in('id', userIds);
 
     if (answerUsersDataError || !answerUsersData) {
       return NextResponse.json({ error: 'answerUsersData not found', message: answerUsersDataError?.message || 'No answer_users_data found' }, { status: 404 });
@@ -47,10 +47,9 @@ export async function GET(request: Request, { params }: { params: { questionId: 
       return NextResponse.json({ error: 'Answers not found', message: answerError.message }, { status: 404 });
     }
 
-        // ユーザーが見つからなかった場合でも回答リストは表示されるようにする
   return NextResponse.json({
     answers: answerData,
-    answerUsersData: answerUsersData || [],  // 空配列を返す
+    answerUsersData: answerUsersData || [],
   }, { status: 200 });
 
   }

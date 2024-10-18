@@ -43,7 +43,6 @@ export default function VoteDetail() {
         <>
           <h1>投票タイトル: {vote.title}</h1>
           <p>投票数: {vote.count}</p>
-          {/* 他の投票詳細情報を追加 */}
         </>
       ) : (
         <p>投票が見つかりませんでした。</p>

@@ -1,4 +1,3 @@
-// app/components/profile/CurrentUserNameDisplay.tsx
 
 'use client';
 
