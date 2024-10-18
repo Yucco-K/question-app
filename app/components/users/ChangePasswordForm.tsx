@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import UsersLayout from '../../components/layout/main/UsersLayout';
+import UsersLayout from '../../components/Layout/main/UsersLayout';
 import Notification from '../ui/Notification';
 import { useLoading } from '../../context/LoadingContext';
 

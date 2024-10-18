@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import Notification from '../ui/Notification';
-import UsersLayout from '../../components/layout/main/UsersLayout';
+import UsersLayout from '../../components/Layout/main/UsersLayout';
 import { useLoading } from '../../context/LoadingContext';
 import useAuth from '../../lib/useAuth';
 import { useAuth as useAuthContext } from '../../context/AuthContext';

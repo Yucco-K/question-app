@@ -6,7 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import Notification from '../ui/Notification';
 import zxcvbn from 'zxcvbn';
-import UsersLayout from '../../components/layout/main/UsersLayout';
+import UsersLayout from '../../components/Layout/main/UsersLayout';
 import  supabase from '../../lib/supabaseClient';
 import { useLoading } from '../../context/LoadingContext';
 
