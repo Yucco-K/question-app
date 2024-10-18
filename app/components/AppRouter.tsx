@@ -1,25 +1,25 @@
 'use client';
 
 import { usePathname } from 'next/navigation';
-import DefaultLayout from './layout/main/DefaultLayout';
-import QuestionsLayout from './layout/main/QuestionsLayout';
-import QuestionDetailLayout from './layout/main/QuestionDetailLayout';
+import DefaultLayout from './Layout/main/DefaultLayout';
+import QuestionsLayout from './Layout/main/QuestionsLayout';
+import QuestionDetailLayout from './Layout/main/QuestionDetailLayout';
 
-import UsersHeader from './layout/header/UsersHeader';
-import DefaultHeader from './layout/header/DefaultHeader';
+import UsersHeader from './Layout/header/UsersHeader';
+import DefaultHeader from './Layout/header/DefaultHeader';
 
-import UsersFooter from './layout/footer/UsersFooter';
-import DefaultFooter from './layout/footer/DefaultFooter';
-import QuestionDetailNav from './layout/nav/QuestionDetailNav';
-import UsersNavigation from './layout/nav/UsersNavigation';
-import UserDetailNav from './layout/nav/UserDetailNav';
-import PublicQuestionsHeader from './layout/header/PublicQuestionsHeader';
-import QuestionsNavigation from './layout/nav/QuestionsNavigation';
-import PublicQuestionsNavigation from './layout/nav/PublicQuestionsNavigation';
-import UserDetailLayout from './layout/main/UserDetailLayout';
-import UsersLayout from './layout/main/UsersLayout';
-import UserDetailHeader from './layout/header/UserDetailHeader';
-import QuestionHeader from './layout/header/QuestionHeader';
+import UsersFooter from './Layout/footer/UsersFooter';
+import DefaultFooter from './Layout/footer/DefaultFooter';
+import QuestionDetailNav from './Layout/nav/QuestionDetailNav';
+import UsersNavigation from './Layout/nav/UsersNavigation';
+import UserDetailNav from './Layout/nav/UserDetailNav';
+import PublicQuestionsHeader from './Layout/header/PublicQuestionsHeader';
+import QuestionsNavigation from './Layout/nav/QuestionsNavigation';
+import PublicQuestionsNavigation from './Layout/nav/PublicQuestionsNavigation';
+import UserDetailLayout from './Layout/main/UserDetailLayout';
+import UsersLayout from './Layout/main/UsersLayout';
+import UserDetailHeader from './Layout/header/UserDetailHeader';
+import QuestionHeader from './Layout/header/QuestionHeader';
 
 const AppRouter = ({ children }: { children: React.ReactNode }) => {
   const pathname = usePathname();
