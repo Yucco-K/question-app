@@ -18,7 +18,6 @@ interface CardProps {
   onDelete?: () => void;
   onClick?: () => void;
   showMenuButton?: boolean;
-  isPublicScreen?: boolean;
   onOpenLoginModal?: () => void;
   id?: string;
   ownerId?: string;
@@ -26,10 +25,12 @@ interface CardProps {
   isResolved: boolean;
   isDraft: boolean;
   showReadMoreButton?: boolean;
-  viewCount?: number;
-  type: 'questions' | 'answers' | 'comments' | "drafts";
   showViewCount?: boolean;
+  viewCount?: number;
+  type: 'questions' | 'answers' | 'comments' | "drafts" | "bookmarks";
   questionId?: string;
+  isPublic?: boolean;
+  isPublicScreen?: boolean;
 }
 
 interface Bookmark {
@@ -47,6 +48,7 @@ export default function Card({
   onEdit,
   onDelete,
   showMenuButton = true,
+  showViewCount = true,
   ownerId,
   onRefresh,
   isResolved,
@@ -55,8 +57,8 @@ export default function Card({
   viewCount = 0,
   type,
   id,
-  showViewCount = true,
-  questionId,
+  isPublic,
+  isPublicScreen,
 }: CardProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -69,106 +71,116 @@ export default function Card({
   const [viewCounter, setViewCounter] = useState(viewCount);
   const [bookmarkId, setBookmarkId] = useState(null);
   const [bookmarks, setBookmarks] = useState<Bookmark[]>([]);
+  const { userId } = useUser();
 
   const toggleMenu = () => {
     setIsMenuOpen((prev) => !prev);
   };
 
-  const { userId } = useUser();
+  const fetchBookmark = async () => {
+    setLoading(true);
+    const questionId = id;
 
+    if (isPublic || isPublicScreen) {
+      console.log('公開ページのため、ブックマークの取得をスキップします。');
+      setLoading(false);
+      return;
+    }
 
-    const fetchBookmark = async () => {
-      setLoading(true);
-      const questionId = id;
+    if (!userId) {
+    console.log('ユーザーがログインしていないため、ブックマークの取得をスキップします。');
+    setLoading(false);
+    return;
+  }
 
-      console.log('fetchBookmark');
-      console.log('id:', id);
-      console.log('userId:', userId);
-      console.log('questionId:', questionId);
-      console.log(`/api/bookmarks?question_id=${questionId}&user_id=${userId}`);
+    if (!loading && !userId) {
+      setError('ログインしてください。');
+      setShowNotification(true);
+      return false;
+    }
 
-      if (!loading && !userId) {
-        setError('ログインしてください。');
-        setShowNotification(true);
-        return false;
-      }
+    // if (!userId) {
+    //   setError('ログインしてください。');
+    //   setShowNotification(true);
+    //   setLoading(false);  // ローディングを停止
+    //   return false;
+    // }
 
-      try {
+    try {
 
-        const response = await fetch(`/api/bookmarks?question_id=${questionId}&user_id=${userId}`);
-        const data = await response.json();
+      const response = await fetch(`/api/bookmarks?question_id=${questionId}&user_id=${userId}`);
+      const data = await response.json();
 
-        if (data.success && data.bookmarks.length > 0) {
-          // ブックマークを配列として状態に保存
-          setBookmarks(data.bookmarks);
-          console.log('ブックマークを取得しました:', data.bookmarks);
+      if (data.success && data.bookmarks.length > 0) {
+        // ブックマークを配列として状態に保存
+        setBookmarks(data.bookmarks);
+        console.log('ブックマークを取得しました:', data.bookmarks);
 
-          // 各質問IDに対応するブックマークIDをオブジェクトとして保存
-          // const bookmarkMap: { [key: string]: any } = {};
-          // data.bookmarks.forEach((bookmark: { question_id: string | number; id: any; }) => {
-          //   bookmarkMap[bookmark.question_id] = bookmark.id;
-          // });
-          // setBookmarkIds(bookmarkMap);
-        } else {
-          // ブックマークがない場合、空配列として設定
-          setBookmarks([]);
-          // setBookmarkIds({});
-        }
-      } catch (error) {
-        console.error('ブックマークの取得に失敗しました:', error);
-        setError('ブックマークの取得に失敗しました');
-      }finally {
-        setLoading(false);
-        setShowNotification(true);
-      }
-    };
-
-    useEffect(() => {
-        fetchBookmark();
-
-    }, [userId, questionId, id]);
-
-
-    const toggleBookmark = async () => {
-      const questionId = id;
-      setLoading(true);
-
-      if (!loading && !userId) {
-        setError('ログインしてください。');
-        setShowNotification(true);
-        return false;
-      }
-
-      console.log('toggleBookmark');
-      console.log('userId:', userId);
-      console.log('questionId:', questionId);
-
-      if (bookmarkId) {
-
-        await fetch(`/api/bookmarks/${bookmarkId}`, {
-          method: 'PATCH',
-        });
+        // 各質問IDに対応するブックマークIDをオブジェクトとして保存
+        // const bookmarkMap: { [key: string]: any } = {};
+        // data.bookmarks.forEach((bookmark: { question_id: string | number; id: any; }) => {
+        //   bookmarkMap[bookmark.question_id] = bookmark.id;
+        // });
+        // setBookmarkIds(bookmarkMap);
       } else {
-
-        const response = await fetch('/api/bookmarks', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ user_id: userId, question_id: questionId }),
-        });
-
-        const data = await response.json();
-
-        console.log('APIレスポンスのデータ:', data);
-        // if (response.ok && data && data.data) {
-        //   setBookmarkId(data.data.id);
-        //   setIsBookmarked(!isBookmarked);
-        // }
-        if (data.success) {
-          // 最新のブックマーク状態を取得して更新
-          fetchBookmark();
-        }
+        // ブックマークがない場合、空配列として設定
+        setBookmarks([]);
+        // setBookmarkIds({});
       }
-      setLoading(false);};
+    } catch (error) {
+      console.error('ブックマークの取得に失敗しました:', error);
+      setError('ブックマークの取得に失敗しました');
+    }finally {
+      setLoading(false);
+      setShowNotification(true);
+    }
+  };
+
+  useEffect(() => {
+      fetchBookmark();
+
+  }, [userId, id]);
+
+  const toggleBookmark = async () => {
+    const questionId = id;
+    setLoading(true);
+
+  if (!loading && !userId) {
+    setError('ログインしてください。');
+    setShowNotification(true);
+    return false;
+  }
+
+  // console.log('toggleBookmark');
+  // console.log('userId:', userId);
+  // console.log('questionId:', questionId);
+
+  if (bookmarkId) {
+
+    await fetch(`/api/bookmarks/${bookmarkId}`, {
+      method: 'PATCH',
+    });
+  } else {
+
+    const response = await fetch('/api/bookmarks', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ user_id: userId, question_id: questionId }),
+    });
+
+    const data = await response.json();
+
+    // console.log('APIレスポンスのデータ:', data);
+    // if (response.ok && data && data.data) {
+    //   setBookmarkId(data.data.id);
+    //   setIsBookmarked(!isBookmarked);
+    // }
+    if (data.success) {
+      // 最新のブックマーク状態を取得して更新
+      fetchBookmark();
+    }
+  }
+  setLoading(false);};
 
 
   const fetchViewCount = async () => {
@@ -176,6 +188,8 @@ export default function Card({
       const response = await fetch(`/api/${type}/${id}/increment-view`);
 
       const data = await response.json();
+      // console.log('APIレスポンス:', data);
+
       if (response.ok) {
         setViewCounter(data.data.view_count);
         console.log('閲覧数を取得しました:', viewCounter);
@@ -189,13 +203,13 @@ export default function Card({
 
   useEffect(() => {
     fetchViewCount();
-  }, [viewCount]);
+  }, []);
 
 
   const incrementViewCount = async () => {
     try {
       const response = await fetch(`/api/${type}/${id}/increment-view`, {
-        method: 'POST',
+        method: 'PATCH',
       });
       if (response.ok) {
         setViewCounter(viewCounter + 1);
@@ -210,10 +224,8 @@ export default function Card({
 
   const toggleExpand = () => {
     console.log('ここは奇数回と偶数回の両方が通ります');
-    if (!isExpanded ) {
+    if (!isExpanded && (type === 'questions' )) {
       incrementViewCount();
-      console.log('閲覧数を増加させました');
-      console.log('viewCounter ここは奇数回のみ通ります:', viewCounter);
     }
 
     setIsExpanded(!isExpanded);
@@ -354,7 +366,7 @@ export default function Card({
               )}
             </div>
 
-            {type === 'questions' && (
+            {!isPublic && (type === 'questions' || type === 'bookmarks') && (
               <button onClick={toggleBookmark} className="absolute top-4 left-4">
 
                 {bookmarks.some(bookmark => bookmark.question_id === id && bookmark.is_bookmark) ? (
@@ -368,12 +380,12 @@ export default function Card({
 
             {isConfirmingDelete && (
               <div
-                className="absolute inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center"
+                className="absolute inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center z-50"
                 onClick={handleCancelDelete}
               >
-                <div className="bg-white p-10 rounded shadow-md" onClick={(e) => e.stopPropagation()}>
-                  <p className="text-center mb-6">本当に削除しますか？</p>
-                  <div className="flex justify-center space-x-4">
+                <div className="bg-white p-10 rounded shadow-md z-60" onClick={(e) => e.stopPropagation()}>
+                  <p className="text-center mb-6 z-70">本当に削除しますか？</p>
+                  <div className="flex justify-center space-x-4 z-70">
                     <button
                       className="py-2 px-6 bg-red-500 text-white rounded"
                       onClick={handleDelete}
@@ -387,17 +399,18 @@ export default function Card({
                       キャンセル
                     </button>
                   </div>
-                <p className='text-red-500 text-sm mt-4'>※ この操作は元に戻せません。</p>
+                  <p className='text-red-500 text-sm mt-4'>※ この操作は元に戻せません。</p>
                 </div>
               </div>
             )}
+
 
             <h3 className="text-lg mt-6 mb-4 font-bold">{title}</h3>
 
               <>
               <div className="relative">
                 <div
-                  className={`relative transition-all duration-300 ${
+                  className={`relative transition-all duration-10 ${
                     isExpanded ? 'max-h-full' : 'max-h-[300px]'
                   } overflow-hidden`}
                   style={{ lineHeight: '1.5rem' }}

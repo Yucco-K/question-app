@@ -8,6 +8,7 @@ import Notification from '../ui/Notification';
 import UsersLayout from '../../components/layout/main/UsersLayout';
 import { useLoading } from '../../context/LoadingContext';
 import useAuth from '../../lib/useAuth';
+import { useAuth as useAuthContext } from '../../context/AuthContext';
 
 export default function LoginForm() {
   const [email, setEmail] = useState('');
@@ -19,7 +20,8 @@ export default function LoginForm() {
   const [usernameOrEmail, setUsernameOrEmail] = useState('');
   const router = useRouter();
   const { isLoading, setLoading } = useLoading();
-  const { session, loading } = useAuth('/');
+  const { session, loading } = useAuth();
+  const { setSession } = useAuthContext(true);
 
   if (loading) {
     return <div>ローディング中...</div>;
@@ -38,7 +40,9 @@ export default function LoginForm() {
     }
 
     setError('ユーザー名またはメールアドレスの形式が正しいことを確認してください。');
-    setShowNotification(true);
+    setTimeout(() => {
+      setShowNotification(true);
+    } , 5000);
     return false;
   };
 
@@ -48,7 +52,9 @@ export default function LoginForm() {
 
     if (password.length < 8 || !hasLetter || !hasNumber) {
       setError('パスワードは8文字以上、英字、数字を含みます。');
-      setShowNotification(true);
+      setTimeout(() => {
+        setShowNotification(true);
+      } , 3000);
       return false;
     }
     return true;
@@ -83,12 +89,17 @@ export default function LoginForm() {
       } else {
 
         const result = await response.json();
+        console.log('ログイン結果:', result);
+
+        const session = result.session;
+
+        setSession(session);
 
         console.log('Redirecting to home...');
         setSuccess('ログインに成功しました');
         setShowNotification(true);
 
-        router.push('/');
+        router.push('/questions/public');
       }
     } catch (err) {
 

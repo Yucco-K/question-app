@@ -28,7 +28,6 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
     '/users/login',
     '/users/change-password',
     '/users/set-new-password',
-    '/session/test',
   ];
 
   const isExcludedPath = (path: string) => {

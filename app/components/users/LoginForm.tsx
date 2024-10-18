@@ -21,7 +21,7 @@ export default function LoginForm() {
   const router = useRouter();
   const { isLoading, setLoading } = useLoading();
   const { session, loading } = useAuth();
-  const { setSession } = useAuthContext();
+  const { setSession } = useAuthContext(true);
 
   if (loading) {
     return <div>ローディング中...</div>;
@@ -70,6 +70,7 @@ export default function LoginForm() {
     if (!validateUsernameOrEmail() || !validatePassword()) {
       setError('入力内容に誤りがあります');
       setShowNotification(true);
+      setLoading(false);
       return;
     }
 
@@ -145,7 +146,7 @@ export default function LoginForm() {
               id="usernameOrEmail"
               value={usernameOrEmail}
               onChange={(e) => setUsernameOrEmail(e.target.value)}
-              onBlur={validateUsernameOrEmail}
+              // onBlur={validateUsernameOrEmail}
               autoComplete="usernameOrEmail"
               required
               className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
@@ -159,7 +160,7 @@ export default function LoginForm() {
                 id="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                onBlur={validatePassword}
+                // onBlur={validatePassword}
                 required
                 className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm pr-10"
               />

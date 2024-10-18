@@ -9,7 +9,6 @@ interface LoadingContextType {
   isLoading: boolean;
   setLoading: (loading: boolean) => void;
 }
-
 const LoadingContext = createContext<LoadingContextType | undefined>(undefined);
 
 export const useLoading = () => {

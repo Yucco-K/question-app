@@ -27,7 +27,6 @@ const incrementViewCount = async (questionId: string) => {
       throw new Error(`閲覧数の更新に失敗しました: ${updateError.message}`);
     }
 
-    console.log('閲覧数が更新されました:', data);
     return data;
   } catch (error) {
     console.error(error);
@@ -36,9 +35,8 @@ const incrementViewCount = async (questionId: string) => {
 };
 
 
-export async function POST(request: Request, { params }: { params: { questionId: string } }) {
+export async function PATCH(request: Request, { params }: { params: { questionId: string } }) {
   const { questionId } = params;
-  console.log('questionId:', questionId);
 
   try {
     const result = await incrementViewCount(questionId);
@@ -58,9 +56,6 @@ export async function GET(request: Request, { params }: { params: { questionId: 
       .select('view_count')
       .eq('id', questionId)
       .single();
-
-      console.log('questionData:', questionData);
-      console.log('questionData.view_count:', questionData?.view_count);
 
     if (error) {
       throw new Error(`閲覧数の取得に失敗しました: ${error.message}`);

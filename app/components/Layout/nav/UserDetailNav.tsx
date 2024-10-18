@@ -49,7 +49,7 @@ export default function QuestionDetailNav() {
         isVisible ? 'opacity-100' : 'opacity-0'
       }`}
     >
-      <ul className="flex space-x-6 text-sm items-center mt-4">
+      <ul className="flex space-x-6 text-md items-center mt-4">
         <li>
           <button
             className="text-blue-800 ml-4 hover:underline flex items-center"

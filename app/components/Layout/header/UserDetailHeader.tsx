@@ -1,5 +1,4 @@
 import { useState, useEffect, use} from 'react';
-import ProfileImageDisplay from '../../profile/ProfileImageDisplay';
 import useAuth from '../../../lib/useAuth';
 import { useRouter } from 'next/navigation';
 import LogoutButton from '../../users/LogoutButton';

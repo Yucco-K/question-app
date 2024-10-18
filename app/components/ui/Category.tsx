@@ -20,7 +20,7 @@ interface CategoryProps {
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
-    // APIからカテゴリを取得する関数
+
     async function fetchCategories() {
       const response = await fetch('/api/categories');
       const data = await response.json();
@@ -34,7 +34,7 @@ interface CategoryProps {
     fetchCategories();
   }, []);
 
-  // 初期カテゴリが更新された場合も反映
+
   useEffect(() => {
     if (initialCategoryId) {
       setSelectedCategory(initialCategoryId);
@@ -43,8 +43,8 @@ interface CategoryProps {
 
   const handleCategorySelect = (categoryId: string) => {
     setSelectedCategory(categoryId);
-    onSelect(categoryId); // 親コンポーネントへカテゴリIDを渡す
-    setIsOpen(false); // カテゴリ選択後、ドロップダウンを閉じる
+    onSelect(categoryId);
+    setIsOpen(false);
   };
 
   return (
@@ -56,7 +56,6 @@ interface CategoryProps {
 
       <button
         onClick={() => setIsOpen(!isOpen)}
-        // className="w-full px-4 py-2 text-left bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
         className="w-full border border-gray-300 px-3 py-2 text-md focus:outline-none focus:border-blue-600"
         >
         {selectedCategory

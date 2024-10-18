@@ -157,6 +157,7 @@ export default function AnswerList({ questionId, categoryId, answers: initialAns
                 onDelete={() => handleDelete(answer.id)}
                 isResolved={isResolved}
                 isDraft={false}
+                showViewCount={false}
                 className="mb-5"
               >
 

@@ -31,7 +31,7 @@ export default function UserInfo() {
       )}
       <h1>ユーザー情報</h1>
       <UserIdDisplay />
-      <UserNameDisplay />
+      <UserNameDisplay userId={''} />
       <UserEmailDisplay />
     </div>
   );

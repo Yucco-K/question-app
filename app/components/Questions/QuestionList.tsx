@@ -5,10 +5,15 @@ import DOMPurify from 'dompurify';
 import styles from './QuestionList.module.css';
 import { useLoading } from '../../context/LoadingContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowDown, faAward } from '@fortawesome/free-solid-svg-icons';
+import { faAward } from '@fortawesome/free-solid-svg-icons';
 import ScrollToBottomButton from '../ui/ScrollToBottomButton';
 import UserProfileImage from '../profile/UserProfileImage';
 import UserNameDisplay from '../profile/UserNameDisplay';
+import Pagination from '../ui/Pagination';
+import KeywordSearch from '../ui/KeywordSearch';
+import { useAuth } from '@/app/context/AuthContext';
+
+
 
 interface Question {
   id: string;
@@ -23,12 +28,30 @@ interface Question {
   tags: string[];
 }
 
-export default function QuestionList() {
+interface QuestionListProps {
+  selectedTags: string[];
+  setSelectedTags: (tags: string[]) => void;
+}
+
+export default function QuestionList({ selectedTags, setSelectedTags }: QuestionListProps) {
   const [questions, setQuestions] = useState<Question[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [showNotification, setShowNotification] = useState(false);
   const { isLoading, setLoading } = useLoading();
+  const { session } = useAuth(true);
+  const isPublic = false;
+  const [filteredQuestions, setFilteredQuestions] = useState<Question[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+
+
+  const itemsPerPage = 5;
+
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
 
   const fetchQuestions = useCallback(async () => {
     setLoading(true);
@@ -39,6 +62,8 @@ export default function QuestionList() {
 
       if (response.ok) {
         setQuestions(data);
+        setFilteredQuestions(data);
+        setTotalPages(Math.ceil(data.length / itemsPerPage));
         setError(null);
 
       } else {
@@ -54,13 +79,39 @@ export default function QuestionList() {
     }
   }, [setLoading]);
 
+
   useEffect(() => {
     fetchQuestions();
 
   }, [fetchQuestions]);
 
 
-  return (
+  useEffect(() => {
+    if (selectedTags.length === 0) {
+      setFilteredQuestions(questions);
+    } else {
+      const filtered = questions.filter((question) =>
+        selectedTags.every((tag) => question.tags.includes(tag))
+      );
+      setFilteredQuestions(filtered);
+    }
+  }, [selectedTags, questions]);
+
+  useEffect(() => {
+    setTotalPages(Math.ceil(filteredQuestions.length / itemsPerPage));
+  }, [filteredQuestions.length]);
+
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const paginatedQuestions = filteredQuestions.slice(startIndex, startIndex + itemsPerPage);
+
+    const handleSearchResults = (searchResults: Question[]) => {
+      setFilteredQuestions(searchResults);
+      setCurrentPage(1);
+      setTotalPages(Math.ceil(searchResults.length / itemsPerPage));
+    };
+
+
+    return (
     <>
       {showNotification && (error || success) && (
         <Notification
@@ -73,24 +124,19 @@ export default function QuestionList() {
       <div className={styles.questionBody}>
         <div className='flex justify-between'>
           <h1 className="mx-auto mb-4 flex items-center justify-center text-blue-900">質問一覧</h1>
-          {/* <div className="my-2 top-0">
-          <button
-            onClick={fetchQuestions}
-            className="text-gray-500 bg-gray-100 text-md p-1 rounded hover:text-gray-900"
-            title="質問一覧を再読み込み"
-          >
-            <FontAwesomeIcon icon={faSync} className="mr-2" />
-          </button> */}
-        {/* </div> */}
+
         <ScrollToBottomButton />
       </div>
-      {questions.length === 0 ? (
-        <p className='text-blue-900'>質問がありません。</p>
+
+      <KeywordSearch data={questions} onSearchResults={handleSearchResults} />
+
+        {filteredQuestions.length === 0 ? (
+          <p className="text-blue-900">質問がありません。</p>
+        ) : paginatedQuestions.length === 0 ? (
+          <p className="text-blue-900">このページには質問がありません。</p>
         ) : (
-
-        <div className="space-y-4 text-md">
-          {questions.map((question) => {
-
+          <div className="space-y-4 text-md">
+          {paginatedQuestions.map((question) => {
             const sanitizedDescription = DOMPurify.sanitize(question.description);
 
             return (
@@ -102,6 +148,7 @@ export default function QuestionList() {
                 categoryId={question.category_id}
                 onRefresh={fetchQuestions}
                 isResolved={false}
+                isPublic={false}
                 showReadMoreButton={false}
                 footer={<a href={`/questions/${question.id}`}
                   className="hoverScale px-3 py-1 rounded-md text-md text-semibold inline-block"
@@ -109,7 +156,11 @@ export default function QuestionList() {
                   詳細を見る
                 </a>}
                 showMenuButton={false}
-                isDraft={false}>
+                isDraft={false}
+              >
+              <div className="text-blue-900 text-sm mb-4">
+                質問ID: {question.id}
+              </div>
               {question.is_resolved && (
                 <div className="absolute top-0 right-4 font-semibold text-pink-500 px-4">
                   <FontAwesomeIcon icon={faAward} className="mr-2 text-3xl text-yellow-300" />解決済み
@@ -159,6 +210,13 @@ export default function QuestionList() {
           </div>
         )}
       </div>
+
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={handlePageChange}
+      />
+
     </>
   );
 }

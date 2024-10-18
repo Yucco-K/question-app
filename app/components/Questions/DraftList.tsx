@@ -171,7 +171,9 @@ export default function DraftList({ onSelectDraft, categoryId }: DraftListProps)
                 onEdit={() => onSelectDraft(draft)}
                 onDelete={() => handleDeleteDraft(draft.id)}
                 isResolved={false}
-                showViewCount={false} isDraft={false}>
+                showViewCount={false}
+                isDraft={false}
+              >
                 <div>
                   <p className="label"></p>
                   <div

@@ -28,25 +28,6 @@ export default function QuestionDetailNav() {
     }
   };
 
-  // useEffect(() => {
-  //   let lastScrollTop = 0;
-
-  //   const handleScroll = () => {
-  //     const scrollTop = window.scrollY;
-  //     if (scrollTop > lastScrollTop) {
-  //       setIsVisible(false);
-  //     } else {
-  //       setIsVisible(true);
-  //     }
-  //     lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
-  //   };
-
-  //   window.addEventListener('scroll', handleScroll);
-  //   return () => {
-  //     window.removeEventListener('scroll', handleScroll);
-  //   };
-  // }, []);
-
 
   useEffect(() => {
     const handleScroll = () => {
@@ -72,7 +53,17 @@ export default function QuestionDetailNav() {
         isVisible ? 'opacity-100' : 'opacity-0'
       }`}
     >
-      <ul className="flex space-x-6 text-sm items-center mt-4">
+      <ul className="flex space-x-6 text-md items-center mt-4">
+
+        <li>
+          <button
+            className="text-blue-800 ml-4 hover:underline flex items-center"
+            onClick={handleBack}
+          >
+            <FontAwesomeIcon icon={faArrowLeft} className="mr-2" />
+            戻る
+          </button>
+        </li>
 
         <li>
           <button
@@ -94,7 +85,7 @@ export default function QuestionDetailNav() {
           className="text-blue-800 ml-2 hover:underline"
           onClick={handleAccountManagement}
         >
-          プロフィール
+          マイページ
         </button>
         </li>
 

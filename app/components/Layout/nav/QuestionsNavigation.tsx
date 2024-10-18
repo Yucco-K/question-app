@@ -28,6 +28,12 @@ export default function QuestionDetailNav() {
     }
   };
 
+  const handleSearchCategory = () => {
+    // if (userId) {
+      router.push('/questions/search/category');
+    // }
+  };
+
   useEffect(() => {
     const handleScroll = () => {
       const scrollTop = window.scrollY;
@@ -52,7 +58,7 @@ export default function QuestionDetailNav() {
         isVisible ? 'opacity-100' : 'opacity-0'
       }`}
     >
-      <ul className="flex space-x-6 text-sm items-center mt-2">
+      <ul className="flex space-x-6 text-md items-center mt-2">
         <li>
           <button
             className="text-blue-800 ml-4 hover:underline flex items-center"
@@ -69,12 +75,21 @@ export default function QuestionDetailNav() {
 
         <li className="text-gray-500 mx-2">＞</li>
 
-        <li>
+        {/* <li>
           <button
             className="text-blue-800 ml-2 hover:underline"
             onClick={handleAccountManagement}
           >
-            プロフィール
+            マイページ
+          </button>
+        </li> */}
+
+        <li>
+          <button
+            className="text-blue-800 ml-2 hover:underline"
+            onClick={handleSearchCategory}
+          >
+            カテゴリ検索
           </button>
         </li>
 

@@ -19,6 +19,9 @@ import UserProfileImage from '../profile/UserProfileImage';
 import UserNameDisplay from '../profile/UserNameDisplay';
 import { faAward } from '@fortawesome/free-solid-svg-icons';
 import ConfirmationModal from '../ui/ConfirmationModal';
+import KeywordSearch from '../ui/KeywordSearch';
+import Pagination from '../ui/Pagination';
+import { set } from 'lodash';
 
 
 interface Answer {
@@ -48,7 +51,6 @@ interface Question {
   category_id: string;
   is_resolved: boolean;
   is_draft: boolean;
-  fetchAnswers: () => void;
 }
 
 export default function QuestionDetail({ questionId }: { questionId: string }) {
@@ -69,7 +71,7 @@ export default function QuestionDetail({ questionId }: { questionId: string }) {
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [answers, setAnswers] = useState<Answer[]>([]);
   const [isConfirmingResolved, setIsConfirmingResolved] = useState(false);
-
+  const isPublic = false;
 
   const router = useRouter();
 
@@ -92,11 +94,20 @@ export default function QuestionDetail({ questionId }: { questionId: string }) {
 
   const fetchAnswers = useCallback(async () => {
     try {
+      setError(null);
+      setShowNotification(false);
+      setLoading(true);
+
       const response = await fetch(`/api/questions/${questionId}/answers`);
       const data = await response.json();
+
       setAnswers(data.answers);
+
     } catch (error) {
       console.error('回答の取得に失敗しました', error);
+    } finally {
+      setLoading(false);
+      setShowNotification(true);
     }
   }, [questionId]);
 
@@ -124,20 +135,21 @@ export default function QuestionDetail({ questionId }: { questionId: string }) {
 
       } else {
         setError(data.message || 'データの取得に失敗しました');
-        setShowNotification(true);
       }
+
     } catch (err) {
       setError('データの取得中にエラーが発生しました');
-      setShowNotification(true);
+
     } finally {
       setLoading(false);
+      setShowNotification(true);
     }
+
   }, []);
 
 
   useEffect(() => {
     fetchQuestionDetail();
-    console.log('categoryId:', categoryId);
   }, [fetchQuestionDetail])
 
 
@@ -162,31 +174,32 @@ export default function QuestionDetail({ questionId }: { questionId: string }) {
         setSuccess('解決済み状態が更新されました');
         setIsConfirmingResolved(false);
         fetchQuestionDetail();
+
       } else {
         setError('解決済み状態の更新に失敗しました');
       }
+
     } catch (err) {
       setError('解決済み状態の更新中にエラーが発生しました');
     }finally {
       setLoading(false);
+      setShowNotification(true);
     }
   };
 
 
   const handleUpdate = async () => {
 
-    setLoading(true);
     setError(null);
     setSuccess(null);
     setShowNotification(false);
 
     try {
+      setLoading(true);
 
       if (!userId) {
         setQuestionModalOpen(false);
         setError('ログインしてください。');
-        setShowNotification(true);
-        setLoading(false);
         return;
       }
 
@@ -194,29 +207,26 @@ export default function QuestionDetail({ questionId }: { questionId: string }) {
         setQuestionModalOpen(false);
         setError('この投稿を編集する権限がありません。');
         setShowNotification(true);
-        setLoading(false);
         return;
       }
 
       if (!newTitle) {
         setError('タイトルを入力してください');
         setShowNotification(true);
-        setLoading(false);
         return;
       }
 
       if (!newDescription) {
         setError('本文を入力してください');
         setShowNotification(true);
-        setLoading(false);
         return;
       }
 
       if (selectedTags.length === 0) {
-        setError('タグを1つ以上指定してください');
-
+        setError('タグを1つ以上選び直してください');
         setShowNotification(true);
-        setLoading(false);
+        console.log('tags:', tags);
+        console.log('selected tags:', selectedTags);
         return;
       }
 
@@ -239,26 +249,23 @@ export default function QuestionDetail({ questionId }: { questionId: string }) {
       if (response.ok) {
         setQuestionModalOpen(false);
         setSuccess('質問が更新されました');
-        setShowNotification(true);
         setLoading(false);
         fetchQuestionDetail();
         router.push(`/questions/${questionId}`);
 
       } else {
-        setQuestionModalOpen(false);
         setError(data.message || '更新に失敗しました');
-        setShowNotification(true);
         setLoading(false);
       }
     } catch (err) {
-      setQuestionModalOpen(false);
       setError('更新中にエラーが発生しました');
-      setShowNotification(true);
       setLoading(false);
     }finally {
       setLoading(false);
+      setShowNotification(true);
     }
   };
+
 
   const handleDelete = async () => {
 
@@ -275,31 +282,35 @@ export default function QuestionDetail({ questionId }: { questionId: string }) {
     }
 
     try {
+      setError(null);
+      setSuccess(null);
+      setShowNotification(false);
+      setLoading(true);
+
       const response = await fetch(`/api/questions/${questionId}`, {
         method: 'DELETE',
       });
 
       if (response.ok) {
         setSuccess('質問が削除されました');
-        setShowNotification(true);
         setTimeout(() => {
         router.push('/questions');
       } , 1000);
 
       } else {
         setError('削除に失敗しました');
-        setShowNotification(true);
       }
     } catch (err) {
       setError('削除中にエラーが発生しました');
+    }finally {
+      setLoading(false);
       setShowNotification(true);
-    }
-  };
+    };
+  }
 
   const handleCancel = () => {
     setNewTitle(question?.title || '');
     setNewDescription(question?.description || '');
-
     setSelectedTags(question?.tags.map(tag => tag.name) || []);
     setQuestionModalOpen(false);
   };
@@ -350,18 +361,9 @@ export default function QuestionDetail({ questionId }: { questionId: string }) {
           onClose={() => setShowNotification(false)}
         />
       )}
-      <div className="flex items-center justify-center mt-4">
+      <div className="flex items-center justify-center mt-10">
         <h1 className="mx-auto flex items-center justify-center text-blue-900">質問詳細ページ</h1>
-        {/* <button
-          onClick={fetchQuestionDetail}
-          className="text-gray-500 bg-gray-100 text-md p-1 rounded hover:text-gray-900 ml-4 mr-10"
-          title="質問詳細を再読み込み"
-        >
-          <FontAwesomeIcon icon={faSync} className="m-1" />
-        </button> */}
       </div>
-
-    {/* <ScrollToBottomButton /> */}
 
       <div className="container mx-auto px-4 py-8 w-[1200px] mx-auto">
 
@@ -420,6 +422,7 @@ export default function QuestionDetail({ questionId }: { questionId: string }) {
             onRefresh={fetchQuestionDetail}
             isResolved={question.is_resolved}
             isDraft={question.is_draft}
+            isPublic={false}
             onEdit={() => {
               setQuestionModalOpen(true);
             }}
@@ -513,9 +516,13 @@ export default function QuestionDetail({ questionId }: { questionId: string }) {
               )}
             </div>
 
-            <AnswerList questionId={questionId} answers={answers} categoryId={categoryId} fetchAnswers={function (): void {
-                throw new Error('Function not implemented.');
-              }} isResolved={question.is_resolved}/>
+            <AnswerList
+              questionId={questionId}
+              answers={question.answers}
+              categoryId={categoryId}
+              fetchAnswers={fetchAnswers}
+              isResolved={question.is_resolved}
+            />
           </>
         )}
       </div>

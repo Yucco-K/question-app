@@ -6,19 +6,13 @@ export async function PUT(request: Request, { params }: { params: { userId: stri
   const body = await request.json();
   const { email, username, profileImage } = body;
 
-  console.log('userId:', userId);
-  console.log('body:', body);
-  console.log('email:', email);
-  console.log('username:', username);
-  console.log('profileImage:', profileImage);
 
-    // 1. ユーザーネームの更新がある場合に重複チェック
     if (username) {
       const { data: existingUsername, error: usernameError } = await supabase
         .from('User')
         .select('id')
         .eq('username', username)
-        .neq('id', userId) // 自分以外のユーザーをチェック
+        .neq('id', userId)
         .single();
 
       if (usernameError && usernameError.code !== 'PGRST116') {
@@ -75,20 +69,8 @@ export async function PUT(request: Request, { params }: { params: { userId: stri
         }
       }
     //   // auth.users のメールアドレスを更新
-      // if (email) {
-      //   const { error: authError } = await supabase.auth.updateUser({
-      //     email: email,
-      //   });
-
-      //   if (authError) {
-      //     console.error('auth.usersのメールアドレス更新に失敗:', authError);
-      //     return NextResponse.json({ error: 'auth.usersのメールアドレス更新に失敗しました。', message: authError.message }, { status: 500 });
-      //   }
-      // }
-
 
     if (profileImage) {
-      // プロフィール画像のURLをUserテーブルに保存
       const { data, error } = await supabase
         .from('User')
         .update({ profileImage })
@@ -168,29 +150,6 @@ export async function PUT(request: Request, { params }: { params: { userId: stri
 export async function DELETE(request: Request, { params }: { params: { userId: string } }) {
   const { userId } = params;
 
-  // const { data: user, error: userError } = await supabase
-  //   .from('User')
-  //   .select('profileImage')
-  //   .eq('id', userId)
-  //   .single();
-
-  // if (userError || !user) {
-  //   console.error("ユーザー情報の取得に失敗しました:", userError);
-  //   return NextResponse.json({ error: "ユーザー情報の取得に失敗しました。" }, { status: 500 });
-  // }
-
-  // if (user.profileImage) {
-  //   const imagePath = user.profileImage.split('/').pop();
-
-  //   const { error: storageError } = await supabase.storage
-  //     .from('avatar-files')
-  //     .remove([imagePath]);
-
-  //   if (storageError) {
-  //     console.error("ストレージから画像を削除する際にエラーが発生しました:", storageError);
-  //     return NextResponse.json({ error: "画像の削除に失敗しました。" }, { status: 500 });
-  //   }
-  // }
 
   const { error: authError } = await supabase.auth.admin.deleteUser(userId);
   if (authError) {
@@ -198,15 +157,6 @@ export async function DELETE(request: Request, { params }: { params: { userId: s
     return NextResponse.json({ error: "auth.usersの削除に失敗しました。" }, { status: 500 });
   }
 
-  // const { error: userDeleteError } = await supabase
-  //   .from('User')
-  //   .delete()
-  //   .eq('id', userId);
-
-  // if (userDeleteError) {
-  //   console.error("Userテーブルからユーザーの削除に失敗しました:", userDeleteError);
-  //   return NextResponse.json({ error: "ユーザーの削除に失敗しました。" }, { status: 500 });
-  // }
 
   return NextResponse.json({ message: "アカウントが削除されました。" }, { status: 200 });
 }

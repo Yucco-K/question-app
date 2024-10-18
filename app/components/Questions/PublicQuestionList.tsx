@@ -12,6 +12,8 @@ import { useRouter, usePathname } from 'next/navigation';
 import useAuth from '@/app/lib/useAuth';
 import UserProfileImage from '../profile/UserProfileImage';
 import UserNameDisplay from '../profile/UserNameDisplay';
+import Pagination from '../ui/Pagination';
+import KeywordSearch from '../ui/KeywordSearch';
 
 
 interface Question {
@@ -27,9 +29,15 @@ interface Question {
   tags: string[];
 }
 
-export default function PublicQuestionList() {
+type PublicQuestionListProps = {
+  selectedTags: string[];
+  setSelectedTags: React.Dispatch<React.SetStateAction<string[]>>;
+};
+
+export default function PublicQuestionList({ selectedTags }: PublicQuestionListProps) {
   const [questions, setQuestions] = useState<Question[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const [filteredQuestions, setFilteredQuestions] = useState<Question[]>([]);
   const [success, setSuccess] = useState<string | null>(null);
   const [showNotification, setShowNotification] = useState(false);
   const { setLoading } = useLoading();
@@ -37,7 +45,17 @@ export default function PublicQuestionList() {
   const [isLoginPromptOpen, setLoginPromptOpen] = useState(false);
   const router = useRouter();
   const { session } = useAuth(false);
+  const pathname = usePathname();
+  const isPublic = true;
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
 
+  const itemsPerPage = 5;
+
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
 
   const fetchQuestions = useCallback(async () => {
     setLoading(true);
@@ -48,6 +66,8 @@ export default function PublicQuestionList() {
 
       if (response.ok) {
         setQuestions(data);
+        setFilteredQuestions(data);
+        setTotalPages(Math.ceil(data.length / itemsPerPage));
         setError(null);
 
       } else {
@@ -78,7 +98,6 @@ export default function PublicQuestionList() {
   const handleViewDetails = (e: ReactMouseEvent<HTMLAnchorElement>, question: Question) => {
     e.preventDefault();
 
-    const pathname = usePathname();
     const isPublicScreen = pathname === '/questions/public';
 
     if (isPublicScreen || !session) {
@@ -90,6 +109,29 @@ export default function PublicQuestionList() {
     }
   };
 
+  useEffect(() => {
+    if (selectedTags.length === 0) {
+      setFilteredQuestions(questions);
+    } else {
+      const filtered = questions.filter((question) =>
+        selectedTags.every((tag) => question.tags.includes(tag))
+      );
+      setFilteredQuestions(filtered);
+    }
+  }, [selectedTags, questions]);
+
+  useEffect(() => {
+    setTotalPages(Math.ceil(filteredQuestions.length / itemsPerPage));
+  }, [filteredQuestions.length]);
+
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const paginatedQuestions = filteredQuestions.slice(startIndex, startIndex + itemsPerPage);
+
+    const handleSearchResults = (searchResults: Question[]) => {
+      setFilteredQuestions(searchResults);
+      setCurrentPage(1);
+      setTotalPages(Math.ceil(searchResults.length / itemsPerPage));
+    };
 
   return (
     <>
@@ -103,25 +145,24 @@ export default function PublicQuestionList() {
 
       <div className={styles.questionBody}>
         <div className='flex justify-between'>
+
           <h1 className="mb-1 mx-auto flex items-center justify-center text-blue-900">質問一覧</h1>
-          {/* <div className="my-2 top-0">
-          <button
-            onClick={fetchQuestions}
-            className="text-gray-500 bg-gray-100 text-lg p-1 rounded hover:text-gray-900"
-            title="質問一覧を再読み込み"
-          >
-            <FontAwesomeIcon icon={faSync} className="mr-2" />
-          </button> */}
-        {/* </div> */}
-        <ScrollToBottomButton />
-      </div>
-        {questions.length === 0 ? (
-          <p>質問がありません。</p>
+
+          <ScrollToBottomButton />
+        </div>
+
+          <KeywordSearch data={questions} onSearchResults={handleSearchResults} />
+
+
+      {filteredQuestions.length === 0 ? (
+          <p className="text-blue-900">質問がありません。</p>
+        ) : paginatedQuestions.length === 0 ? (
+          <p className="text-blue-900">このページには質問がありません。</p>
         ) : (
           <div className="space-y-4 text-md">
-            {questions.map((question) => {
-              const sanitizedDescription = DOMPurify.sanitize(question.description);
-              const pathname = usePathname();
+          {paginatedQuestions.map((question) => {
+            const sanitizedDescription = DOMPurify.sanitize(question.description);
+
               const isPublicScreen = pathname === '/questions/public';
 
             return (
@@ -134,6 +175,7 @@ export default function PublicQuestionList() {
                   categoryId={question.category_id}
                   onRefresh={fetchQuestions}
                   isResolved={false}
+                  isPublic={isPublic}
                   showReadMoreButton={false}
                   footer={<a
                     href="#"
@@ -150,8 +192,11 @@ export default function PublicQuestionList() {
                     詳細を見る
                   </a>}
                   showMenuButton={false}
-                  isDraft={false}>
-
+                  isDraft={false}
+                >
+                <div className="text-blue-900 text-sm mb-4">
+                  質問ID: {question.id}
+                </div>
                 {question.is_resolved && (
                   <div className="absolute top-0 right-4 font-semibold text-pink-500 px-4 transition-transform duration-300 ease-in-out transform hover:scale-105">
                     <FontAwesomeIcon icon={faAward} className="mr-2 text-3xl text-yellow-300" />解決済み
@@ -194,7 +239,7 @@ export default function PublicQuestionList() {
                     </div>
                   </div>
 
-                </Card>
+                  </Card>
                   <Modal
                     isOpen={isLoginPromptOpen}
                     onClose={() => setLoginPromptOpen(false)}
@@ -242,6 +287,13 @@ export default function PublicQuestionList() {
           </div>
         )}
       </div>
+
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={handlePageChange}
+      />
+
     </>
   );
 }

@@ -38,7 +38,7 @@ export default function CommentList({ questionId, answerId, categoryId, selected
   const [comments, setComments] = useState<Comment[]>([]);
   const [commentCount, setCommentCount] = useState<number>(0);
   const [commentModalOpen, setCommentModalOpen] = useState(false);
-  const [selectedCommentId, setSelectedCommentId] = useState<string | null>(null);
+  const [, setSelectedCommentId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [showNotification, setShowNotification] = useState(false);
@@ -48,7 +48,7 @@ export default function CommentList({ questionId, answerId, categoryId, selected
   const [editingCommentId, setEditingCommentId] = useState<string | null>(null);
   const [editingContent, setEditingContent] = useState<string>('');
   const [initialBody, setInitialBody] = useState<string>('');
-  const [isBottomVisible, setIsBottomVisible] = useState(true);
+  const [] = useState(true);
   const { userId } = useUser();
 
 
@@ -285,15 +285,6 @@ export default function CommentList({ questionId, answerId, categoryId, selected
                 onClose={() => setShowNotification(false)}
               />
             )}
-
-
-            {/* <button
-              onClick={fetchComments}
-              className="text-gray-500 bg-gray-100 px-4 py-2 rounded hover:text-gray-900 ml-20"
-              title="コメントを再読み込み"
-            >
-              <FontAwesomeIcon icon={faSync} className="mr-4 ml-2 text-blue-900"/>リストを更新
-            </button> */}
           </div>
           <div className='flex flex-col items-center mb-16'>
             <h2 className="text-lg mb-4 text-blue-900">
@@ -317,6 +308,7 @@ export default function CommentList({ questionId, answerId, categoryId, selected
                     onEdit={() => handleEdit(comment.id, comment.content)}
                     onDelete={() => handleDelete(comment.id)}
                     isDraft={false}
+                    showViewCount={false}
                   >
                     <div className="text-sm text-blue-900 mb-2">コメントID: {comment.id}</div>
                     {isEditing && editingCommentId === comment.id ? (

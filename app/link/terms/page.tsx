@@ -47,8 +47,10 @@ export default function TermsPage() {
             （ 利用規約が入ります。）
             </p>
           </section>
-
           </div>
+          <p className="text-center text-gray-600 hover:underline m-8">
+            <a href="/link/contact">お問い合わせページ からご連絡ください。</a>
+          </p>
       </div>
     </div>
   );

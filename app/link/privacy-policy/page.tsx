@@ -54,8 +54,10 @@ export default function PrivacyPolicyPage() {
             （ プライバシーポリシーが入ります。）
             </p>
           </section>
-
-        </div>
+          </div>
+          <p className="text-center text-gray-600 hover:underline m-8">
+            <a href="/link/contact">お問い合わせページ からご連絡ください。</a>
+          </p>
       </div>
     </div>
   );

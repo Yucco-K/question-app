@@ -12,7 +12,7 @@ interface AuthContextProps {
 
 const AuthContext = createContext<AuthContextProps | undefined>(undefined);
 
-export const useAuth = () => {
+export const useAuth = (p0: boolean) => {
   const context = useContext(AuthContext);
   if (!context) {
     throw new Error('useAuthはAuthProvider内でのみ使用できます');

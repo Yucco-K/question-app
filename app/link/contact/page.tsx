@@ -21,8 +21,8 @@ export default function ContactPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 relative top-4">
-      <div className="w-full max-w-lg mx-auto px-6 py-8 bg-white shadow-lg rounded-lg absolute top-6">
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 relative top-6">
+      <div className="w-full max-w-xl mx-auto px-6 py-8 bg-white shadow-lg rounded-lg absolute">
         <h1 className="text-3xl font-bold text-center mb-6">CONTACT</h1>
         <p className="text-center text-gray-600 mb-8">お問い合わせ</p>
 
@@ -81,7 +81,7 @@ export default function ContactPage() {
 
             <button
               type="submit"
-              className="w-full py-3 bg-black text-white rounded-md font-semibold hover:bg-gray-700 transition duration-300"
+              className="w-full py-3 bg-gray-700 text-white rounded-md font-semibold hover:bg-gray-700 transition duration-300"
             >
               送信する
             </button>
@@ -90,7 +90,7 @@ export default function ContactPage() {
 
         <div className="mt-8 text-center">
           <h2 className="text-sm font-semibold">メールアドレス</h2>
-          <p className="text-gray-700">support@engineer-qa-board.com</p>
+          <p className="text-gray-700">support@engineers Q&A board.com</p>
         </div>
 
         <div className="mt-4 text-center">
@@ -100,7 +100,7 @@ export default function ContactPage() {
 
         <div className="mt-4 text-center">
           <h2 className="text-sm font-semibold">住所</h2>
-          <p className="text-gray-700">〒123-4567 東京都新宿区1-2-3</p>
+          <p className="text-gray-700">〒123-4567 東京都△△区1-2-3</p>
         </div>
       </div>
     </div>

@@ -14,9 +14,6 @@ import { useUser } from '../../context/UserContext';
 import { useLoading } from '../../context/LoadingContext';
 import { useRouter } from 'next/navigation';
 import Category from '../ui/Category';
-import ScrollToBottomButton from '../ui/ScrollToBottomButton';
-
-
 
 
 interface QuestionFormProps {
@@ -26,6 +23,7 @@ interface QuestionFormProps {
   onSubmit: (updatedTitle: string, updatedBody: string, updatedTags: string[]) => void;
   onCancel: () => void;
 }
+
 
 export default function QuestionForm({ initialTitle: propInitialTitle, initialBody: propInitialBody, initialTags: propInitialTags }: QuestionFormProps) {
   const { userId } = useUser();
@@ -303,12 +301,7 @@ export default function QuestionForm({ initialTitle: propInitialTitle, initialBo
     setInitialTitle(draft.title);
     setInitialBody(draft.description);
     setInitialTags(draft.tags);
-    console.log('Draft tags:', draft.tags);
     setSelectedCategory(draft.category_id);
-    console.log('draft.category:', draft.category_id);
-    console.log('selectedCategory:', selectedCategory);
-    console.log('initialTags:', initialTags);
-    console.log('draft.tags:', draft.tags);
     setDraftListModalOpen(false);
   };
 
@@ -333,8 +326,6 @@ export default function QuestionForm({ initialTitle: propInitialTitle, initialBo
       setInitialBody(selectedDraft.description);
       setInitialTags(selectedDraft.tags);
       setSelectedCategory(selectedDraft.category_id);
-      console.log('selectedDraft:', selectedDraft);
-      console.log('initialTags:', initialTags);
     }
   }, [selectedDraft]);
 
@@ -365,8 +356,6 @@ export default function QuestionForm({ initialTitle: propInitialTitle, initialBo
     useEffect(() => {
       if (selectedDraft) {
         setInitialTags(selectedDraft.tags);
-        console.log('selectedDraft tags:', selectedDraft.tags);
-        console.log('initialTags before render:', initialTags);
       }
     }, [selectedDraft]);
 
@@ -375,7 +364,6 @@ export default function QuestionForm({ initialTitle: propInitialTitle, initialBo
 
         setTimeout(() => {
           setInitialTags(selectedDraft.tags || []);
-          console.log('initialTags after setting:', selectedDraft.tags);
         }, 0);  // タグのセットを遅延させることで非同期の問題を回避
       }
     }, [selectedDraft]);

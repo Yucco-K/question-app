@@ -5,11 +5,11 @@ import { useRouter } from 'next/navigation';
 import { useAuth as useAuthContext } from '../context/AuthContext';
 
 const useAuth = (requireAuth: boolean = true, redirectUrl?: string) => {
-  const { session, loading } = useAuthContext();
+  const { session, loading } = useAuthContext(requireAuth);
   const router = useRouter();
 
   const excludedPaths = [
-    '/', '/questions', '/users/change-password',
+    '/', '/users/change-password',
     '/users/login', '/users/set-new-password', '/users/signup',
   ];
 

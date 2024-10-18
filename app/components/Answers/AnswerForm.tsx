@@ -6,7 +6,6 @@ import ButtonGroup from '../ui/ButtonGroup';
 import Form from '../ui/Form';
 import { useUser } from '../../context/UserContext';
 import Notification from '../ui/Notification';
-import { useLoading } from '../../context/LoadingContext';
 import useAuth from '../../lib/useAuth';
 import { useRouter } from 'next/navigation';
 import ScrollToBottomButton from '../ui/ScrollToBottomButton';
@@ -60,22 +59,6 @@ export default function AnswerForm({
   }, [isEditing, initialAnswer]);
 
 
-  // const fetchAnswers = useCallback(async () => {
-  //   try {
-  //     const response = await fetch(`/api/questions/${questionId}/answers`);
-  //     if (response.ok) {
-  //       const data = await response.json();
-  //       setAnswers(data);
-  //       console.log('answers:', data);
-  //     } else {
-  //       console.error("Failed to fetch answers");
-  //     }
-  //   } catch (error) {
-  //     console.error("Error fetching answers:", error);
-  //   }
-  // }, [questionId]);
-
-
   const handleBodyChange = useCallback((newBody: string) => {
     if (newBody !== initialBody) {
       setInitialBody(newBody);
@@ -102,23 +85,6 @@ export default function AnswerForm({
       setShowNotification(true);
       return;
     }
-
-    // if (isEditing) {
-    //   const answer = answers.find(a => a.id === answerId);
-    //   if (!answer) {
-    //     console.error("編集対象の回答が見つかりません");
-    //     setError("編集対象の回答が存在しません。");
-    //     setShowNotification(true);
-    //     return;
-    //   }
-
-
-    //   if (isEditing && answer && answer.user_id !== userId) {
-    //     setError('この投稿を編集する権限がありません。');
-    //     setShowNotification(true);
-    //     return;
-    //   }
-    // }
 
     if (!initialBody.trim()) {
       console.error("回答の内容が空です。");
@@ -157,7 +123,6 @@ export default function AnswerForm({
         console.log(isEditing ? '回答が更新されました:' : '回答が保存されました:', result);
         setSuccess(isEditing ? '回答が更新されました' : '回答が保存されました');
         // setAnswerModalOpen(false);
-        setShowNotification(true);
 
         setTimeout(() =>
           window.location.reload()
