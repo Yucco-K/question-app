@@ -13,6 +13,7 @@ import { useParams } from 'next/navigation';
 import { useRouter } from 'next/navigation';
 import Pagination from '@/app/components/ui/Pagination';
 import ScrollToBottomButton from '@/app/components/ui/ScrollToBottomButton';
+import Image from 'next/image';
 
 
 interface UserData {
@@ -222,7 +223,7 @@ export default function MyPage() {
                   プロフィール画像
                 </label>
                 {userData?.profileImage ? (
-                  <img
+                  <Image
                     src={userData.profileImage}
                     alt="Profile"
                     className="w-16 h-16"
