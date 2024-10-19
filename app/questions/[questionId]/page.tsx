@@ -1,6 +1,6 @@
 'use client';
 
-import QuestionDetail from '../../components/questions/QuestionDetail';
+import QuestionDetail from '../../components/Questions/QuestionDetail';
 import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 

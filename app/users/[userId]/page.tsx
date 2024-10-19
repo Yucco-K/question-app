@@ -1,6 +1,6 @@
 'use client';
 
-import styles from '@/app/components/questions/QuestionDetail.module.css';
+import styles from '@/app/components/Questions/QuestionDetail.module.css';
 import { AwaitedReactNode, JSXElementConstructor, Key, ReactElement, ReactNode, ReactPortal, useEffect, useState } from 'react';
 import Card from '../../components/ui/Card';
 import Notification from '../../components/ui/Notification';
@@ -222,12 +222,20 @@ export default function MyPage() {
                 <label className="w-32 font-bold text-blue-900 whitespace-nowrap text-md">
                   プロフィール画像
                 </label>
-                {userData?.profileImage ? (
+                {/* {userData?.profileImage ? ( */}
+                {profileImage ? (
+                  // <Image
+                  //   src={userData.profileImage}
+                  //   alt="Profile"
+                  //   className="w-16 h-16"
+                  // />
                   <Image
-                    src={userData.profileImage}
-                    alt="Profile"
-                    className="w-16 h-16"
-                  />
+                  src={profileImage}
+                  alt="Profile"
+                  width={80}
+                  height={80}
+                  className="w-full h-full rounded-sm"
+                />
                 ) : (
                   <div className="flex items-center justify-center w-16 h-16 border border-gray-300 rounded-sm">
                     <FontAwesomeIcon icon={faUser} className="text-gray-500" size="2x" />

@@ -8,7 +8,7 @@ import '../../globals.css';
 import { Session } from '@supabase/supabase-js';
 import { useLoading } from '../../context/LoadingContext';
 import Notification from '../../components/ui/Notification';
-import PublicQuestionList from '../../components/questions/PublicQuestionList';
+import PublicQuestionList from '../../components/Questions/PublicQuestionList';
 import TagSearch from '@/app/components/ui/TagSearch';
 
 

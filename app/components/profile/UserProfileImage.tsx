@@ -5,7 +5,7 @@ import Image from 'next/image';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser } from '@fortawesome/free-solid-svg-icons';
 import Notification from '../ui/Notification';
-import { set } from 'lodash';
+import { useLoading } from '../../context/LoadingContext';
 
 interface UserProfileImageProps {
   userId: string;
@@ -17,11 +17,22 @@ export default function UserProfileImage({ userId }: UserProfileImageProps) {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [showNotification, setShowNotification] = useState(false);
+  const { isLoading, setLoading } = useLoading();
 
 
   useEffect(() => {
+
+    if (!userId && !isLoading) {
+      setError('ユーザーIDが無効です');
+      setShowNotification(true);
+      return;
+    }
     const fetchUserProfile = async () => {
       try {
+
+        setError(null);
+        setShowNotification(false);
+        setLoading(true);
 
         const response = await fetch(`/api/users/${userId}/profile`);
         const data = await response.json();
@@ -36,6 +47,8 @@ export default function UserProfileImage({ userId }: UserProfileImageProps) {
       } catch (err) {
         setError('ユーザー情報の取得中にエラーが発生しました');
         setShowNotification(true);
+      }finally{
+        setLoading(false);
       }
     };
 

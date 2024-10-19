@@ -1,10 +1,10 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import QuestionForm from '../components/questions/QuestionForm';
+import QuestionForm from '../components/Questions/QuestionForm';
 import { useEffect, useState } from 'react';
 import Modal from '../components/ui/Modal';
-import QuestionList from '../components/questions/QuestionList';
+import QuestionList from '../components/Questions/QuestionList';
 import useAuth from '../lib/useAuth';
 import '../globals.css';
 import Notification from '../components/ui/Notification';

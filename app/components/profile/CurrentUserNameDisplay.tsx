@@ -5,8 +5,9 @@ import { useUser } from '../../context/UserContext';
 import { useState } from 'react';
 import Notification from '../ui/Notification';
 
+
 export default function CurrentUserNameDisplay() {
-  const { username } = useUser() as { username: string };
+  const { userId, username } = useUser() as { userId: string; username: string };
   const displayName = username || 'ゲスト';
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);

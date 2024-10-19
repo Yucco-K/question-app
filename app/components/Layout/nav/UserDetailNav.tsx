@@ -3,12 +3,14 @@
 import { useRouter } from 'next/navigation';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
+import useAuth from '@/app/lib/useAuth';
 import { useUser } from '@/app/context/UserContext';
 import { useEffect, useState } from 'react';
 
 export default function QuestionDetailNav() {
   const [isVisible, setIsVisible] = useState(true);
   const router = useRouter();
+  const { session } = useAuth();
   const { userId } = useUser();
 
   const handleNavigation = (path: string) => {

@@ -1,11 +1,13 @@
 import { useState, useEffect} from 'react';
 import useAuth from '../../../lib/useAuth';
 import { useRouter } from 'next/navigation';
+import { useUser } from '@/app/context/UserContext';
 
 export default function PublicQuestionsHeader() {
   const { session } = useAuth(false);
   const [isDropdownOpen, setDropdownOpen] = useState(false);
   const router = useRouter();
+  const { userId } = useUser();
 
   const handleClickOutside = (event: MouseEvent) => {
     if (isDropdownOpen && event.target instanceof Element && !event.target.closest('.profile-dropdown')) {

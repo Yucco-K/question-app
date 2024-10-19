@@ -2,6 +2,8 @@
 
 import React, { useEffect, useState } from 'react';
 import Notification from '../ui/Notification';
+import { useLoading } from '../../context/LoadingContext';
+import { set } from 'lodash';
 
 interface UserNameDisplayProps {
   userId: string;
@@ -11,10 +13,23 @@ const UserNameDisplay: React.FC<UserNameDisplayProps> = ({ userId }) => {
   const [username, setUsername] = useState<string>('ゲスト');
   const [error, setError] = useState<string | null>(null);
   const [showNotification, setShowNotification] = useState(false);
+  const { isLoading, setLoading } = useLoading();
 
   useEffect(() => {
+
+    if (!userId && !isLoading) {
+      setError('ユーザーIDが無効です');
+      setShowNotification(true);
+      return;
+    }
+
     const fetchUsername = async () => {
       try {
+
+        setError(null);
+        setShowNotification(false);
+        setLoading(true);
+
         const response = await fetch(`/api/users/${userId}/profile`);
         const data = await response.json();
 
@@ -27,6 +42,8 @@ const UserNameDisplay: React.FC<UserNameDisplayProps> = ({ userId }) => {
       } catch (err) {
         setError('ユーザー名の取得中にエラーが発生しました');
         setShowNotification(true);
+      }finally{
+        setLoading(false);
       }
     };
 

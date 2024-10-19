@@ -1,4 +1,3 @@
-// app/users/[userId]/edit/page.tsx
 'use client';
 
 import EditUserProfile from '@/app/components/profile/EditUserProfile';

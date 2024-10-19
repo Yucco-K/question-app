@@ -8,9 +8,10 @@ import { useEffect, useState } from 'react';
 import Notification from '../ui/Notification';
 import { useLoading } from '../../context/LoadingContext';
 import { useUser } from '../../context/UserContext';
+import { set } from 'lodash';
 
 export default function CurrentUserProfileImage() {
-  const { username, profileImage } = useUser();
+  const { userId, username, profileImage } = useUser();
   const displayName = username || 'ゲスト';
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
@@ -29,6 +30,7 @@ export default function CurrentUserProfileImage() {
         setError('ユーザー情報の取得に失敗しました');
       } finally {
         setLoading(false);
+        setShowNotification(true);
       }
     };
 

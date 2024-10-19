@@ -10,7 +10,6 @@ import Card from '../ui/Card';
 import DOMPurify from 'dompurify';
 import UserNameDisplay from '../profile/UserNameDisplay';
 import { useUser } from '@/app/context/UserContext';
-import { set } from 'lodash';
 
 
 interface DraftItem {
