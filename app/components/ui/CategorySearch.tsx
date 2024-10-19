@@ -3,7 +3,7 @@ import Card from '../ui/Card';
 import Notification from '../ui/Notification';
 import DOMPurify from 'dompurify';
 import { useLoading } from '../../context/LoadingContext';
-import styles from '../questions/QuestionList.module.css';
+import styles from '../Questions/QuestionList.module.css';
 import Pagination from './Pagination';
 
 interface Question {
