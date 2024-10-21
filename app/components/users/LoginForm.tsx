@@ -21,7 +21,8 @@ export default function LoginForm() {
   const router = useRouter();
   const { isLoading, setLoading } = useLoading();
   const { session, loading } = useAuth();
-  const { setSession } = useAuthContext(true);
+  const authContext = useAuthContext();
+  const setSession = authContext?.setSession;
 
   if (loading) {
     return <div>ローディング中...</div>;
@@ -93,12 +94,14 @@ export default function LoginForm() {
 
         const session = result.session;
 
-        setSession(session);
+        if (setSession) {
+          setSession(session);
+        }
 
-        setSuccess('ログインに成功しました');
+        setSuccess('ログインしました');
         setShowNotification(true);
 
-        router.push('/questions/public');
+        router.push('/questions');
       }
     } catch (err) {
 

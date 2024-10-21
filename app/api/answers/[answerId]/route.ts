@@ -7,9 +7,6 @@ export async function PUT(request: Request, { params }: { params: { answerId: st
   const body = await request.json();
   const { content } = body;
 
-  console.log('answerId:', answerId);
-  console.log('content:', content);
-
   const { data: existingAnswer, error: fetchError } = await supabase
     .from('Answer')
     .select('*')
@@ -30,14 +27,12 @@ export async function PUT(request: Request, { params }: { params: { answerId: st
     return NextResponse.json({ error: 'Update failed', message: error.message }, { status: 500 });
   }
 
-  console.log('Update successful, affected rows:', data);
   return NextResponse.json({ message: 'Update successful', data }, { status: 200 });
 }
 
 
 export async function DELETE(request: Request, { params }: { params: { answerId: string } }) {
   const { answerId } = params;
-  console.log('answerId:', answerId);
 
   const { data: existingAnswer, error: answerCheckError } = await supabase
   .from('Answer')

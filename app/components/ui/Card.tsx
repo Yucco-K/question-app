@@ -3,8 +3,8 @@
 import { ReactNode, useEffect, useState } from 'react';
 import Notification from './Notification';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEdit, faTrashAlt, faEllipsisV, faSync, faEye, faBookmark } from '@fortawesome/free-solid-svg-icons';
-import { useUser } from '../../context/UserContext';
+import { faEdit, faTrashAlt, faEllipsisV, faSync, faEye, faBookmark, faChevronUp, faChevronDown } from '@fortawesome/free-solid-svg-icons';
+import useAuth from '@/app/lib/useAuth';
 
 interface CardProps {
   title?: string;
@@ -31,6 +31,7 @@ interface CardProps {
   questionId?: string;
   isPublic?: boolean;
   isPublicScreen?: boolean;
+  createdAt?: string;
 }
 
 interface Bookmark {
@@ -59,6 +60,7 @@ export default function Card({
   id,
   isPublic,
   isPublicScreen,
+  createdAt,
 }: CardProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -71,7 +73,17 @@ export default function Card({
   const [viewCounter, setViewCounter] = useState(viewCount);
   const [bookmarkId, setBookmarkId] = useState(null);
   const [bookmarks, setBookmarks] = useState<Bookmark[]>([]);
-  const { userId } = useUser();
+  const { session, loading: userLoading } = useAuth();
+  const userId = (session?.user as { id?: string })?.id ?? null;
+
+
+  const isNewPost = (): boolean => {
+    if (!createdAt) return false;
+    const createdDate = new Date(createdAt);
+    const currentDate = new Date();
+    const oneWeekInMilliseconds = 7 * 24 * 60 * 60 * 1000;
+    return currentDate.getTime() - createdDate.getTime() < oneWeekInMilliseconds;
+  };
 
   const toggleMenu = () => {
     setIsMenuOpen((prev) => !prev);
@@ -159,15 +171,16 @@ export default function Card({
 
   const fetchViewCount = async () => {
     try {
-      const endpoint = type === 'bookmarks' ? `/api/questions/${id}/increment-view` : `/api/${type}/${id}/increment-view`;
-      const response = await fetch(endpoint);
+      if (type !== 'comments' && type !== 'answers' && type !== 'bookmarks') {
+        const endpoint = `/api/questions/${id}/increment-view`;
+        const response = await fetch(endpoint);
 
-      const data = await response.json();
-
-      if (response.ok) {
-        setViewCounter(data.data.view_count);
-      } else {
-        console.error('閲覧数の取得に失敗しました');
+        if (response.ok) {
+          const data = await response.json();
+          setViewCounter(data.data.view_count);
+        } else {
+          console.error('閲覧数の取得に失敗しました');
+        }
       }
     } catch (error) {
       console.error('閲覧数の取得中にエラーが発生しました:', error);
@@ -178,17 +191,21 @@ export default function Card({
     fetchViewCount();
   }, []);
 
-
   const incrementViewCount = async () => {
     try {
-      const endpoint = type === 'bookmarks' ? `/api/questions/${id}/increment-view` : `/api/${type}/${id}/increment-view`;
-      const response = await fetch(endpoint, {
-        method: 'PATCH',
-      });
-      if (response.ok) {
-        setViewCounter(viewCounter + 1);
+      if (type !== 'comments' && type !== 'answers' && type !== 'bookmarks') {
+        const endpoint = `/api/questions/${id}/increment-view`;
+        const response = await fetch(endpoint, {
+          method: 'PATCH',
+        });
+
+        if (response.ok) {
+          setViewCounter(viewCounter + 1);
+        } else {
+          console.error('閲覧数の増加に失敗しました');
+        }
       } else {
-        console.error('閲覧数の増加に失敗しました');
+        console.log('このタイプの投稿では閲覧数を増加しません');
       }
     } catch (error) {
       console.error('閲覧数の増加中にエラーが発生しました:', error);
@@ -278,6 +295,11 @@ export default function Card({
         />
       )}
       <div className="relative border rounded-lg shadow-md overflow-hidden bg-white max-w-[1400px]">
+      {isNewPost() && (
+          <div className="absolute top-0 left-20 bg-yellow-100 text-yellow-500 px-3 py-1 ml-10 rounded-b-md text-sm font-bold mt-4">
+            NEW
+          </div>
+        )}
         <div className="p-10">
           <div className={`card-base-styles ${className}`}>
             <div className="absolute top-4 right-4 flex items-center space-x-10">
@@ -398,9 +420,19 @@ export default function Card({
                   onClick={() => {
                     toggleExpand();
                   }}
-                  className="text-gray-500 text-sm mt-2 hover: transition transform hover:scale-110 duration-300 ease-in-out px-3 py-1 rounded-md text-md text-semibold"
+                  className="text-gray-500 text-md font-bold mt-2 hover: transition transform hover:scale-110 duration-300 ease-in-out px-3 py-1 rounded-md text-md font-bold"
                 >
-                    {isExpanded ? '折りたたむ' : '… 続きを読む'}
+                    {isExpanded ? (
+                      <>
+                        <FontAwesomeIcon icon={faChevronUp} className="mr-2 text-sm text-gray-300" />
+                        <span className="ml-2">折りたたむ</span>
+                      </>
+                    ) : (
+                      <>
+                        <FontAwesomeIcon icon={faChevronDown} className="mr-2 text-sm text-gray-300" />
+                        <span className="ml-2">… 続きを読む</span>
+                      </>
+                    )}
                 </button>
                 )}
               </>

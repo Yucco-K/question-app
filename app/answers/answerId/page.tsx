@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 import Modal from '../../components/ui/Modal';
 import ButtonGroup from '../../components/ui/ButtonGroup';
 import Form from '../../components/ui/Form';
-import { useUser } from '../../context/UserContext';
+import useAuth from '../../lib/useAuth';
 
 export default function AnswerDetail() {
   const pathname = usePathname();
@@ -17,7 +17,8 @@ export default function AnswerDetail() {
   const [newAnswer, setNewAnswer] = useState('');
   const [initialTitle, setInitialTitle] = useState('');
   const [initialBody, setInitialBody] = useState('');
-  const { userId, loading: userLoading, error: userError } = useUser();
+  const { session, loading: userLoading } = useAuth();
+  const userId = (session?.user as { id?: string })?.id ?? null;
 
   useEffect(() => {
     if (answerId) {

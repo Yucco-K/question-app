@@ -2,7 +2,6 @@
 import AppRouter from './components/AppRouter';
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { UserProvider } from './context/UserContext';
 import { Noto_Sans } from "next/font/google";
 import { ModalProvider } from './context/ModalContext';
 import { LoadingProvider } from './context/LoadingContext';
@@ -29,7 +28,6 @@ export default function RootLayout({
       <CustomToastContainer />
 
         <LoadingProvider>
-          <UserProvider>
             <ModalProvider>
               <AuthProvider>
                 <AppRouter>
@@ -37,7 +35,6 @@ export default function RootLayout({
                 </AppRouter>
               </AuthProvider>
             </ModalProvider>
-          </UserProvider>
         </LoadingProvider>
       </body>
     </html>

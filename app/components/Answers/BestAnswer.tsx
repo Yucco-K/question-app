@@ -4,8 +4,8 @@ import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCrown } from '@fortawesome/free-solid-svg-icons';
 import Notification from '../ui/Notification';
-import { useUser } from '@/app/context/UserContext';
 import { useLoading } from '../../context/LoadingContext';
+import useAuth from '@/app/lib/useAuth';
 
 interface BestAnswerProps {
   questionId: string;
@@ -20,7 +20,8 @@ export default function BestAnswer({ questionId, answerId }: BestAnswerProps) {
   const [success, setSuccess] = useState<string | null>(null);
   const [showNotification, setShowNotification] = useState(false);
   const [questionOwnerId, setQuestionOwnerId] = useState<string | null>(null);
-  const { userId } = useUser();
+  const { session, loading: userLoading } = useAuth();
+  const userId = (session?.user as { id?: string })?.id ?? null;
 
 
   const fetchBestAnswer = async () => {

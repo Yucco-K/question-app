@@ -1,9 +1,12 @@
 'use client';
 
-import { useUser } from '../../context/UserContext';
+import useAuth from "@/app/lib/useAuth";
+
 
 export default function UserEmailDisplay() {
-  const { email } = useUser();
+  const { session, loading: userLoading } = useAuth();
+  const userId = (session?.user as { id?: string })?.id ?? null;
+  const email = (session?.user as { email?: string })?.email ?? null;
 
   const displayEmail = email || '未登録';
 

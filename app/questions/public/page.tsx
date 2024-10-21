@@ -20,15 +20,16 @@ export default function PublicQuestionsPage() {
   const [success, setSuccess] = useState<string | null>(null);
   const [localSession, setLocalSession] = useState<Session | null>(null);
   const { isLoading, setLoading } = useLoading();
-  const { session, loading } = useAuth(false);
+  const { session, loading: userLoading } = useAuth(false);
+  const userId = (session?.user as { id?: string })?.id ?? null;
   const router = useRouter();
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const isPublicScreen = true;
 
 
   useEffect(() => {
-    if (!loading && session) {
-      setLocalSession(session);
+    if (!isLoading && session) {
+      // setLocalSession(session);
 
       router.push('/questions');
     }
@@ -110,7 +111,7 @@ export default function PublicQuestionsPage() {
         <p className='flex justify-end text-sm text-semibold mt-3'>※ 投稿またはソート・フィルタリング・カテゴリ検索にはログインが必要です。</p>
       </Modal>
 
-      <div className="flex">
+      <div className="flex container mx-auto w-[1200px]">
         <div className="flex-grow mr-8 w-2/3">
           <PublicQuestionList
             selectedTags={selectedTags}
@@ -131,7 +132,7 @@ export default function PublicQuestionsPage() {
                     handleSortQuestions();
                   }
                 }}
-                className="block w-full border border-gray-300 bg-gray-100 rounded-md p-2 hover: transition transform hover:scale-105 duration-300 ease-in-out"
+                className="block w-full border text-orange-700 border border-orange-500 bg-orange-100 bg-indigo-100 rounded-md p-2 hover: transition transform hover:scale-105 duration-300 ease-in-out"
               >
                 ソート
               </button>
@@ -147,7 +148,7 @@ export default function PublicQuestionsPage() {
                     handleFilteredQuestions();
                   }
                 }}
-                className="block w-full border border-gray-300 bg-gray-100 rounded-md p-2 hover: transition transform hover:scale-105 duration-300 ease-in-out"
+                className="block w-full text-orange-700 border border-orange-500 bg-orange-100 rounded-md p-2 hover: transition transform hover:scale-105 duration-300 ease-in-out"
               >
                 フィルター
               </button>
@@ -163,7 +164,7 @@ export default function PublicQuestionsPage() {
                     handleSearchCategory();
                   }
                 }}
-                className="block w-full border border-gray-300 bg-gray-100 rounded-md p-2 hover: transition transform hover:scale-105 duration-300 ease-in-out"
+                className="block w-full text-orange-700 border border-orange-500 bg-orange-100 rounded-md p-2 hover: transition transform hover:scale-105 duration-300 ease-in-out"
               >
                 カテゴリ検索
               </button>

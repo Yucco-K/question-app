@@ -3,7 +3,6 @@
 import styles from '@/app/components/Questions/QuestionDetail.module.css';
 import { AwaitedReactNode, JSXElementConstructor, Key, ReactElement, ReactNode, ReactPortal, useEffect, useState } from 'react';
 import Card from '../../components/ui/Card';
-import Notification from '../../components/ui/Notification';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faThumbsUp, faUserGraduate, faUser, faCrown, faAward, faChevronUp, faChevronDown } from '@fortawesome/free-solid-svg-icons';
 import UserProfileImage from '@/app/components/profile/UserProfileImage';
@@ -14,6 +13,7 @@ import { useRouter } from 'next/navigation';
 import Pagination from '@/app/components/ui/Pagination';
 import ScrollToBottomButton from '@/app/components/ui/ScrollToBottomButton';
 import Image from 'next/image';
+import { toast } from 'react-toastify';
 
 
 interface UserData {
@@ -61,14 +61,13 @@ export default function MyPage() {
     is_draft: boolean;
     tags: any;
     user_id: string;
-    created_at: any; question_id: string
+    created_at: any;
+    createAt: any;
+    question_id: string
   }[]>([]);
 
   const [userData, setUserData] = useState<UserData | null>(null);
-  const [error, setError] = useState<string | null>(null);
   const [profileImage, setProfileImage] = useState('');
-  const [showNotification, setShowNotification] = useState(false);
-  const [success, setSuccess] = useState<string | null>(null);
   const router = useRouter();
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const { userId } = useParams() as { userId: string };
@@ -126,13 +125,22 @@ export default function MyPage() {
 
   const fetchUserData = async () => {
     try {
+      setLoading(true);
       const response = await fetch(`/api/users/${userId}`);
       if (!response.ok) throw new Error('ユーザー情報の取得に失敗しました');
+        // toast.error('ユーザー情報の取得に失敗しました', {
+        //   position: "top-center",
+        //   autoClose: 2000,
+        // });
       const data = await response.json();
       setUserData(data);
       setProfileImage(data.publicUrl);
     } catch (err) {
-      setError((err as Error).message);
+      console.error((err as Error).message);
+      toast.error('エラーが発生しました', {
+        position: "top-center",
+        autoClose: 2000,
+      });
     } finally {
       setLoading(false);
     }
@@ -150,6 +158,10 @@ export default function MyPage() {
       });
     } catch (error) {
       console.error('統計情報の取得に失敗しました:', error);
+      toast.error('統計情報の取得に失敗しました', {
+        position: "top-center",
+        autoClose: 2000,
+      });
     }
   };
 
@@ -161,6 +173,10 @@ export default function MyPage() {
       setQuestions(data.questions || []);
     } catch (error) {
       console.error('投稿履歴の取得に失敗しました:', error);
+      toast.error('投稿履歴の取得に失敗しました', {
+        position: "top-center",
+        autoClose: 2000,
+      });
     }
   };
 
@@ -171,6 +187,10 @@ export default function MyPage() {
       setBookmarks(Array.isArray(data.bookmarks) ? data.bookmarks : []);
     } catch (error) {
       console.error('ブックマークの取得に失敗しました:', error);
+      toast.error('ブックマークの取得に失敗しました', {
+        position: "top-center",
+        autoClose: 2000,
+      });
     }
   };
 
@@ -180,6 +200,10 @@ export default function MyPage() {
         await Promise.all([fetchUserData(), fetchPostHistory(), fetchBookmarks()]);
       } catch (error) {
         console.error('データの取得に失敗しました:', error);
+        toast.error('データの取得に失敗しました', {
+          position: "top-center",
+          autoClose: 2000,
+        });
       }
     };
 
@@ -195,14 +219,6 @@ export default function MyPage() {
   return (
 
     <div className="container mx-auto p-6">
-      {showNotification && (error || success) && (
-        <Notification
-          message={error ?? success ?? ''}
-          type={error ? 'error' : 'success'}
-          onClose={() => setShowNotification(false)}
-        />
-      )}
-
       <section className="my-8">
         <div className="p-8 bg-white rounded-md shadow-md w-full lg:w-2/3 mx-auto">
           <div className="flex justify-between mb-4">
@@ -222,13 +238,7 @@ export default function MyPage() {
                 <label className="w-32 font-bold text-blue-900 whitespace-nowrap text-md">
                   プロフィール画像
                 </label>
-                {/* {userData?.profileImage ? ( */}
                 {profileImage ? (
-                  // <Image
-                  //   src={userData.profileImage}
-                  //   alt="Profile"
-                  //   className="w-16 h-16"
-                  // />
                   <Image
                   src={profileImage}
                   alt="Profile"
@@ -256,13 +266,13 @@ export default function MyPage() {
 
             <div className="w-1/2 flex flex-col items-end space-y-4">
               <div className="text-blue-900 text-md font-semibold">
-                <FontAwesomeIcon icon={faCrown} className="mr-3 mt-4 text-yellow-300 text-2xl" /> ベストアンサー数: {userStatistics.bestAnswerCount}
+                <FontAwesomeIcon icon={faCrown} className="mr-11 mt-4 text-yellow-300 text-2xl" /><span className='mr-10'> ベストアンサー数: {userStatistics.bestAnswerCount}</span>
               </div>
               <div className="text-blue-900 text-md font-semibold">
-                <FontAwesomeIcon icon={faThumbsUp} className="mr-6 mt-4 text-orange-300 text-2xl" /> いいね獲得数: {userStatistics.totalLikes}
+                <FontAwesomeIcon icon={faThumbsUp} className="mr-14 mt-4 text-orange-300 text-2xl" /><span className='mr-10'> いいね獲得数: {userStatistics.totalLikes}</span>
               </div>
               <div className="text-blue-900 text-md font-semibold">
-                <FontAwesomeIcon icon={faUserGraduate} className="mr-12 mt-4 text-green-500 text-2xl" /> 総回答数: {userStatistics.totalAnswers}
+                <FontAwesomeIcon icon={faUserGraduate} className="mr-20 mt-4 text-indigo-500 text-2xl" /><span className='mr-10'> 総回答数: {userStatistics.totalAnswers}</span>
               </div>
             </div>
           </div>
@@ -272,9 +282,13 @@ export default function MyPage() {
 
       <section className="mb-8">
         <div
-          className="cursor-pointer w-full lg:w-2/3 mx-auto bg-blue-900 text-white rounded-t-lg p-4 flex justify-between items-center"
+          className="cursor-pointer w-full lg:w-2/3 mx-auto  border border-blue-400 bg-blue-100 text-blue-500 rounded-t-lg p-4 flex justify-between items-center"
           onClick={togglePostHistory}
         ><p className="text-md font-semibold">投稿履歴</p>
+        <div className="flex justify-center">
+          <h3 className="text-xl text-center my-4 mr-4 font-bold text-blue-400">質問</h3>
+          <p className="ml-2 font-bold text-blue-400 my-4 mr-8">( 全 {questions.length} 件 )</p>
+        </div>
         <FontAwesomeIcon
           icon={isPostHistoryOpen ? faChevronUp : faChevronDown}
           className="text-lg"
@@ -285,10 +299,6 @@ export default function MyPage() {
         <div className="space-y-8 w-full lg:w-2/3 mx-auto">
           {paginatedQuestions.length > 0 ? (
             <>
-              <div className="flex justify-center">
-                <h3 className="text-xl text-center my-4 font-bold text-gray-500">質問</h3>
-                <p className="ml-2 font-bold text-gray-500 my-4">( 全 {questions.length} 件 )</p>
-              </div>
               {paginatedQuestions.map((question) => {
                 const sanitizedDescription = DOMPurify.sanitize(question.description);
 
@@ -305,6 +315,7 @@ export default function MyPage() {
                     footer={<a href={`/questions/${question.id}`} className="hoverScale px-3 py-1 rounded-md text-md text-semibold inline-block">詳細を見る</a>}
                     showMenuButton={false}
                     isDraft={question.is_draft}
+                    createdAt={question.created_at}
                   >
                     <div className="text-blue-900 text-sm mb-4">
                       質問ID: {question.id}
@@ -320,8 +331,8 @@ export default function MyPage() {
                       }) : '作成日登録なし'}
                     </div>
                     {question.is_resolved && (
-                      <div className="absolute top-0 right-4 font-semibold text-pink-500 px-4">
-                        <FontAwesomeIcon icon={faAward} className="mr-2 text-3xl text-yellow-300" />解決済み
+                      <div className="absolute top-0 right-4 font-semibold text-red-400 px-4">
+                        <FontAwesomeIcon icon={faAward} className="mr-2 text-2xl text-yellow-300" />解決済み
                       </div>
                     )}
 
@@ -374,23 +385,22 @@ export default function MyPage() {
 
     <section className="mb-8">
       <div
-        className="cursor-pointer w-full lg:w-2/3 mx-auto bg-blue-900 text-white rounded-t-lg p-4 flex justify-between items-center"
+        className="cursor-pointer w-full lg:w-2/3 mx-auto border border-blue-400 bg-blue-100 text-white rounded-t-lg p-4 flex justify-between items-center"
         onClick={toggleBookmarks}
       >
-        <p className="text-md font-semibold">ブックマーク</p>
+        <h3 className="text-xl font-bold text-center my-4 mr-8 font-bold text-blue-500">ブックマーク</h3>
+        <p className="ml-2 font-bold text-blue-400 my-4 mr-8">
+          ( 全 {bookmarks.length} 件 )
+        </p>
           <FontAwesomeIcon
             icon={isBookmarksOpen ? faChevronUp : faChevronDown}
-            className="text-lg"
+            className="text-lg text-blue-400"
           />
         </div>
 
         {isBookmarksOpen && (
         <>
-          <p className="text-md font-bold text-gray-500 items-center text-center mt-2 mb-4">
-            ( 全 {bookmarks.length} 件 )
-          </p>
-          <div className="space-y-8 w-full lg:w-2/3 mx-auto">
-
+          <div className="space-y-8 w-full lg:w-2/3 mx-auto mt-4">
             {paginatedBookmarks.length > 0 ? (
               paginatedBookmarks.map((bookmark) => {
                 const sanitizedDescription = DOMPurify.sanitize(String(bookmark.description));
@@ -405,6 +415,7 @@ export default function MyPage() {
                     isDraft={bookmark.is_draft}
                     showReadMoreButton={false}
                     showViewCount={true}
+                    createdAt={bookmark.created_at}
                     footer={
                       <a
                         href={`/questions/${bookmark.id}`}
@@ -416,8 +427,8 @@ export default function MyPage() {
                     type={'bookmarks'}
                   >
                     {bookmark.is_resolved && (
-                      <div className="absolute top-0 right-4 font-semibold text-pink-500 px-4">
-                        <FontAwesomeIcon icon={faAward} className="mr-2 text-3xl text-yellow-300" />解決済み
+                      <div className="absolute top-0 right-4 font-semibold text-red-400 px-4">
+                        <FontAwesomeIcon icon={faAward} className="mr-2 text-2xl text-yellow-300" />解決済み
                       </div>
                     )}
                     <div className="text-blue-900 text-sm mb-4">

@@ -10,10 +10,10 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Modal from '../ui/Modal';
 import Notification from '../ui/Notification';
 import useAuth from '../../lib/useAuth';
-import { useUser } from '../../context/UserContext';
 import { useLoading } from '../../context/LoadingContext';
 import { useRouter } from 'next/navigation';
 import Category from '../ui/Category';
+import { toast } from 'react-toastify';
 
 
 interface QuestionFormProps {
@@ -26,15 +26,12 @@ interface QuestionFormProps {
 
 
 export default function QuestionForm({ initialTitle: propInitialTitle, initialBody: propInitialBody, initialTags: propInitialTags }: QuestionFormProps) {
-  const { userId } = useUser();
-  const { session, loading } = useAuth();
+  const { session, loading: userLoading } = useAuth();
+  const userId = (session?.user as { id?: string })?.id ?? null;
   const router = useRouter();
   const [initialTitle, setInitialTitle] = useState<string>(propInitialTitle);
   const [initialBody, setInitialBody] = useState<string>(propInitialBody);
   const [initialTags, setInitialTags] = useState<string[]>(propInitialTags);
-  const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState<string | null>(null);
-  const [showNotification, setShowNotification] = useState(false);
   const [draftListModalOpen, setDraftListModalOpen] = useState(false);
   const [availableTags, setAvailableTags] = useState<string[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
@@ -72,34 +69,49 @@ export default function QuestionForm({ initialTitle: propInitialTitle, initialBo
 
   const validateForm = () => {
 
-    if (!loading && !session) {
-      setError('ログインしてください。');
-      setShowNotification(true);
+    if (!isLoading && !session) {
+      console.error('ログインしてください。');
+      toast.error('ログインしてください。', {
+        position: "top-center",
+        autoClose: 2000,
+      });
       return false;
     }
 
 
     if (!initialTitle || initialTitle.trim() === '') {
-      setError('タイトルを入力してください');
-      setShowNotification(true);
+      console.error('タイトルを入力してください');
+      toast.error('タイトルを入力してください', {
+        position: "top-center",
+        autoClose: 2000,
+      });
       return false;
     }
 
     if (!initialBody || initialBody.trim() === '') {
-      setError('本文を入力してください');
-      setShowNotification(true);
+      console.error('本文を入力してください');
+      toast.error('本文を入力してください', {
+        position: "top-center",
+        autoClose: 2000,
+      });
       return false;
     }
 
     if (!initialTags || initialTags.length === 0) {
-      setError('タグを1つ以上指定してください');
-      setShowNotification(true);
+      console.error('タグを1つ以上指定してください');
+      toast.error('タグを1つ以上指定してください', {
+        position: "top-center",
+        autoClose: 2000,
+      });
       return false;
     }
 
     if (!selectedCategory || selectedCategory === "カテゴリを選択") {
-      setError('カテゴリを選択してください');
-      setShowNotification(true);
+      console.error('カテゴリを選択してください');
+      toast.error('カテゴリを選択してください', {
+        position: "top-center",
+        autoClose: 2000,
+      });
       return false;
     }
 
@@ -131,10 +143,6 @@ export default function QuestionForm({ initialTitle: propInitialTitle, initialBo
   const handleSubmit = async () => {
 
     setLoading(true);
-    setError(null);
-    setSuccess(null);
-    setShowNotification(false);
-
 
     const uploadedFiles: any[] = [];
 
@@ -184,13 +192,18 @@ export default function QuestionForm({ initialTitle: propInitialTitle, initialBo
       const result = await response.json();
 
       if (!response.ok) {
-        setError(result.message || '質問の投稿に失敗しました');
-        setShowNotification(true);
+        console.error(result.message || '質問の投稿に失敗しました');
+        toast.error('質問の投稿に失敗しました', {
+          position: "top-center",
+          autoClose: 2000,
+        });
         return;
       }
 
-      setSuccess('質問を投稿しました！');
-      setShowNotification(true);
+      toast.success('質問を投稿しました！', {
+        position: "top-center",
+        autoClose: 2000,
+      });
 
       setTimeout(() => {
         handleResetForm();
@@ -198,8 +211,11 @@ export default function QuestionForm({ initialTitle: propInitialTitle, initialBo
       }, 1000);
 
     } catch (err) {
-      setError('送信中にエラーが発生しました');
-      setShowNotification(true);
+      console.error('送信中にエラーが発生しました');
+      toast.error('送信中にエラーが発生しました', {
+        position: "top-center",
+        autoClose: 2000,
+      });
       console.error(err);
 
     } finally {
@@ -210,9 +226,6 @@ export default function QuestionForm({ initialTitle: propInitialTitle, initialBo
   const handleDraftSubmit = async () => {
 
     setLoading(true);
-    setError(null);
-    setSuccess(null);
-    setShowNotification(false);
 
     const uploadedFiles: any[] = [];
 
@@ -262,24 +275,31 @@ export default function QuestionForm({ initialTitle: propInitialTitle, initialBo
       const result = await response.json();
 
       if (!response.ok) {
-        setError(result.message || '下書きの保存に失敗しました');
-        setShowNotification(true);
+        console.error(result.message || '下書きの保存に失敗しました');
+        toast.error('下書きの保存に失敗しました', {
+          position: "top-center",
+          autoClose: 2000,
+        });
         setLoading(false);
         return;
       }
 
       setDrafts(result);
 
-      setSuccess('質問の下書きが保存されました！');
-      setShowNotification(true);
+      toast.success('質問の下書きを保存しました！', {
+        position: "top-center",
+        autoClose: 2000,
+      });
 
       setTimeout(() => {
         setDraftListModalOpen(true);
       }, 1000)
 
     } catch (err) {
-      setError('送信中にエラーが発生しました');
-      setShowNotification(true);
+      toast.error('送信中にエラーが発生しました', {
+        position: "top-center",
+        autoClose: 2000,
+      });
       console.error('エラー内容:', err);
     }finally {
       setLoading(false);
@@ -326,6 +346,7 @@ export default function QuestionForm({ initialTitle: propInitialTitle, initialBo
 
     const fetchDraftData = async (draftId: string) => {
       try {
+        setLoading(true);
         const response = await fetch(`/api/drafts/${draftId}`);
         if (!response.ok) {
           throw new Error('Failed to fetch draft');
@@ -338,7 +359,13 @@ export default function QuestionForm({ initialTitle: propInitialTitle, initialBo
         setInitialTags(data.tags);
         setSelectedCategory(data.category_id);
       } catch (error) {
-        setError('データの取得に失敗しました');
+        console.error('データの取得に失敗しました');
+        toast.error('データの取得に失敗しました', {
+          position: "top-center",
+          autoClose: 2000,
+        });
+      }finally {
+        setLoading(false);
       }
     };
 
@@ -366,13 +393,6 @@ export default function QuestionForm({ initialTitle: propInitialTitle, initialBo
 
   return (
     <>
-      {showNotification && (error || success) && (
-        <Notification
-          message={error ?? success ?? ""}
-          type={error ? "error" : "success"}
-          onClose={() => setShowNotification(false)}
-        />
-      )}
       <div className="container mx-auto px-4 py-8 relative">
         {!draftListModalOpen && (
           <div className="absolute top-5 right-20 flex items-center space-x-2 z-[100]">
@@ -389,7 +409,7 @@ export default function QuestionForm({ initialTitle: propInitialTitle, initialBo
       <Modal
         isOpen={draftListModalOpen}
         onClose={() => {setDraftListModalOpen(false);
-          router.push('/questions/public');
+          router.push('/questions');
         }}
           title="下書きリスト">
           <DraftList onSelectDraft={handleSelectDraft} categoryId={selectedCategory ?? null} />

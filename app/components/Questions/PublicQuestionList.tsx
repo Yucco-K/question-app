@@ -178,7 +178,7 @@ export default function PublicQuestionList({ selectedTags }: PublicQuestionListP
                   showReadMoreButton={false}
                   footer={<a
                     href="#"
-                    className={`${styles.link} transition transform hover:scale-110 duration-300 ease-in-out px-3 py-1 rounded-md text-md text-semibold inline-block`}
+                    className={`${styles.link} font-bold transition transform hover:scale-110 duration-300 ease-in-out px-3 py-1 rounded-md text-md text-semibold inline-block`}
                     onClick={(e) => {
                       e.preventDefault();
                       if (isPublicScreen) {
@@ -192,13 +192,14 @@ export default function PublicQuestionList({ selectedTags }: PublicQuestionListP
                   </a>}
                   showMenuButton={false}
                   isDraft={false}
+                  createdAt={question.created_at}
                 >
                 <div className="text-blue-900 text-sm mb-4">
                   質問ID: {question.id}
                 </div>
                 {question.is_resolved && (
-                  <div className="absolute top-0 right-4 font-semibold text-pink-500 px-4 transition-transform duration-300 ease-in-out transform hover:scale-105">
-                    <FontAwesomeIcon icon={faAward} className="mr-2 text-3xl text-yellow-300" />解決済み
+                  <div className="absolute top-0 right-4 font-semibold text-red-400 px-4 transition-transform duration-300 ease-in-out transform hover:scale-105">
+                    <FontAwesomeIcon icon={faAward} className="mr-2 text-2xl text-yellow-300" />解決済み
                   </div>
                 )}
 

@@ -2,7 +2,7 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import { Editor } from '@tinymce/tinymce-react';
-import Notification from '../ui/Notification';
+import { toast } from 'react-toastify';
 
 
 interface FormProps {
@@ -39,9 +39,6 @@ export default function Form({
   const [title, setTitle] = useState(initialTitle);
   const [body, setBody] = useState(initialBody);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState<string | null>(null);
-  const [showNotification, setShowNotification] = useState(false);
 
 
   const openPreview = () => {
@@ -49,8 +46,10 @@ export default function Form({
       editorRef.current.execCommand('mcePreview'); // TinyMCEのプレビューコマンドを実行
     } else {
       console.error('エディターが初期化されていません');
-      setError("エディターが初期化されていません");
-      setShowNotification(true);
+      toast.error('エディターが初期化されていません', {
+        position: "top-center",
+        autoClose: 2000,
+      });
     }
   };
 
@@ -96,8 +95,10 @@ export default function Form({
         }
       } catch (error) {
         console.error('ファイルアップロードエラー:', error);
-        setError('ファイルのアップロードに失敗しました');
-        setShowNotification(true);
+        toast.error('ファイルのアップロードに失敗しました', {
+          position: "top-center",
+          autoClose: 2000,
+        });
       } finally {
         setLoading(false);
       }
@@ -122,13 +123,6 @@ export default function Form({
 
   return (
     <>
-      {showNotification && (error || success) && (
-        <Notification
-          message={error ?? success ?? ""}
-          type={error ? "error" : "success"}
-          onClose={() => setShowNotification(false)}
-        />
-      )}
       <form className="max-w-[1400px] mx-auto">
       {showTitle && (
         <div className="mb-4">

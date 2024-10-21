@@ -3,10 +3,11 @@
 import React, { useEffect, useState } from 'react';
 import Form from '../ui/Form';
 import ButtonGroup from '../ui/ButtonGroup';
-import { useUser } from '../../context/UserContext';
-import Notification from '../ui/Notification';
 import { useLoading } from '../../context/LoadingContext';
 import ScrollToBottomButton from '../ui/ScrollToBottomButton';
+import useAuth from '@/app/lib/useAuth';
+import { toast } from 'react-toastify';
+import { on } from 'events';
 
 interface CommentFormProps {
   initialComment?: string;
@@ -34,55 +35,62 @@ export default function CommentForm({ questionId,
 
   const [initialBody, setInitialBody] = useState('');
   const [comments, setComments] = useState([]);
-  const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState<string | null>(null);
-  const [showNotification, setShowNotification] = useState(false);
   const [isLoading, setLoading] = useState(false);
   const [selectedCommentId, setSelectedCommentId] = useState<string | null>(null);
-  const [commentModalOpen, setCommentModalOpen] = useState(false);
   const [commentId, setCommentId] = useState<string | null>(null);
 
-  const { userId: contextUserId } = useUser();
+  const { session, loading: userLoading } = useAuth();
+  const contextUserId = (session?.user as { id?: string })?.id ?? null;
   const userId = propUserId || contextUserId;
 
   const handleCancel = () => {
     setSelectedCommentId(null);
     setInitialBody('');
     onCancel();
-  };
+    };
+
 
 
   const fetchCommentsData = async () => {
-    setLoading(true);
+
     try {
+      setLoading(true);
+
       const response = await fetch(`/api/comments?answerId=${answerId}`);
       const data = await response.json();
       if (response.ok) {
         setComments(data.comments);
-        setError(null);
       } else {
-        setError(data.message || 'コメントの取得に失敗しました');
+        console.log(data.message || 'コメントの取得に失敗しました');
+        toast.error('コメントの取得に失敗しました', {
+          position: "top-center",
+          autoClose: 2000,
+        });
       }
     } catch (err) {
-      setError('コメントの取得中にエラーが発生しました');
+      console.log('コメントの取得中にエラーが発生しました');
+      toast.error('コメントの取得中にエラーが発生しました', {
+        position: "top-center",
+        autoClose: 2000,
+      });
     } finally {
       setLoading(false);
     }
   };
 
   const handleSubmit = async () => {
-    setError(null);
-    setSuccess(null);
-    setShowNotification(false);
 
     if (!userId) {
-      console.error("ユーザーがログインしていません");
-      setError("ログインしてください");
-      setShowNotification(true);
+      console.log("ユーザーがログインしていません");
+      toast.error('コメントの取得中にエラーが発生しました', {
+        position: "top-center",
+        autoClose: 2000,
+      });
       return;
     }
 
     if (initialBody) {
+
       setLoading(true);
       try {
 
@@ -103,35 +111,47 @@ export default function CommentForm({ questionId,
 
         if (response.ok) {
 
-            setLoading(false);
-            setInitialBody('');
-            onSubmit('', initialBody);
-            setSuccess('コメントが投稿されました');
-            setSelectedCommentId(null);
+          setCommentId(data.id);
 
-            setCommentId(data.id);
+          toast.success('コメントが投稿されました!', {
+            position: "top-center",
+            autoClose: 2000,
+          });
 
-            fetchComments && fetchComments();
-            fetchCommentCount && fetchCommentCount();
+          onSubmit('', initialBody);
+
+          setSelectedCommentId(null);
+
+          fetchComments && fetchComments();
+          fetchCommentCount && fetchCommentCount();
 
         } else {
-          setError(data.message || 'コメントの投稿に失敗しました');
-
+          console.log(data.message || 'コメントの投稿に失敗しました');
+          toast.error('コメントの投稿に失敗しました', {
+            position: "top-center",
+            autoClose: 2000,
+          });
         }
+
       } catch (error) {
-        setError('コメントの投稿中にエラーが発生しました');
+        console.log('コメントの投稿中にエラーが発生しました');
+        toast.error('コメントの投稿中にエラーが発生しました', {
+          position: "top-center",
+          autoClose: 2000,
+        });
 
       } finally {
         setLoading(false);
-        setShowNotification(true);
-
+        setInitialBody('');
       }
-    } else {
-      setError('コメントを入力してください');
-      setShowNotification(true);
-
-    }
-  };
+    }else {
+      console.log('コメントが入力されていません');
+      toast.error('コメントを入力してください', {
+        position: "top-center",
+        autoClose: 2000,
+      });
+    };
+  }
 
 
   const buttons = [
@@ -150,13 +170,6 @@ export default function CommentForm({ questionId,
   return (
     <>
       <div>
-        {showNotification && (error || success) && (
-        <Notification
-          message={error ?? success ?? ""}
-          type={error ? "error" : "success"}
-          onClose={() => setShowNotification(false)}
-        />
-        )}
         <ScrollToBottomButton />
         <Form
           titleLabel="コメントタイトル"

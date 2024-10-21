@@ -7,14 +7,16 @@ import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import Notification from '../ui/Notification';
 import { useLoading } from '../../context/LoadingContext';
-import { useUser } from '../../context/UserContext';
-import { set } from 'lodash';
+import useAuth from '@/app/lib/useAuth';
 
 export default function CurrentUserProfileImage() {
-  const { userId, username, profileImage } = useUser();
+  const { session, loading: userLoading } = useAuth();
+  const userId = (session?.user as { id?: string })?.id ?? null;
+  const username = (session?.user as { name?: string })?.name ?? null;
   const displayName = username || 'ゲスト';
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+  const profileImage = (session?.user as { image?: string })?.image ?? null;
   const [showNotification, setShowNotification] = useState(false);
 
   const { isLoading, setLoading } = useLoading();
@@ -25,12 +27,11 @@ export default function CurrentUserProfileImage() {
         setLoading(true);
 
         await new Promise((resolve) => setTimeout(resolve, 2000));
-        setSuccess('ユーザー情報の取得に成功しました');
+        console.log('ユーザー情報の取得に成功しました');
       } catch (error) {
-        setError('ユーザー情報の取得に失敗しました');
+        console.error('ユーザー情報の取得に失敗しました');
       } finally {
         setLoading(false);
-        setShowNotification(true);
       }
     };
 

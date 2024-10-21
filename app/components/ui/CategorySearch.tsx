@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
 import Card from '../ui/Card';
-import Notification from '../ui/Notification';
 import DOMPurify from 'dompurify';
 import { useLoading } from '../../context/LoadingContext';
 import styles from '../Questions/QuestionList.module.css';
 import Pagination from './Pagination';
+import { toast } from 'react-toastify';
 
 interface Question {
   id: string;
@@ -24,9 +24,6 @@ interface CategorySearchProps {
 
 const CategorySearch: React.FC<CategorySearchProps> = ({ categoryId = null }) => {
   const [questions, setQuestions] = useState<Question[]>([]);
-  const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState<string | null>(null);
-  const [showNotification, setShowNotification] = useState(false);
   const { isLoading, setLoading } = useLoading();
 
   const [currentPage, setCurrentPage] = useState(1);
@@ -59,14 +56,21 @@ const CategorySearch: React.FC<CategorySearchProps> = ({ categoryId = null }) =>
 
         if (response.ok) {
           setQuestions(data);
-          setError(null);
+          console.error(null);
         } else {
-          setError(data.message || '質問の取得に失敗しました');
+          console.error(data.message || '質問の取得に失敗しました');
+          toast.error('質問の取得に失敗しました', {
+            position: "top-center",
+            autoClose: 2000,
+          });
         }
       } catch (err) {
-        setError('データの取得中にエラーが発生しました');
+        console.error('データの取得中にエラーが発生しました');
+        toast.error('データの取得中にエラーが発生しました', {
+          position: "top-center",
+          autoClose: 2000,
+        });
       } finally {
-        setShowNotification(true);
         setLoading(false);
       }
     };
@@ -76,14 +80,6 @@ const CategorySearch: React.FC<CategorySearchProps> = ({ categoryId = null }) =>
 
   return (
     <>
-      {showNotification && (error || success) && (
-        <Notification
-          message={error ?? success ?? ""}
-          type={error ? "error" : "success"}
-          onClose={() => setShowNotification(false)}
-        />
-      )}
-
       <div className={styles.questionBody}>
           {questions.length === 0 ? (
             <p className='text-blue-900'>このカテゴリに質問がありません。</p>

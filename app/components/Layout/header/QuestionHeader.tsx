@@ -2,15 +2,14 @@ import { useState, useEffect} from 'react';
 import useAuth from '../../../lib/useAuth';
 import { useRouter } from 'next/navigation';
 import LogoutButton from '../../users/LogoutButton';
-import { useUser } from '@/app/context/UserContext';
 import CurrentUserNameDisplay from '../../profile/CurrentUserNameDisplay';
 import CurrentUserProfileImage from '../../profile/CurrentUserProfileImage';
 
 export default function DefaultHeader() {
   const [isDropdownOpen, setDropdownOpen] = useState(false);
   const router = useRouter();
-  const { userId, username } = useUser();
-  const { session, loading } = useAuth();
+  const { session, loading: userLoading } = useAuth();
+  const userId = (session?.user as { id?: string })?.id ?? null;
 
   const handleProfileClick = () => {
     setDropdownOpen(!isDropdownOpen);
@@ -43,7 +42,7 @@ export default function DefaultHeader() {
 
   return (
     <header className="bg-gray-100 text-white py-1 fixed top-0 left-0 w-full z-50">
-      <div className="container mx-auto flex justify-between items-center">
+      <div className="container mx-auto flex justify-between items-center w-[1200px]">
 
         <div className="logo cursor-pointer" onClick={handleLogoClick}>
           Engineers <span>Q&A</span> Board
@@ -56,7 +55,7 @@ export default function DefaultHeader() {
 
           {isDropdownOpen && (
             <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-2 z-10">
-              {session && !loading ? (
+              {session && !userLoading ? (
                 <>
                   <div className="ml-4 my-2 text-black whitespace-nowrap">
                     <CurrentUserNameDisplay />

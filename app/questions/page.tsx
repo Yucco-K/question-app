@@ -9,7 +9,6 @@ import useAuth from '../lib/useAuth';
 import '../globals.css';
 import Notification from '../components/ui/Notification';
 import TagSearch from '../components/ui/TagSearch';
-import { useUser } from '../context/UserContext';
 
 
 export default function QuestionsPage() {
@@ -17,17 +16,18 @@ export default function QuestionsPage() {
   const [showNotification, setShowNotification] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
-  const { session, loading, setSession } = useAuth(true) as { session: any; loading: boolean; setSession: (session: any) => void };
+  const { session, loading: userLoading } = useAuth();
+  const userId = (session?.user as { id?: string })?.id ?? null;
   const router = useRouter();
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const isPublicScreen = false;
-  const { userId } = useUser();
+  const [localsession, setLocalSession] = useState<any>(null);
 
   useEffect(() => {
-    if (!loading && !session) {
+    if (!userLoading && !session) {
       router.push('/questions/public');
     }
-  }, [loading, session, router]);
+  }, [userLoading, session, router]);
 
 
   const handleSearchCategory = () => {
@@ -41,6 +41,11 @@ export default function QuestionsPage() {
   const handleFilteredQuestions = () => {
     router.push('/questions/filter');
   };
+
+  useEffect(() => {
+      setLocalSession(session);
+      console.log('localsession:', session);
+  }, [session]);
 
 
   return (
@@ -67,7 +72,7 @@ export default function QuestionsPage() {
       />
     </Modal>
 
-    <div className="flex">
+    <div className="flex container mx-auto w-[1200px]">
       <div className="flex-grow mr-8 w-2/3">
         <QuestionList
           selectedTags={selectedTags}
@@ -75,26 +80,26 @@ export default function QuestionsPage() {
         />
       </div>
 
-      <div className="w-1/3">
+      <div className="w-1/3 mt-20">
         <div className="bg-white shadow-md border rounded-lg p-4 space-y-4">
 
           <div>
             <button onClick={handleSortQuestions}
-              className="block w-full border border-gray-300 bg-gray-100 rounded-md p-2 hover: transition transform hover:scale-105 duration-300 ease-in-out">
+              className="block w-full text-orange-700 border border-orange-500 bg-orange-100 rounded-md p-2 hover: transition transform hover:scale-105 duration-300 ease-in-out">
               ソート
             </button>
           </div>
 
           <div>
             <button onClick={handleFilteredQuestions}
-              className="block w-full border border-gray-300 bg-gray-100 rounded-md p-2 hover: transition transform hover:scale-105 duration-300 ease-in-out">
+              className="block w-full text-orange-700 border border-orange-500 bg-orange-100 rounded-md p-2 hover: transition transform hover:scale-105 duration-300 ease-in-out">
               フィルター
             </button>
           </div>
 
           <div>
             <button onClick={handleSearchCategory}
-              className="block w-full border border-gray-300 bg-gray-100 rounded-md p-2 hover: transition transform hover:scale-105 duration-300 ease-in-out">
+              className="block w-full text-orange-700 border border-orange-500 bg-orange-100 rounded-md p-2 hover: transition transform hover:scale-105 duration-300 ease-in-out">
               カテゴリ検索
             </button>
           </div>

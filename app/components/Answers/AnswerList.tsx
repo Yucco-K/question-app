@@ -5,15 +5,14 @@ import Card from '../ui/Card';
 import DOMPurify from 'dompurify';
 import BestAnswer from './BestAnswer';
 import CommentList from '../comments/CommentList';
-import Notification from '../ui/Notification';
 import AnswerForm from './AnswerForm';
 import Vote from '../ui/Vote';
 import ScrollToBottomButton from '../ui/ScrollToBottomButton';
-import { useUser } from '../../context/UserContext';
 import useAuth from '@/app/lib/useAuth';
 import styles from './AnswerList.module.css';
 import UserProfileImage from '../profile/UserProfileImage';
 import UserNameDisplay from '../profile/UserNameDisplay';
+import { toast } from 'react-toastify';
 
 interface Answer {
   id: string;
@@ -39,21 +38,19 @@ export default function AnswerList({ questionId, categoryId, answers: initialAns
   const [answers, setAnswers] = useState<Answer[]>(initialAnswers);
   const [answerUsers, setAnswerUsers] = useState<AnswerUser[]>([]);
   const [isLoading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const [selectedAnswerId, setSelectedAnswerId] = useState<string | undefined>(undefined);
   const [selectedAnswerContent, setSelectedAnswerContent] = useState<string | undefined>(undefined);
   const [answerModalOpen, setAnswerModalOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
-  const [success, setSuccess] = useState<string | null>(null);
-  const [showNotification, setShowNotification] = useState<boolean>(false);
   const [editingAnswerId, setEditingAnswerId] = useState<string | undefined>(undefined);
-  const { userId } = useUser();
-  const { loading, session } = useAuth();
+  const { session, loading: userLoading } = useAuth();
+  const userId = (session?.user as { id?: string })?.id ?? null;
 
   const fetchAnswers = async () => {
 
-    setLoading(true);
     try {
+      setLoading(true);
+
       const response = await fetch(`/api/questions/${questionId}/answers`);
       if (!response.ok) {
         throw new Error('回答データの取得に失敗しました');
@@ -61,11 +58,13 @@ export default function AnswerList({ questionId, categoryId, answers: initialAns
       const data = await response.json();
       setAnswers(data.answers);
       setAnswerUsers(data.answerUsersData || []);
-      setError(null);
 
     } catch (err) {
-      setError('回答の取得中にエラーが発生しました');
-      setShowNotification(true);
+      console.log('回答の取得中にエラーが発生しました');
+      toast.error('回答の取得中にエラーが発生しました', {
+        position: "top-center",
+        autoClose: 2000,
+      });
     } finally {
       setLoading(false);
     }
@@ -75,14 +74,21 @@ export default function AnswerList({ questionId, categoryId, answers: initialAns
   const handleDelete = async (answerId: string) => {
 
     if (!userId) {
-      setError('ログインしてください。');
-      setShowNotification(true);
+      console.log('ログインしてください。');
+      toast.error('ログインしてください。', {
+        position: "top-center",
+        autoClose: 2000,
+      });
       return;
     }
 
     const answer = answers.find((a) => a.id === answerId);
     if (!answer || answer.user_id !== userId) {
-      setError('この投稿を削除する権限がありません。');
+      console.log('この投稿を削除する権限がありません。');
+      toast.error('この投稿を削除する権限がありません。', {
+        position: "top-center",
+        autoClose: 2000,
+      });
       return;
     }
 
@@ -96,15 +102,20 @@ export default function AnswerList({ questionId, categoryId, answers: initialAns
         throw new Error('回答の削除に失敗しました');
       }
       setAnswers(answers.filter((answer) => answer.id !== answerId));
-      setSuccess('回答が削除されました');
+      toast.success('回答が削除されました', {
+        position: "top-center",
+        autoClose: 2000,
+      });
       await fetchAnswers();
 
     } catch (err) {
       console.error('Error deleting answer:', err);
-      setError('回答の削除中にエラーが発生しました');
+      toast.error('回答の削除中にエラーが発生しました。', {
+        position: "top-center",
+        autoClose: 2000,
+      });
     }finally {
       setLoading(false);
-      setShowNotification(true);
     }
   };
 
@@ -126,13 +137,6 @@ export default function AnswerList({ questionId, categoryId, answers: initialAns
 
   return (
     <>
-      {showNotification && (error || success) && (
-      <Notification
-        message={error ?? success ?? ""}
-        type={error ? "error" : "success"}
-        onClose={() => setShowNotification(false)}
-      />
-      )}
       <ScrollToBottomButton />
       <h2 className="text-lg my-4 flex items-center justify-center mr-10 text-blue-900">
         全{answers ? answers.length : 0 }件の回答

@@ -5,7 +5,9 @@ import { useRouter } from 'next/navigation';
 import { useAuth as useAuthContext } from '../context/AuthContext';
 
 const useAuth = (requireAuth: boolean = true, redirectUrl?: string) => {
-  const { session, loading } = useAuthContext(requireAuth);
+  const authContext = useAuthContext();
+  const session = authContext?.session;
+  const loading = authContext?.loading;
   const router = useRouter();
 
   const excludedPaths = [
@@ -33,7 +35,7 @@ const useAuth = (requireAuth: boolean = true, redirectUrl?: string) => {
     }
   }, [loading, session, requireAuth, redirectUrl, router]);
 
-  return { session, loading };
+  return { session, loading, error: authContext?.error };
 };
 
 export default useAuth;

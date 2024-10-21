@@ -4,11 +4,10 @@ import React, { useCallback, useEffect, useState } from 'react';
 import Modal from '../ui/Modal';
 import ButtonGroup from '../ui/ButtonGroup';
 import Form from '../ui/Form';
-import { useUser } from '../../context/UserContext';
-import Notification from '../ui/Notification';
 import useAuth from '../../lib/useAuth';
 import { useRouter } from 'next/navigation';
 import ScrollToBottomButton from '../ui/ScrollToBottomButton';
+import { toast } from 'react-toastify';
 
 interface Answer {
   id: string;
@@ -34,22 +33,19 @@ export default function AnswerForm({
 
   const [answerModalOpen, setAnswerModalOpen] = useState(true);
   const [initialBody, setInitialBody] = useState('');
-  const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState<string | null>(null);
-  const [showNotification, setShowNotification] = useState(false);
   const [isLoading, setLoading] = useState(false);
-  const { loading } = useAuth();
   const router = useRouter();
   const [content, setContent] = useState('');
-  const { userId, loading: userLoading, error: userError } = useUser();
+  const { session, loading: userLoading } = useAuth();
+  const userId = (session?.user as { id?: string })?.id ?? null;
   const [answers, setAnswers] = useState<Answer[]>([]);
 
 
   useEffect(() => {
-    if (!loading && !userId) {
+    if (!userLoading && !userId) {
       router.push('/users/login');
     }
-  }, [loading, userId, router]);
+  }, [isLoading, userId, router]);
 
 
   useEffect(() => {
@@ -68,28 +64,30 @@ export default function AnswerForm({
 
   const handleSubmit = async () => {
 
-    setError(null);
-    setSuccess(null);
-    setShowNotification(false);
-
     if (!questionId) {
-      console.error("質問IDが指定されていません");
-      setError("質問IDが存在しません。");
-      setShowNotification(true);
+      console.log("質問IDが指定されていません");
+      toast.error('質問IDが指定されていません', {
+        position: "top-center",
+        autoClose: 2000,
+      });
       return;
     }
 
     if (!userId) {
       console.error("ユーザーがログインしていません");
-      setError("ログインしてください");
-      setShowNotification(true);
+      toast.error('ログインしてください', {
+        position: "top-center",
+        autoClose: 2000,
+      });
       return;
     }
 
     if (!initialBody.trim()) {
       console.error("回答の内容が空です。");
-      setError("回答を入力してください。");
-      setShowNotification(true);
+      toast.error('回答を入力してください。', {
+        position: "top-center",
+        autoClose: 2000,
+      });
       return;
     }
 
@@ -118,34 +116,45 @@ export default function AnswerForm({
       if (response.ok) {
         const result = await response.json();
         setInitialBody(result.content);
-        setLoading(false);
+
         await fetchAnswers();
-        setSuccess(isEditing ? '回答が更新されました' : '回答が保存されました');
+        setLoading(false);
+
+        toast.success(isEditing ? '回答が更新されました' : '回答が保存されました', {
+          position: "top-center",
+          autoClose: 2000,
+        });
 
         setTimeout(() =>
           window.location.reload()
         , 1000);
 
+        setAnswerModalOpen(false);
+
       } else {
         const error = await response.json();
         console.error("保存エラー:", error.message);
-        setError(error.message);
+        toast.error('保存中にエラーが発生しました', {
+          position: "top-center",
+          autoClose: 2000,
+        });
       }
     } catch (error) {
       console.error("エラーが発生しました:", error);
-      setError("エラーが発生しました");
+      toast.error('エラーが発生しました', {
+        position: "top-center",
+        autoClose: 2000,
+      });
     }finally {
       setLoading(false);
-      setShowNotification(true);
+      setInitialBody('');
+      setAnswerModalOpen(false);
     }
   };
 
 
   const handleCancel = () => {
     setInitialBody('');
-    setSuccess(null);
-    setError(null);
-    setShowNotification(false);
     setLoading(false);
     setAnswerModalOpen(false);
   };
@@ -158,26 +167,11 @@ export default function AnswerForm({
 
   return (
     <>
-      {showNotification && (error || success) && (
-        <Notification
-          message={error ?? success ?? ""}
-          type={error ? "error" : "success"}
-          onClose={() => setShowNotification(false)}
-        />
-      )}
-
       <ScrollToBottomButton />
 
       <Modal isOpen={answerModalOpen} onClose={() => setAnswerModalOpen(false)} title={isEditing ? '回答を編集' : '回答を投稿'}>
         <div className="px-8">
 
-          {showNotification && (error || success) && (
-            <Notification
-              message={error ?? success ?? ""}
-              type={error ? "error" : "success"}
-              onClose={() => setShowNotification(false)}
-            />
-          )}
           <Form
             titleLabel="タイトル"
             titlePlaceholder="タイトルを入力"

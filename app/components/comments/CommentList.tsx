@@ -11,8 +11,9 @@ import Notification from '../ui/Notification';
 import Form from '../ui/Form';
 import ButtonGroup from '../ui/ButtonGroup';
 import ScrollToBottomButton from '../ui/ScrollToBottomButton';
-import { useUser } from '@/app/context/UserContext';
 import UserProfileImage from '../profile/UserProfileImage';
+import useAuth from '@/app/lib/useAuth';
+import DOMPurify from 'dompurify';
 
 interface Comment {
   id: string;
@@ -38,7 +39,7 @@ export default function CommentList({ questionId, answerId, categoryId, selected
   const [comments, setComments] = useState<Comment[]>([]);
   const [commentCount, setCommentCount] = useState<number>(0);
   const [commentModalOpen, setCommentModalOpen] = useState(false);
-  const [, setSelectedCommentId] = useState<string | null>(null);
+  const [selectedCommentId,setSelectedCommentId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [showNotification, setShowNotification] = useState(false);
@@ -48,8 +49,8 @@ export default function CommentList({ questionId, answerId, categoryId, selected
   const [editingCommentId, setEditingCommentId] = useState<string | null>(null);
   const [editingContent, setEditingContent] = useState<string>('');
   const [initialBody, setInitialBody] = useState<string>('');
-  const [] = useState(true);
-  const { userId } = useUser();
+  const { session, loading: userLoading } = useAuth();
+  const userId = (session?.user as { id?: string })?.id ?? null;
 
 
   const fetchComments = async () => {
@@ -189,11 +190,11 @@ export default function CommentList({ questionId, answerId, categoryId, selected
       setError('エラーが発生しました');
     }finally {
       setLoading(false);
+      setShowNotification(true);
       setIsEditing(false);
       setSelectedCommentId(null);
       setEditingContent('');
       setInitialBody('');
-      setShowNotification(true);
     }
   };
 
@@ -278,7 +279,7 @@ export default function CommentList({ questionId, answerId, categoryId, selected
       {commentListModalOpen && (
         <Modal onClose={() => setCommentListModalOpen(false)} isOpen={true} title="コメント一覧">
           <div className="mb-4 flex relative">
-            {showNotification && (error || success) && (
+            {showNotification && (
               <Notification
                 message={error ?? success ?? ""}
                 type={error ? "error" : "success"}
@@ -295,83 +296,86 @@ export default function CommentList({ questionId, answerId, categoryId, selected
               {isLoading ? (
                 null
               ) : comments.length > 0 ? (
-                comments.map((comment: Comment) => (
-                  <Card
-                    key={comment.id}
-                    id={comment.id}
-                    type="comments"
-                    ownerId={comment.user_id}
-                    categoryId={categoryId}
-                    onRefresh={fetchComments}
-                    isResolved={false}
-                    className="mb-5 w-full"
-                    onEdit={() => handleEdit(comment.id, comment.content)}
-                    onDelete={() => handleDelete(comment.id)}
-                    isDraft={false}
-                    showViewCount={false}
-                  >
-                    <div className="text-sm text-blue-900 mb-2">コメントID: {comment.id}</div>
-                    {isEditing && editingCommentId === comment.id ? (
-                      <div className="px-8">
-                        <Form
-                          titleLabel="タイトル"
-                          titlePlaceholder="タイトルを入力"
-                          bodyLabel="本文"
-                          bodyPlaceholder="ここに本文を入力"
-                          initialTitle=""
-                          initialBody={initialBody}
-                          onTitleChange={() => console.log('タイトルは使用しません')}
-                          onBodyChange={(value: string) => setEditingContent(value)}
-                          showTitle={false}
-                        />
-                        <div className="mx-auto w-1/2">
-                          <ButtonGroup
-                            pattern={2}
-                            buttons={[
-                              {
-                                label: '更 新', className: 'bg-blue-600 text-white text-sm w-1/4', onClick: () => handleEditSubmit(comment.id),
-                              },
-                              {
-                                label: 'キャンセル', className: 'bg-gray-400 text-white text-sm w-1/4', onClick: () => setIsEditing(false),
-                              }
-                            ]}
-                            buttonsPerRow={[2]}
+                comments.map((comment: Comment) => {
+                  const sanitizedDescription = DOMPurify.sanitize(comment.content);
+                  return (
+                    <Card
+                      key={comment.id}
+                      id={comment.id}
+                      type="comments"
+                      ownerId={comment.user_id}
+                      categoryId={categoryId}
+                      onRefresh={fetchComments}
+                      isResolved={false}
+                      className="mb-5 w-full"
+                      onEdit={() => handleEdit(comment.id, comment.content)}
+                      onDelete={() => handleDelete(comment.id)}
+                      isDraft={false}
+                      showViewCount={false}
+                    >
+                      <div className="text-sm text-blue-900 mb-2">コメントID: {comment.id}</div>
+                      {isEditing && editingCommentId === comment.id ? (
+                        <div className="px-8">
+                          <Form
+                            titleLabel="タイトル"
+                            titlePlaceholder="タイトルを入力"
+                            bodyLabel="本文"
+                            bodyPlaceholder="ここに本文を入力"
+                            initialTitle=""
+                            initialBody={initialBody}
+                            onTitleChange={() => console.log('タイトルは使用しません')}
+                            onBodyChange={(value: string) => setEditingContent(value)}
+                            showTitle={false}
                           />
-                        </div>
-                      </div>
-                    ) : (
-                      <div key={comment.id} className="p-2 mb-2">
-
-                        <div className="flex items-center mt-4">
-                        <UserProfileImage userId={comment.user_id} />
-                          <div className="ml-4">
-                            <p className="text-sm mb-2">{comment.username}</p>
-                            <p className="text-sm ">
-                              {comment.created_at ? (
-                                new Date(comment.created_at).toLocaleString('ja-JP', {
-                                  year: 'numeric',
-                                  month: '2-digit',
-                                  day: '2-digit',
-                                  hour: '2-digit',
-                                  minute: '2-digit',
-                                  second: '2-digit',
-                                })
-                              ) : (
-                                '作成日登録なし'
-                              )}
-                            </p>
+                          <div className="mx-auto w-1/2">
+                            <ButtonGroup
+                              pattern={2}
+                              buttons={[
+                                {
+                                  label: '更 新', className: 'bg-blue-600 text-white text-sm w-1/4', onClick: () => handleEditSubmit(comment.id),
+                                },
+                                {
+                                  label: 'キャンセル', className: 'bg-gray-400 text-white text-sm w-1/4', onClick: () => setIsEditing(false),
+                                }
+                              ]}
+                              buttonsPerRow={[2]}
+                            />
                           </div>
                         </div>
+                      ) : (
+                        <div key={comment.id} className="p-2 mb-2">
 
-                        <hr className="my-10 border-gray-300" />
+                          <div className="flex items-center mt-4">
+                          <UserProfileImage userId={comment.user_id} />
+                            <div className="ml-4">
+                              <p className="text-sm mb-2">{comment.username}</p>
+                              <p className="text-sm ">
+                                {comment.created_at ? (
+                                  new Date(comment.created_at).toLocaleString('ja-JP', {
+                                    year: 'numeric',
+                                    month: '2-digit',
+                                    day: '2-digit',
+                                    hour: '2-digit',
+                                    minute: '2-digit',
+                                    second: '2-digit',
+                                  })
+                                ) : (
+                                  '作成日登録なし'
+                                )}
+                              </p>
+                            </div>
+                          </div>
 
-                        <div className={`mt-8 mb-12 ${styles.commentBody}`}>
-                          <div dangerouslySetInnerHTML={{ __html: comment.content }} />
-                        </div>
-                    </div>
-                    )}
-                  </Card>
-                ))
+                          <hr className="my-10 border-gray-300" />
+
+                          <div className={`mt-8 mb-12 ${styles.commentBody}`}>
+                            <div dangerouslySetInnerHTML={{ __html: sanitizedDescription }} />
+                          </div>
+                      </div>
+                      )}
+                    </Card>
+                  );
+                })
               ) : (
                 <p className='text-blue-900'>まだコメントはありません。</p>
               )}
@@ -389,45 +393,52 @@ export default function CommentList({ questionId, answerId, categoryId, selected
               </div>
 
             {commentModalOpen && (
-              <div className="fixed inset-0 flex items-center justify-center z-50 overflow-auto">
-                <div
-                  className="fixed inset-0 bg-black opacity-70 backdrop-blur-xl"
-                  onClick={() => setCommentModalOpen(false)}
-                ></div>
-
-                <div className="bg-white p-6 rounded-lg shadow-lg w-2/3 relative">
-                  <button
-                    className="absolute top-6 right-6 text-gray-500 hover:text-gray-700 text-3xl"
-                    onClick={() => setCommentModalOpen(false)}
-                  >
-                    ×
-                  </button>
-
-                  {selectedAnswerId && (
-                    <div className="text-blue-900 text-sm mb-4">
-                      回答ID: {selectedAnswerId}
-                    </div>
-                  )}
-
-                  <CommentForm
-                    questionId={questionId}
-                    userId={userId}
-                    answerId={answerId ?? ''}
-                    onSubmit={(title: any, body: any) => {
-                      console.log('コメント送信:', title, body);
-                      setCommentModalOpen(false);
-                      setSuccess('コメントが送信されました。');
-                      setShowNotification(true);
-                    }}
-                    onCancel={() => {
-                      setCommentModalOpen(false);
-                      setSelectedAnswerId(undefined);
-                    }}
-                    fetchComments={fetchComments}
-                    fetchCommentCount={fetchCommentCount}
+              <>
+                {showNotification && (error || success) && (
+                  <Notification
+                    message={error ?? success ?? ""}
+                    type={error ? "error" : "success"}
+                    onClose={() => setShowNotification(false)}
                   />
+                )}
+                <div className="fixed inset-0 flex items-center justify-center z-50 overflow-auto">
+                  <div
+                    className="fixed inset-0 bg-black opacity-70 backdrop-blur-xl"
+                    onClick={() => setCommentModalOpen(false)}
+                  ></div>
+
+                  <div className="bg-white p-6 rounded-lg shadow-lg w-2/3 relative">
+                    <button
+                      className="absolute top-6 right-6 text-gray-500 hover:text-gray-700 text-3xl"
+                      onClick={() => setCommentModalOpen(false)}
+                    >
+                      ×
+                    </button>
+
+                    {selectedAnswerId && (
+                      <div className="text-blue-900 text-sm mb-4">
+                        回答ID: {selectedAnswerId}
+                      </div>
+                    )}
+
+                    <CommentForm
+                      questionId={questionId}
+                      userId={userId}
+                      answerId={answerId ?? ''}
+                      onSubmit={(title: any, body: any) => {
+                        console.log('コメント送信:', title, body);
+                        setCommentModalOpen(false);
+                      }}
+                      onCancel={() => {
+                        setCommentModalOpen(false);
+                        setSelectedAnswerId(undefined);
+                      }}
+                      fetchComments={fetchComments}
+                      fetchCommentCount={fetchCommentCount}
+                    />
+                  </div>
                 </div>
-              </div>
+              </>
             )}
           </div>
         </Modal>

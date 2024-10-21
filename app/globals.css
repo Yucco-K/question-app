@@ -58,8 +58,7 @@ body {
   position: fixed;
   bottom: 30px;
   right: 20px;
-  /* background-color: #ff9800;
-  color: white; */
+  margin-right: 20px;
   padding: 10px 20px;
   cursor: pointer;
   z-index: 1000;

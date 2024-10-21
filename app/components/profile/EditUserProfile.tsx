@@ -5,7 +5,6 @@ import { useRouter } from 'next/navigation';
 import { faTrash, faUser } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import ButtonGroup from '@/app/components/ui/ButtonGroup';
-import Notification from '@/app/components/ui/Notification';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Image from 'next/image';
@@ -32,9 +31,6 @@ export default function EditUserProfile({ userId }: EditUserProfileProps) {
   const [name, setName] = useState('');
   const [profileImage, setProfileImage] = useState('');
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
-  const [showNotification, setShowNotification] = useState(false);
   const [isEditingEmail, setIsEditingEmail] = useState(false);
   const [isEditingName, setIsEditingName] = useState(false);
   const [isEditingImage, setIsEditingImage] = useState(false);
@@ -61,8 +57,11 @@ export default function EditUserProfile({ userId }: EditUserProfileProps) {
         setProfileImage(data.profileImage);
 
       } catch (err) {
-        setError((err as Error).message);
-        setShowNotification(true);
+        console.error((err as Error).message);
+        // toast.error('ユーザー情報の取得に失敗しました', {
+        //   position: "top-center",
+        //   autoClose: 3000,
+        // });
 
       } finally {
         setLoading(false);
@@ -87,8 +86,11 @@ export default function EditUserProfile({ userId }: EditUserProfileProps) {
     if (field === 'name') {
       const currentLength = newValue.length;
       if (currentLength < 2) {
-        setError('ユーザー名を2文字以上入力してください。');
-        setShowNotification(true);
+        console.error('ユーザー名を2文字以上入力してください。');
+        toast.error('ユーザー名を2文字以上入力してください。', {
+          position: "top-center",
+          autoClose: 3000,
+        });
         return false;
       }
     }
@@ -98,15 +100,15 @@ export default function EditUserProfile({ userId }: EditUserProfileProps) {
       const dotIndex = newValue.lastIndexOf('.');
       if (atIndex < 1 || dotIndex < atIndex + 2 || dotIndex >= newValue.length - 1) {
         setTimeout(() => {
-          setError('有効なメールアドレスを入力してください。');
-          setShowNotification(true);
+          console.error('有効なメールアドレスを入力してください。');
+          toast.error('有効なメールアドレスを入力してください。', {
+            position: "top-center",
+            autoClose: 3000,
+          });
         }, 4000);
         return false;
       }
     }
-
-    setError('');
-    setShowNotification(false);
     return true;
   };
 
@@ -125,8 +127,6 @@ export default function EditUserProfile({ userId }: EditUserProfileProps) {
     setNewEmail('');
     setConfirmEmail('');
     setIsEditingEmail(false);
-    setShowNotification(false);
-    setError('');
   };
 
   const handleImageDelete = async () => {
@@ -145,10 +145,12 @@ export default function EditUserProfile({ userId }: EditUserProfileProps) {
         position: "top-center",
         autoClose: 3000,
       });
-      setShowNotification(true);
     } catch (err) {
-      setError((err as Error).message);
-      setShowNotification(true);
+      console.error((err as Error).message);
+      toast.error('画像の削除に失敗しました', {
+        position: "top-center",
+        autoClose: 3000,
+      });
     } finally{
       setLoading(false);
     }
@@ -166,8 +168,6 @@ export default function EditUserProfile({ userId }: EditUserProfileProps) {
     setNewEmail('');
     setConfirmEmail('');
     setIsEditingEmail(false);
-    setShowNotification(false);
-    setError('');
     router.push(`/users/${userId}`);
   };
 
@@ -187,11 +187,13 @@ export default function EditUserProfile({ userId }: EditUserProfileProps) {
         position: "top-center",
         autoClose: 3000,
       })
-      setShowNotification(true);
       router.push('/');
     } catch (err) {
-      setError((err as Error).message);
-      setShowNotification(true);
+      console.error((err as Error).message);
+      toast.error('アカウントの削除に失敗しました。', {
+        position: "top-center",
+        autoClose: 3000,
+      });
     } finally {
       setLoading(false);
     }
@@ -201,8 +203,11 @@ export default function EditUserProfile({ userId }: EditUserProfileProps) {
   const handleProfileImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (!files || files.length === 0) {
-      setError('ファイルが選択されていません');
-      setShowNotification(true);
+      console.error('ファイルが選択されていません');
+      toast.error('ファイルが選択されていません', {
+        position: "top-center",
+        autoClose: 3000,
+      });
       return;
     }
 
@@ -219,8 +224,11 @@ export default function EditUserProfile({ userId }: EditUserProfileProps) {
       const data = await response.json();
       setProfileImage(data.publicUrl);
     } catch (err) {
-      setError((err as Error).message);
-      setShowNotification(true);
+      console.error((err as Error).message);
+      toast.error('エラーが発生しました', {
+        position: "top-center",
+        autoClose: 3000,
+      });
     }finally{
       setLoading(false);
     }
@@ -244,10 +252,12 @@ export default function EditUserProfile({ userId }: EditUserProfileProps) {
         position: "top-center",
         autoClose: 3000,
       })
-      setShowNotification(true);
     } catch (err) {
-      setError((err as Error).message);
-      setShowNotification(true);
+      console.error((err as Error).message);
+      toast.error('プロフィール画像の保存に失敗しました', {
+        position: "top-center",
+        autoClose: 3000,
+      });
     }finally{
       setLoading(false);
     }
@@ -257,15 +267,16 @@ export default function EditUserProfile({ userId }: EditUserProfileProps) {
     if (!validateField('email', newEmail)) return;
 
     if (newEmail !== confirmEmail) {
-      setError('新しいメールアドレスと確認用メールアドレスが一致しません');
-      setShowNotification(true);
+      console.error('新しいメールアドレスと確認用メールアドレスが一致しません');
+      toast.error('新しいメールアドレスと確認用メールアドレスが一致しません', {
+        position: "top-center",
+        autoClose: 3000,
+      });
       return;
     }
 
     try {
       setLoading(true);
-      setError('');
-      setSuccess('');
 
       const response = await fetch(`/api/users/${userId}/edit`, {
         method: 'PUT',
@@ -279,13 +290,10 @@ export default function EditUserProfile({ userId }: EditUserProfileProps) {
         const errorData = await response.json();
         throw new Error(errorData.error || 'メールアドレスの更新に失敗しました');
       }
-      setError('');
       toast.success('メールアドレスを更新しました', {
         position: "top-center",
         autoClose: 3000,
       });
-
-      setShowNotification(true);
 
       setTimeout(() => {
         setEmail(newEmail);
@@ -294,8 +302,11 @@ export default function EditUserProfile({ userId }: EditUserProfileProps) {
         setIsEditingEmail(false);
       }, 3000);
     } catch (err) {
-      setError((err as Error).message);
-      setShowNotification(true);
+      console.error((err as Error).message);
+      toast.error('メールアドレスの更新に失敗しました', {
+        position: "top-center",
+        autoClose: 3000,
+      });
     }finally{
       setLoading(false);
     }
@@ -322,10 +333,12 @@ export default function EditUserProfile({ userId }: EditUserProfileProps) {
         position: "top-center",
         autoClose: 3000,
       });
-      setShowNotification(true);
     } catch (err) {
-      setError((err as Error).message);
-      setShowNotification(true);
+      console.error((err as Error).message);
+      toast.error('名前の更新に失敗しました', {
+        position: "top-center",
+        autoClose: 2000,
+      });
     }finally{
       setLoading(false);
     }
@@ -338,13 +351,6 @@ export default function EditUserProfile({ userId }: EditUserProfileProps) {
 
   return (
     <>
-      {showNotification && (error || success) && (
-        <Notification
-          message={error ?? success ?? ""}
-          type={error ? "error" : "success"}
-          onClose={() => setShowNotification(false)}
-        />
-      )}
       <div className="p-8 mt-10 bg-white rounded-md shadow-md w-full lg:w-2/3 mx-auto">
       <div className="flex justify-between mb-4">
         <h2 className="text-2xl font-bold text-gray-500">プロフィール</h2>

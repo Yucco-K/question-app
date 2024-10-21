@@ -18,8 +18,7 @@ const UserNameDisplay: React.FC<UserNameDisplayProps> = ({ userId }) => {
   useEffect(() => {
 
     if (!userId && !isLoading) {
-      setError('ユーザーIDが無効です');
-      setShowNotification(true);
+      console.log('ユーザーIDが無効です');
       return;
     }
 

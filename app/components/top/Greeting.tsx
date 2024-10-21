@@ -12,7 +12,6 @@ export default function Greeting() {
   const [greeting, setGreeting] = useState('');
   const [fade, setFade] = useState(false);
   const router = useRouter();
-  const [isLoading, setLoading] = useState(false);
   const greetingTimeout = 0.1 * 60 * 60 * 1000;
 
   useEffect(() => {
@@ -28,9 +27,9 @@ export default function Greeting() {
 
       } else {
         const nowHours = new Date().getHours();
-        if (nowHours >= 5 && nowHours < 12) {
+        if (nowHours >= 4 && nowHours < 9) {
           setGreeting('おはようございます！');
-        } else if (nowHours >= 12 && nowHours < 18) {
+        } else if (nowHours >= 9 && nowHours < 18) {
           setGreeting('こんにちは！');
         } else {
           setGreeting('こんばんは！');

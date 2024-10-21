@@ -23,8 +23,7 @@ export default function UserProfileImage({ userId }: UserProfileImageProps) {
   useEffect(() => {
 
     if (!userId && !isLoading) {
-      setError('ユーザーIDが無効です');
-      setShowNotification(true);
+      console.log('ユーザーIDが無効です');
       return;
     }
     const fetchUserProfile = async () => {

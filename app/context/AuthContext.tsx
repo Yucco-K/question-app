@@ -1,78 +1,110 @@
 'use client';
 
-import { createContext, useContext, useState, useEffect, ReactNode, use } from 'react';
+import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { useRouter } from 'next/navigation';
 
-interface AuthContextProps {
-  session: any;
-  setSession: (session: any) => void;
-  loading: boolean;
-  error: string | null;
+interface User {
+  id: string;
+  username: string;
+  email: string;
+  profileImage?: string;
 }
+
+type Session = {
+  user: User;
+};
+
+type AuthContextProps = {
+  user: User | null;
+  loading: boolean;
+  session: Session | null;
+  setSession: React.Dispatch<React.SetStateAction<any>>;
+  error: string | null;
+};
+
 
 const AuthContext = createContext<AuthContextProps | undefined>(undefined);
 
-export const useAuth = (p0: boolean) => {
+export const useAuth = () => {
   const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error('useAuthはAuthProvider内でのみ使用できます');
-  }
   return context;
 };
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [session, setSession] = useState(null);
+  const [session, setSession] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
+  const userId = session?.user?.id || null;
 
-  const excludedPaths = [
-    '/', '/questions', '/users/change-password',
-    '/users/login', '/users/set-new-password', '/users/signup',
-  ];
+  const checkSession = async () => {
+    try {
+      const response = await fetch('/api/check-session', {
+        method: 'GET',
+        credentials: 'include',
+      });
 
-  const isExcludedPath = (path: string) => excludedPaths.includes(path);
+      if (response.ok) {
+        const data = await response.json();
+        setSession(data.session);
+      } else {
+        setSession(null);
+        router.push('/users/login');
+      }
+    } catch (error) {
+      console.error('セッション確認エラー:', error);
+      setError('認証に失敗しました');
+      setSession(null);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const checkAuth = async () => {
-      const pathname = window.location.pathname;
+    checkSession();
+  }, []);
 
-      if (isExcludedPath(pathname)) {
-        setLoading(false);
-        return;
-      }
+  useEffect(() => {
+    if (!userId) {
+      console.log('ユーザーIDがまだ設定されていません');
+      return;
+    }
 
-      setLoading(true);
 
+    const fetchUserInfo = async () => {
       try {
-        const response = await fetch('/api/users', {
+        console.log('ユーザー情報取得中...ユーザーID:', userId);
+        const response = await fetch(`/api/users/${userId}`, {
           method: 'GET',
           credentials: 'include',
         });
-        if (response.ok) {
-          const data = await response.json();
-          setSession(data);
-        } else {
-          router.push('/users/login');
+
+        if (!response.ok) {
+          throw new Error('ユーザー情報の取得に失敗しました');
         }
+
+        const data = await response.json();
+        setSession((prevSession: any) => ({
+          ...prevSession,
+          user: {
+            ...prevSession?.user,
+            username: data.username,
+            email: data.email,
+            profileImage: data.profileImage,
+          },
+        }));
+        console.log('ユーザー情報:', data);
       } catch (err) {
-        setError('認証に失敗しました');
-        router.push('/users/login');
-      } finally {
-        setLoading(false);
+        console.error('ユーザー情報取得エラー:', err);
       }
     };
 
-    checkAuth();
-  }, [router]);
+    fetchUserInfo();
+  }, [userId]);
 
-  useEffect(() => {
-    if (!loading && session) {
-    }
-  }, [session, loading]);
 
   return (
-    <AuthContext.Provider value={{ session, setSession, loading, error }}>
+    <AuthContext.Provider value={{ user: session?.user || null, session, setSession, loading, error }}>
       {children}
     </AuthContext.Provider>
   );

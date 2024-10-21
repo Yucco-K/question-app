@@ -5,14 +5,16 @@ import UserNameDisplay from './UserNameDisplay';
 import UserEmailDisplay from './UserEmailDisplay';
 import Spinner from '../ui/Spinner';
 import Notification from '../ui/Notification';
-import { useUser } from '../../context/UserContext';
 import { useState } from 'react';
+import useAuth from '@/app/lib/useAuth';
 
 export default function UserInfo() {
   const [showNotification, setShowNotification] = useState(false);
-  const { loading, error } = useUser();
+  const { session, loading: userLoading, error } = useAuth();
+  const userId = (session?.user as { id?: string })?.id ?? null;
 
-  if (loading) {
+
+  if (userLoading) {
     return <Spinner />;
   }
 
@@ -22,7 +24,7 @@ export default function UserInfo() {
 
   return (
     <div>
-      {showNotification && (error) && (
+      {showNotification && error && (
         <Notification
           message={error ??  ""}
           type={error ? 'error' : undefined}

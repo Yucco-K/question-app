@@ -29,9 +29,8 @@ const KeywordSearch: React.FC<KeywordSearchProps> = ({ data = [],  onSearchResul
           day: 'numeric',
         });
 
-        // 正規表現で部分一致をサポート
         return searchWords.every((word) => {
-          const regex = new RegExp(word, 'i'); // 部分一致を実現する正規表現
+          const regex = new RegExp(word, 'i');
 
           return (
             regex.test(normalizedTitle) ||
@@ -54,10 +53,10 @@ const KeywordSearch: React.FC<KeywordSearchProps> = ({ data = [],  onSearchResul
   };
 
   return (
-    <div className="w-full max-w-3xl mx-auto pb-3">
+    <div className="w-full max-w-2xl mx-auto pb-3">
       <input
         type="text"
-        className="w-full p-3 rounded-md border-2 border-solid border-gray-200"
+        className="w-full p-3 text-md rounded-md border-2 border-solid border-gray-200"
         placeholder={placeholderText}
         value={searchQuery}
         onChange={handleSearchChange}

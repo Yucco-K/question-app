@@ -3,11 +3,9 @@
 import { SetStateAction, useCallback, useEffect, useState } from 'react';
 import styles from './QuestionDetail.module.css';
 import DOMPurify from 'dompurify';
-import Notification from '../ui/Notification';
 import { useLoading } from '../../context/LoadingContext';
 import AnswerForm from '../Answers/AnswerForm';
 import AnswerList from '../Answers/AnswerList';
-import { useUser } from '../../context/UserContext';
 import Form from '../ui/Form';
 import Card from '../ui/Card';
 import ButtonGroup from '../ui/ButtonGroup';
@@ -19,6 +17,9 @@ import UserProfileImage from '../profile/UserProfileImage';
 import UserNameDisplay from '../profile/UserNameDisplay';
 import { faAward } from '@fortawesome/free-solid-svg-icons';
 import ConfirmationModal from '../ui/ConfirmationModal';
+import useAuth from '@/app/lib/useAuth';
+import { toast } from 'react-toastify';
+import { set } from 'lodash';
 
 
 interface Answer {
@@ -53,14 +54,10 @@ interface Question {
 export default function QuestionDetail({ questionId }: { questionId: string }) {
   const [question, setQuestion] = useState<Question | null>(null);
   const [tags, setTags] = useState<{ id: string, name: string }[]>([])
-  const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState<string | null>(null);
-  const [showNotification, setShowNotification] = useState(false);
   const { setLoading } = useLoading();
   const [answerModalOpen, setAnswerModalOpen] = useState(false);
   const [username, setUsername] = useState<string | null>(null);
   const [questionModalOpen, setQuestionModalOpen] = useState(false);
-  const { userId } = useUser();
   const [newTitle, setNewTitle] = useState<string>('');
   const [newDescription, setNewDescription] = useState<string>('');
   const [categoryId, setCategoryId] = useState<string>('');
@@ -68,6 +65,8 @@ export default function QuestionDetail({ questionId }: { questionId: string }) {
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [answers, setAnswers] = useState<Answer[]>([]);
   const [isConfirmingResolved, setIsConfirmingResolved] = useState(false);
+  const { session, loading: userLoading } = useAuth();
+  const userId = (session?.user as { id?: string })?.id ?? null;
   const isPublic = false;
 
   const router = useRouter();
@@ -91,8 +90,6 @@ export default function QuestionDetail({ questionId }: { questionId: string }) {
 
   const fetchAnswers = useCallback(async () => {
     try {
-      setError(null);
-      setShowNotification(false);
       setLoading(true);
 
       const response = await fetch(`/api/questions/${questionId}/answers`);
@@ -102,15 +99,18 @@ export default function QuestionDetail({ questionId }: { questionId: string }) {
 
     } catch (error) {
       console.error('回答の取得に失敗しました', error);
+      toast.error('回答の取得に失敗しました', {
+        position: "top-center",
+        autoClose: 2000,
+      });
     } finally {
       setLoading(false);
-      setShowNotification(true);
     }
   }, [questionId]);
 
   useEffect(() => {
     fetchAnswers();
-  }, []);
+  }, [setLoading, setAnswerModalOpen]);
 
 
   const fetchQuestionDetail = useCallback(async () => {
@@ -130,15 +130,22 @@ export default function QuestionDetail({ questionId }: { questionId: string }) {
         setNewDescription(data.description);
 
       } else {
-        setError(data.message || 'データの取得に失敗しました');
+        console.error(data.message || 'データの取得に失敗しました');
+        toast.error('データの取得に失敗しました', {
+          position: "top-center",
+          autoClose: 2000,
+        });
       }
 
     } catch (err) {
-      setError('データの取得中にエラーが発生しました');
+      console.error('データの取得中にエラーが発生しました');
+      toast.error('データの取得中にエラーが発生しました', {
+        position: "top-center",
+        autoClose: 2000,
+      });
 
     } finally {
       setLoading(false);
-      setShowNotification(true);
     }
 
   }, []);
@@ -151,14 +158,16 @@ export default function QuestionDetail({ questionId }: { questionId: string }) {
 
   const handleResolved = async () => {
     if (!userId || question?.user_id !== userId) {
-      setError('解決済みフラグを変更する権限がありません');
+      console.error('解決済みフラグを変更する権限がありません');
+      toast.error('解決済みを変更する権限がありません', {
+        position: "top-center",
+        autoClose: 2000,
+      });
       return;
     }
 
     try {
-      setError(null);
       setLoading(true);
-      setShowNotification(false);
 
       const response = await fetch(`/api/questions/${questionId}/resolve`, {
         method: 'PATCH',
@@ -167,62 +176,86 @@ export default function QuestionDetail({ questionId }: { questionId: string }) {
       });
 
       if (response.ok) {
-        setSuccess('解決済み状態が更新されました');
+        toast.success('解決済み状態が更新されました', {
+          position: "top-center",
+          autoClose: 2000,
+        });
         setIsConfirmingResolved(false);
         fetchQuestionDetail();
 
       } else {
-        setError('解決済み状態の更新に失敗しました');
+        console.error('解決済み状態の更新に失敗しました');
+        toast.error('更新に失敗しました', {
+          position: "top-center",
+          autoClose: 2000,
+        });
       }
 
     } catch (err) {
-      setError('解決済み状態の更新中にエラーが発生しました');
+      console.error('解決済み状態の更新中にエラーが発生しました');
+      toast.error('更新中にエラーが発生しました', {
+        position: "top-center",
+        autoClose: 2000,
+      });
     }finally {
       setLoading(false);
-      setShowNotification(true);
     }
   };
 
 
   const handleUpdate = async () => {
 
-    setError(null);
-    setSuccess(null);
-    setShowNotification(false);
 
-    try {
-      setLoading(true);
 
       if (!userId) {
         setQuestionModalOpen(false);
-        setError('ログインしてください。');
+        console.error('ログインしてください。');
+        toast.error('ログインしてください。', {
+          position: "top-center",
+          autoClose: 2000,
+        });
         return;
       }
 
       if (question?.user_id !== userId) {
         setQuestionModalOpen(false);
-        setError('この投稿を編集する権限がありません。');
-        setShowNotification(true);
+        console.error('この投稿を編集する権限がありません。');
+        toast.error('この投稿を編集する権限がありません。', {
+          position: "top-center",
+          autoClose: 2000,
+        });
         return;
       }
 
       if (!newTitle) {
-        setError('タイトルを入力してください');
-        setShowNotification(true);
+        console.error('タイトルを入力してください');
+        toast.error('タイトルを入力してください', {
+          position: "top-center",
+          autoClose: 2000,
+        });
         return;
       }
 
       if (!newDescription) {
-        setError('本文を入力してください');
-        setShowNotification(true);
+        console.error('本文を入力してください');
+        toast.error('本文を入力してください', {
+          position: "top-center",
+          autoClose: 2000,
+        });
         return;
       }
 
       if (selectedTags.length === 0) {
-        setError('タグを1つ以上選び直してください');
-        setShowNotification(true);
+        console.error('タグを1つ以上 あらためて指定してください');
+        toast.error('タグを1つ以上 あらためて指定してください', {
+          position: "top-center",
+          autoClose: 2000,
+        });
         return;
       }
+
+    try {
+      setLoading(true);
 
       const response = await fetch(`/api/questions/${questionId}`, {
 
@@ -241,22 +274,34 @@ export default function QuestionDetail({ questionId }: { questionId: string }) {
       const data = await response.json();
 
       if (response.ok) {
-        setQuestionModalOpen(false);
-        setSuccess('質問が更新されました');
+
+        toast.success('質問が更新されました', {
+          position: "top-center",
+          autoClose: 2000,
+        });
+
         setLoading(false);
         fetchQuestionDetail();
+        setQuestionModalOpen(false);
         router.push(`/questions/${questionId}`);
 
       } else {
-        setError(data.message || '更新に失敗しました');
+        console.error(data.message || '更新に失敗しました');
+        toast.error('更新に失敗しました', {
+          position: "top-center",
+          autoClose: 2000,
+        });
         setLoading(false);
       }
     } catch (err) {
-      setError('更新中にエラーが発生しました');
+      console.error('更新中にエラーが発生しました');
+      toast.error('更新中にエラーが発生しました', {
+        position: "top-center",
+        autoClose: 2000,
+      });
       setLoading(false);
     }finally {
       setLoading(false);
-      setShowNotification(true);
     }
   };
 
@@ -264,21 +309,24 @@ export default function QuestionDetail({ questionId }: { questionId: string }) {
   const handleDelete = async () => {
 
     if (!userId) {
-      setError('ログインしてください。');
-      setShowNotification(true);
+      console.error('ログインしてください。');
+      toast.error('ログインしてください。', {
+        position: "top-center",
+        autoClose: 2000,
+      });
       return;
     }
 
     if (question?.user_id !== userId) {
-      setError('この投稿を削除する権限がありません。');
-      setShowNotification(true);
+      console.error('この投稿を削除する権限がありません。');
+      toast.error('この投稿を削除する権限がありません。', {
+        position: "top-center",
+        autoClose: 2000,
+      });
       return;
     }
 
     try {
-      setError(null);
-      setSuccess(null);
-      setShowNotification(false);
       setLoading(true);
 
       const response = await fetch(`/api/questions/${questionId}`, {
@@ -286,19 +334,29 @@ export default function QuestionDetail({ questionId }: { questionId: string }) {
       });
 
       if (response.ok) {
-        setSuccess('質問が削除されました');
+        toast.success('質問が削除されました', {
+          position: "top-center",
+          autoClose: 2000,
+        });
         setTimeout(() => {
         router.push('/questions');
       } , 1000);
 
       } else {
-        setError('削除に失敗しました');
+        console.error('削除に失敗しました');
+        toast.error('削除に失敗しました', {
+          position: "top-center",
+          autoClose: 2000,
+        });
       }
     } catch (err) {
-      setError('削除中にエラーが発生しました');
+      console.error('削除中にエラーが発生しました');
+      toast.error('削除中にエラーが発生しました', {
+        position: "top-center",
+        autoClose: 2000,
+      });
     }finally {
       setLoading(false);
-      setShowNotification(true);
     };
   }
 
@@ -308,6 +366,30 @@ export default function QuestionDetail({ questionId }: { questionId: string }) {
     setSelectedTags(question?.tags.map(tag => tag.name) || []);
     setQuestionModalOpen(false);
   };
+
+
+  useEffect(() => {
+    const fetchTags = async () => {
+      try {
+        setLoading(true);
+
+        const response = await fetch('/api/tags');
+        const data = await response.json();
+        setAvailableTags(data);
+
+      } catch (error) {
+        console.error('タグの取得に失敗しました:', error);
+        toast.error('タグの取得に失敗しました', {
+          position: "top-center",
+          autoClose: 2000,
+        });
+      }finally {
+        setLoading(false);
+      }
+    };
+
+    fetchTags();
+  }, []);
 
 
   const buttons = [
@@ -323,23 +405,6 @@ export default function QuestionDetail({ questionId }: { questionId: string }) {
     },
   ];
 
-  useEffect(() => {
-    const fetchTags = async () => {
-      try {
-        const response = await fetch('/api/tags');
-        const data = await response.json();
-        setAvailableTags(data);
-      } catch (error) {
-        console.error('タグの取得に失敗しました:', error);
-      }
-    };
-
-    fetchTags();
-  }, []);
-
-  useEffect(() => {
-  }, [selectedTags]);
-
 
   if (!question) {
     return null;
@@ -347,28 +412,14 @@ export default function QuestionDetail({ questionId }: { questionId: string }) {
 
   return (
     <>
-      {showNotification && (error || success) && (
-        <Notification
-          message={error ?? success ?? ""}
-          type={error ? "error" : "success"}
-          onClose={() => setShowNotification(false)}
-        />
-      )}
       <div className="flex items-center justify-center mt-10">
         <h1 className="mx-auto flex items-center justify-center text-blue-900">質問詳細ページ</h1>
       </div>
 
-      <div className="container mx-auto px-4 py-8 w-[1200px] mx-auto">
+      <div className="container mx-auto px-4 py-8 w-[1200px]">
 
         {questionModalOpen ? (
           <Modal isOpen={questionModalOpen} onClose={handleCancel} title="質問を編集">
-            {showNotification && (error || success) && (
-              <Notification
-                message={error ?? success ?? ""}
-                type={error ? "error" : "success"}
-                onClose={() => setShowNotification(false)}
-              />
-            )}
             <Form
               titleLabel="タイトル"
               titlePlaceholder="質問のタイトルを入力してください。"
@@ -416,6 +467,7 @@ export default function QuestionDetail({ questionId }: { questionId: string }) {
             onRefresh={fetchQuestionDetail}
             isResolved={question.is_resolved}
             isDraft={question.is_draft}
+            createdAt={question.created_at}
             isPublic={false}
             onEdit={() => {
               setQuestionModalOpen(true);
@@ -457,8 +509,8 @@ export default function QuestionDetail({ questionId }: { questionId: string }) {
             </div>
 
             {question.is_resolved && (
-              <div className="absolute top-4 right-20 font-semibold text-pink-500 px-4 py-2 transition-transform duration-300 ease-in-out transform hover:scale-105">
-                <FontAwesomeIcon icon={faAward} className="mr-2 text-3xl text-yellow-300" />解決済み
+              <div className="absolute top-4 right-20 font-semibold text-red-400 px-4 py-2 transition-transform duration-300 ease-in-out transform hover:scale-105">
+                <FontAwesomeIcon icon={faAward} className="mr-2 text-2xl text-yellow-300" />解決済み
               </div>
             )}
 

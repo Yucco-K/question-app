@@ -11,8 +11,7 @@ import UserProfileImage from '../profile/UserProfileImage';
 import UserNameDisplay from '../profile/UserNameDisplay';
 import Pagination from '../ui/Pagination';
 import KeywordSearch from '../ui/KeywordSearch';
-import { useAuth } from '@/app/context/AuthContext';
-import { useUser } from '@/app/context/UserContext';
+import useAuth from '@/app/lib/useAuth';
 
 
 interface Question {
@@ -39,8 +38,8 @@ export default function QuestionList({ selectedTags, setSelectedTags }: Question
   const [success, setSuccess] = useState<string | null>(null);
   const [showNotification, setShowNotification] = useState(false);
   const { isLoading, setLoading } = useLoading();
-  const { session } = useAuth(true);
-  const { userId } = useUser();
+  const { session, loading: userLoading } = useAuth();
+  const userId = (session?.user as { id?: string })?.id ?? null;
   const isPublic = false;
   const [filteredQuestions, setFilteredQuestions] = useState<Question[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -151,19 +150,20 @@ export default function QuestionList({ selectedTags, setSelectedTags }: Question
                 isPublic={false}
                 showReadMoreButton={false}
                 footer={<a href={`/questions/${question.id}`}
-                  className="hoverScale px-3 py-1 rounded-md text-md text-semibold inline-block"
+                className={`${styles.link} font-bold transition transform hover:scale-110 duration-300 ease-in-out px-3 py-1 rounded-md text-md font-semibold inline-block`}
                 >
                   詳細を見る
                 </a>}
                 showMenuButton={false}
                 isDraft={false}
+                createdAt={question.created_at}
               >
               <div className="text-blue-900 text-sm mb-4">
                 質問ID: {question.id}
               </div>
               {question.is_resolved && (
-                <div className="absolute top-0 right-4 font-semibold text-pink-500 px-4">
-                  <FontAwesomeIcon icon={faAward} className="mr-2 text-3xl text-yellow-300" />解決済み
+                <div className="absolute top-0 right-4 font-semibold text-red-400 px-4">
+                  <FontAwesomeIcon icon={faAward} className="mr-2 text-2xl text-yellow-300" />解決済み
                 </div>
               )}
 

@@ -5,11 +5,10 @@ import styles from './QuestionList.module.css';
 import { useLoading } from '../../context/LoadingContext';
 import useAuth from '@/app/lib/useAuth';
 import { useRouter } from 'next/navigation';
-import Notification from '../ui/Notification';
 import Card from '../ui/Card';
 import DOMPurify from 'dompurify';
 import UserNameDisplay from '../profile/UserNameDisplay';
-import { useUser } from '@/app/context/UserContext';
+import { toast } from 'react-toastify';
 
 
 interface DraftItem {
@@ -30,33 +29,39 @@ interface DraftListProps {
   categoryId: string | null;
 }
 
+interface User {
+  id: string;
+  username: string;
+  email: string;
+  profileImage?: string;
+}
+
 
 export default function DraftList({ onSelectDraft, categoryId }: DraftListProps) {
   const [draftList, setDraftList] = useState<DraftItem[]>([]);
   const [draftId, setDraftId] = useState<string | null>(null);
-  const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState<string | null>(null);
-  const [showNotification, setShowNotification] = useState(false);
   const { isLoading, setLoading } = useLoading();
   const router = useRouter();
-  const { session, loading } = useAuth();
-  const { userId } = useUser();
+  const { session, loading: userLoading } = useAuth();
+  const userId = (session?.user as User & { id: string })?.id ?? null;
 
 
   const fetchDrafts = async () => {
+    if (session && session.user) {
+      const userId = session.user.id;
 
-    if (!loading && !session) {
-      setError('ログインが必要です。');
-      setShowNotification(true);
-      router.push('/users/login');
-      return;
+      if (!isLoading && !session) {
+        console.error('ログインが必要です。');
+        toast.error('ログインが必要です。', {
+          position: "top-center",
+          autoClose: 2000,
+        });
+        router.push('/users/login');
+        return;
+      }
     }
 
-
-
     try {
-      setError(null);
-      setSuccess(null);
       setLoading(true);
 
       const url = `/api/questions/drafts?userId=${userId}`;
@@ -71,13 +76,16 @@ export default function DraftList({ onSelectDraft, categoryId }: DraftListProps)
       setDraftList(data);
 
     } catch (err) {
-      setError('データの取得中にエラーが発生しました');
+      console.error('データの取得中にエラーが発生しました');
+      toast.error('下書きの取得に失敗しました', {
+        position: "top-center",
+        autoClose: 2000,
+      });
       console.error('Error fetching drafts:', err);
 
     } finally {
       setLoading(false);
       setDraftId(null);
-      setShowNotification(true);
     }
   };
 
@@ -86,7 +94,12 @@ export default function DraftList({ onSelectDraft, categoryId }: DraftListProps)
     if (session) {
       fetchDrafts();
     }
-  }, [categoryId, session, loading, router]);
+  }, [
+    // categoryId,
+    // session,
+    // router,
+    // userId
+  ]);
 
 
   const handleDeleteDraft = async (id: string) => {
@@ -94,23 +107,26 @@ export default function DraftList({ onSelectDraft, categoryId }: DraftListProps)
     const draftId = id;
 
     if (!userId) {
-      setError('ログインしてください。');
-      setShowNotification(true);
+      console.error('ログインしてください。');
+      toast.error('ログインしてください。', {
+        position: "top-center",
+        autoClose: 2000,
+      });
       return;
     }
 
     const draft = draftList.find(draft => draft.id === draftId);
     if (!draft || draft.user_id !== userId) {
-      setError('この投稿を削除する権限がありません。');
-      setShowNotification(true);
+      console.error('この投稿を削除する権限がありません。');
+      toast.error('この投稿を削除する権限がありません。', {
+        position: "top-center",
+        autoClose: 2000,
+      });
       return;
     }
 
     try {
 
-      setError(null);
-      setSuccess(null);
-      setShowNotification(false);
       setLoading(true);
 
       const response = await fetch(`/api/questions/drafts/${draftId}`, {
@@ -123,32 +139,35 @@ export default function DraftList({ onSelectDraft, categoryId }: DraftListProps)
 
 
       setDraftList(draftList.filter((draft) => draft.id !== id));
-      setSuccess('下書きを削除しました');
-      setShowNotification(true);
+      toast.success('下書きを削除しました', {
+        position: "top-center",
+        autoClose: 2000,
+      });
+      fetchDrafts();
 
     } catch (err) {
       console.error('Error deleting draft:', err);
-      setError('削除中にエラーが発生しました');
-      setShowNotification(true);
+      toast.error('削除中にエラーが発生しました', {
+        position: "top-center",
+        autoClose: 2000,
+      });
     }finally {
       setLoading(false);
     }
   };
 
+  // if (isLoading) return <p>読み込み中...</p>;
 
   return (
     <>
-      {showNotification && (error || success) && (
-        <Notification
-          message={error ?? success ?? ''}
-          type={error ? 'error' : 'success'}
-          onClose={() => setShowNotification(false)}
-        />
-      )}
       <div className="className=flex flex-col items-center">
         {draftList.length === 0 && !isLoading && (
           <p className='flex items-center justify-center text-lg'>下書きがありません。</p>
         )}
+
+        <p className='my-5 mx-auto w-4/5 text-sm text-green-700 ml-20'>
+          ※ 編集ボタンを押すと、 下書きをコピーして編集することができます。
+        </p>
 
         {draftList.map((draft, index) => {
           const sanitizedDescription = DOMPurify.sanitize(draft.description);

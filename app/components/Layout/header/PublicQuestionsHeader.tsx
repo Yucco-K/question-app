@@ -1,13 +1,12 @@
 import { useState, useEffect} from 'react';
 import useAuth from '../../../lib/useAuth';
 import { useRouter } from 'next/navigation';
-import { useUser } from '@/app/context/UserContext';
 
 export default function PublicQuestionsHeader() {
-  const { session } = useAuth(false);
   const [isDropdownOpen, setDropdownOpen] = useState(false);
   const router = useRouter();
-  const { userId } = useUser();
+  const { session, loading: userLoading } = useAuth();
+  const userId = (session?.user as { id?: string })?.id ?? null;
 
   const handleClickOutside = (event: MouseEvent) => {
     if (isDropdownOpen && event.target instanceof Element && !event.target.closest('.profile-dropdown')) {
@@ -35,7 +34,7 @@ export default function PublicQuestionsHeader() {
 
   return (
     <header className="bg-gray-100 text-white py-1 fixed top-0 left-0 w-full z-50" style={{ minHeight: '40px' }}>
-      <div className="container mx-auto flex justify-between items-center">
+      <div className="container mx-auto flex justify-between items-center w-[1200px]">
 
         <div className="logo cursor-pointer" onClick={handleLogoClick}>
           Engineers <span>Q&A</span> Board

@@ -11,6 +11,7 @@
 }
 
 .link {
+  color: #335bff;
   will-change: transform;
   transform-origin: center;
 }

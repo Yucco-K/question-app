@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useLoading } from '@/app/context/LoadingContext';
-import Notification from '@/app/components/ui/Notification';
+import { toast } from 'react-toastify';
 
 interface Question {
   id: string;
@@ -22,9 +22,7 @@ interface FilteredQuestionsProps {
 }
 
 const FilteredQuestions: React.FC<FilteredQuestionsProps> = ({ questions, isLoading, error: propError }) => {
-  const [showNotification, setShowNotification] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState<string | null>(null);
 
   if (isLoading) {
     return <p>データを読み込み中です...</p>;
@@ -32,7 +30,12 @@ const FilteredQuestions: React.FC<FilteredQuestionsProps> = ({ questions, isLoad
 
   if (error) {
     setError(propError);
-    setShowNotification(true);
+    console.error(error);
+
+    toast.error('エラーが発生しました', {
+      position: "top-center",
+      autoClose: 2000,
+    });
 
   }
 
@@ -42,14 +45,6 @@ const FilteredQuestions: React.FC<FilteredQuestionsProps> = ({ questions, isLoad
 
   return (
     <>
-      {showNotification && (error || success) && (
-        <Notification
-          message={error ?? success ?? ""}
-          type={error ? "error" : "success"}
-          onClose={() => setShowNotification(false)}
-        />
-      )}
-
       <div className="container mx-auto px-4 py-8">
         <div className="space-y-4">
           {questions.map((question) => (
