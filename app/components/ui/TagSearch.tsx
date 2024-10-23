@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { FaTags } from 'react-icons/fa';
 
 export default function TagSearch({ onTagsSelected }: { onTagsSelected: (tags: string[]) => void }) {
   const [tags, setTags] = useState<string[]>([]);
@@ -50,15 +51,19 @@ export default function TagSearch({ onTagsSelected }: { onTagsSelected: (tags: s
 
   return (
     <div>
-      <h3 className="font-bold mb-2">タグ</h3>
+      <div className='flex'>
 
-      <input
-        type="text"
-        placeholder="追加するタグを検索できます"
-        className="w-full border rounded-md p-2 mb-2"
-        value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
-      />
+        <input
+          type="text"
+          placeholder="追加するタグを検索できます"
+          className="w-full border rounded-md p-2 mb-2"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
+
+      <h3 className="font-bold mb-2"><FaTags size={20} className='text-blue-400 mt-3 ml-2' /></h3>
+
+      </div>
 
       <div className="flex flex-wrap mb-4">
         {selectedTags.map((tag, index) => (
@@ -77,11 +82,11 @@ export default function TagSearch({ onTagsSelected }: { onTagsSelected: (tags: s
         ))}
       </div>
 
-      <div className="flex flex-wrap">
+      <div className="flex flex-wrap justify-center items-center">
         {filteredTags.map((tag, index) => (
           <button
             key={index}
-            className={`bg-blue-500 text-white text-sm px-4 py-1 rounded-full mr-2 mb-2 ${selectedTags.includes(tag) ? 'opacity-50 cursor-not-allowed' : ''}`}
+            className={`bg-blue-500 text-white text-sm mx-2 my-2 px-4 py-1 rounded-full mr-2 mb-2 ${selectedTags.includes(tag) ? 'opacity-50 cursor-not-allowed' : ''}`}
             onClick={() => !selectedTags.includes(tag) && handleTagClick(tag)}
             disabled={selectedTags.includes(tag)}
           >

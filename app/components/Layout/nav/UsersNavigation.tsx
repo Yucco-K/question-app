@@ -2,7 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
+import { faArrowLeft, faHome } from '@fortawesome/free-solid-svg-icons';
 
 export default function QuestionDetailNav() {
   const router = useRouter();
@@ -21,11 +21,13 @@ export default function QuestionDetailNav() {
 
         <li>
           <button
-            className="text-blue-800 font-bold ml-4 hover:underline flex items-center"
+            className="text-blue-700 font-bold ml-4 hover:underline flex items-center"
             onClick={() => handleNavigation('/questions/public')}
           >
-            <FontAwesomeIcon icon={faArrowLeft} className="mr-2 font-bold" />
-            公開ページへ戻る
+            <FontAwesomeIcon icon={faArrowLeft} className="mr-2 text-blue-500 font-bold" />
+            {/* <FontAwesomeIcon icon={faHome} className="mx-2 text-blue-500" /> */}
+            <span>公開 ページ</span>
+            <span>へ 戻る</span>
           </button>
         </li>
 

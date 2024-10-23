@@ -19,12 +19,12 @@ export default function ContactPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 relative top-12">
-      <div className="w-full max-w-xl mx-auto px-6 py-8 bg-white shadow-lg rounded-lg absolute">
-        <h1 className="text-3xl font-bold text-center mb-6">CONTACT</h1>
-        <p className="text-center text-gray-600 mb-8">お問い合わせ</p>
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 relative top-10">
+      <div className="w-full max-w-xl mx-auto px-6 py-4 bg-white shadow-lg rounded-lg absolute">
+        <h1 className="text-xl font-bold text-center mb-3">CONTACT</h1>
+        <p className="text-center text-gray-600 mb-4">お問い合わせ</p>
 
-        <div className="bg-gray-100 text-gray-900 p-4 mb-6 text-center font-semibold">
+        <div className="bg-gray-100 text-sm text-gray-900 p-3 mb-2 text-center font-semibold">
           ※このページはダミーページです
         </div>
 

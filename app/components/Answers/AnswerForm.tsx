@@ -160,14 +160,14 @@ export default function AnswerForm({
   };
 
   const buttonData = [
-    { label: isEditing ? '更新' : '投稿', className: 'bg-blue-600 text-white text-sm', onClick: handleSubmit },
-    { label: 'キャンセル', className: 'bg-gray-400 text-white text-sm', onClick: () => handleCancel() },
+    { label: isEditing ? '更新' : '投稿', className: 'bg-blue-600 text-white text-sm whitespace-nowrap', onClick: handleSubmit },
+    { label: 'キャンセル', className: 'bg-gray-400 text-white text-sm whitespace-nowrap', onClick: () => handleCancel() },
   ];
 
 
   return (
     <>
-      <ScrollToBottomButton />
+      <ScrollToBottomButton isModalOpen={answerModalOpen} />
 
       <Modal isOpen={answerModalOpen} onClose={() => setAnswerModalOpen(false)} title={isEditing ? '回答を編集' : '回答を投稿'}>
         <div className="px-8">

@@ -24,6 +24,7 @@ interface ButtonGroupProps {
 
 const ButtonGroup: React.FC<ButtonGroupProps> = ({ pattern, buttons, buttonsPerRow }) => {
 
+  // PC用のボタン幅クラスを取得
   const getButtonWidthClass = (index: number, rowIndex: number) => {
     const buttonCountInRow = buttonsPerRow[rowIndex];
 
@@ -41,6 +42,7 @@ const ButtonGroup: React.FC<ButtonGroupProps> = ({ pattern, buttons, buttonsPerR
     }
   };
 
+  // ボタンをレンダリング
   const renderButtons = () => {
     let buttonIndex = 0;
 
@@ -49,7 +51,7 @@ const ButtonGroup: React.FC<ButtonGroupProps> = ({ pattern, buttons, buttonsPerR
       buttonIndex += buttonCount;
 
       return (
-        <div key={rowIndex} className="flex space-x-4 my-8">
+        <div key={rowIndex} className="flex justify-center space-x-4 my-8 mx-auto">
           {rowButtons.map((button, index) => (
             <CustomButton
               key={index}

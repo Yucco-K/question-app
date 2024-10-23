@@ -137,7 +137,7 @@ export default function AnswerList({ questionId, categoryId, answers: initialAns
 
   return (
     <>
-      <ScrollToBottomButton />
+      <ScrollToBottomButton isModalOpen={answerModalOpen} />
       <h2 className="text-lg my-4 flex items-center justify-center mr-10 text-blue-900">
         全{answers ? answers.length : 0 }件の回答
       </h2>

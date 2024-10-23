@@ -5,6 +5,8 @@ import { useLoading } from '../../context/LoadingContext';
 import styles from '../Questions/QuestionList.module.css';
 import Pagination from './Pagination';
 import { toast } from 'react-toastify';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faAward } from '@fortawesome/free-solid-svg-icons';
 
 interface Question {
   id: string;
@@ -29,7 +31,7 @@ const CategorySearch: React.FC<CategorySearchProps> = ({ categoryId = null }) =>
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
 
-  const itemsPerPage = 5;
+  const itemsPerPage = 8;
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
@@ -98,6 +100,7 @@ const CategorySearch: React.FC<CategorySearchProps> = ({ categoryId = null }) =>
                   title={question.title}
                   categoryId={question.category_id}
                   isResolved={question.is_resolved}
+                  createdAt={question.created_at}
                   showReadMoreButton={false}
                   footer={<a href={`/questions/${question.id}`} className="hoverScale px-3 py-1 rounded-md text-md text-semibold inline-block">
                     詳細を見る
@@ -105,6 +108,12 @@ const CategorySearch: React.FC<CategorySearchProps> = ({ categoryId = null }) =>
                   isDraft={false}
                 >
                   <div className="text-blue-900 text-sm mb-4">質問ID: {question.id}</div>
+                  {question.is_resolved && (
+                    <div className="absolute top-6 right-0 font-semibold text-sm text-red-400">
+                      <FontAwesomeIcon icon={faAward} className="mr-2 text-xl text-yellow-300" />解決済み
+                    </div>
+                  )}
+
                   <div className="text-blue-900 text-left text-sm mt-2">
                     投稿日時:{' '}
                     {question.created_at ? (

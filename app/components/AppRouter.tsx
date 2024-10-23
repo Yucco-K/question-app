@@ -20,9 +20,16 @@ import UserDetailLayout from './Layout/main/UserDetailLayout';
 // import UsersLayout from './Layout/main/UsersLayout';
 import UserDetailHeader from './Layout/header/UserDetailHeader';
 import QuestionHeader from './Layout/header/QuestionHeader';
+import { useState } from 'react';
 
 const AppRouter = ({ children }: { children: React.ReactNode }) => {
   const pathname = usePathname();
+
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+
+  const toggleSearchTool = () => {
+    setIsSearchOpen(!isSearchOpen);  // 検索ツールの開閉
+  };
 
   switch (true) {
     case pathname === '/users/login'|| pathname === '/users/signup' || pathname === '/users/set-new-password' || pathname === '/users/change-password':
@@ -48,7 +55,7 @@ const AppRouter = ({ children }: { children: React.ReactNode }) => {
     case pathname === '/questions/public':
       return (
         <>
-          <PublicQuestionsHeader />
+          <PublicQuestionsHeader toggleSearchTool={toggleSearchTool}  />
           <PublicQuestionsNavigation />
           <QuestionsLayout>{children}</QuestionsLayout>
           <DefaultFooter currentYear={new Date().getFullYear()} />
@@ -58,7 +65,7 @@ const AppRouter = ({ children }: { children: React.ReactNode }) => {
     case pathname === '/questions':
       return (
         <>
-          <QuestionHeader />
+          <QuestionHeader toggleSearchTool={toggleSearchTool} />
           <QuestionsNavigation />
           <QuestionsLayout>{children}</QuestionsLayout>
           <DefaultFooter currentYear={new Date().getFullYear()} />

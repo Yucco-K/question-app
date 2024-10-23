@@ -165,7 +165,7 @@ export default function Vote({ answerId, userId, answerUserId }: VoteProps) {
         <div className="flex items-center space-x-1 text-sm">
           <button
             onClick={() => handleVote('up')}
-            className={`px-4 py-2 rounded transition-all duration-300 ease-in-out transform ${
+            className={`px-4 py-2 rounded whitespace-nowrap transition-all duration-300 ease-in-out transform ${
               voteType === 'up'
               ? 'text-red-600 scale-125'
               : upvoteCount >= 1
@@ -179,7 +179,7 @@ export default function Vote({ answerId, userId, answerUserId }: VoteProps) {
           <span className="font-semibold">{upvoteCount}</span>
         </div>
 
-        <div className="flex items-center space-x-1 text-sm">
+        <div className="flex items-center space-x-1 text-sm  whitespace-nowrap">
           <button
             onClick={() => handleVote('down')}
             className={`px-4 py-2 rounded ${

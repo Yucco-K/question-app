@@ -7,6 +7,7 @@ import { ModalProvider } from './context/ModalContext';
 import { LoadingProvider } from './context/LoadingContext';
 import CustomToastContainer from './components/ui/CustomToastContainer';
 import { AuthProvider } from './context/AuthContext';
+import Head from 'next/head';
 
 const inter = Inter({ subsets: ["latin"] });
 const notoSans = Noto_Sans({ subsets: ["latin"], weight: ["400", "700"] });
@@ -23,6 +24,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ja">
+      <Head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      </Head>
       <body className={notoSans.className}>
 
       <CustomToastContainer />

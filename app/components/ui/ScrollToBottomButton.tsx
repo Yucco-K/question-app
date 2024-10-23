@@ -2,7 +2,11 @@ import { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowDown } from '@fortawesome/free-solid-svg-icons';
 
-const ScrollToBottomButton = () => {
+interface ScrollToBottomButtonProps {
+  isModalOpen: boolean;
+}
+
+const ScrollToBottomButton = ({ isModalOpen }: ScrollToBottomButtonProps) => {
   const [isBottomVisible, setIsBottomVisible] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
 
@@ -10,6 +14,8 @@ const ScrollToBottomButton = () => {
     let timer: NodeJS.Timeout | null = null;
 
     const handleScroll = () => {
+      if (isModalOpen) return; // モーダルが開いている場合は処理を中断
+
       const scrollTop = window.scrollY;
       const documentHeight = document.documentElement.scrollHeight;
       const windowHeight = window.innerHeight;
@@ -21,16 +27,19 @@ const ScrollToBottomButton = () => {
         setIsVisible(true);
       }
 
-    if (timer) {
-      clearTimeout(timer);
-    }
+      if (timer) {
+        clearTimeout(timer);
+      }
 
-    timer = setTimeout(() => {
-      setIsVisible(false);
-    }, 2000);
+      timer = setTimeout(() => {
+        setIsVisible(false);
+      }, 2000);
     };
 
-    window.addEventListener('scroll', handleScroll);
+    // モーダルが開いていないときだけスクロールイベントをリッスン
+    if (!isModalOpen) {
+      window.addEventListener('scroll', handleScroll);
+    }
 
     return () => {
       window.removeEventListener('scroll', handleScroll);
@@ -38,12 +47,28 @@ const ScrollToBottomButton = () => {
         clearTimeout(timer);
       }
     };
-  }, []);
+  }, [isModalOpen]); // isModalOpenが変更されたときにuseEffectを再実行
+
+  // モーダルが開いている間はスクロールを無効化
+  useEffect(() => {
+    if (isModalOpen) {
+      document.body.style.overflow = 'hidden'; // スクロールを無効化
+    } else {
+      document.body.style.overflow = ''; // スクロールを再有効化
+    }
+
+    return () => {
+      document.body.style.overflow = ''; // クリーンアップ時にスクロールを再有効化
+    };
+  }, [isModalOpen]);
 
   const scrollToBottom = () => {
     setIsVisible(false);
     window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
   };
+
+  // モーダルが開いている場合はボタンを表示しない
+  if (isModalOpen) return null;
 
   return (
     <>

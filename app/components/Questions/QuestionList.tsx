@@ -46,7 +46,7 @@ export default function QuestionList({ selectedTags, setSelectedTags }: Question
   const [totalPages, setTotalPages] = useState(1);
 
 
-  const itemsPerPage = 5;
+  const itemsPerPage = 8;
 
 
   const handlePageChange = (page: number) => {
@@ -122,9 +122,9 @@ export default function QuestionList({ selectedTags, setSelectedTags }: Question
 
       <div className={styles.questionBody}>
         <div className='flex justify-between'>
-          <h1 className="mx-auto mb-4 flex items-center justify-center text-blue-900">質問一覧</h1>
+          <h1 className="mx-auto my-4 flex items-center justify-center text-blue-900">質問一覧</h1>
 
-        <ScrollToBottomButton />
+        <ScrollToBottomButton isModalOpen={false} />
       </div>
 
       <KeywordSearch data={questions} onSearchResults={handleSearchResults} />
@@ -134,7 +134,7 @@ export default function QuestionList({ selectedTags, setSelectedTags }: Question
         ) : paginatedQuestions.length === 0 ? (
           <p className="text-blue-900">このページには質問がありません。</p>
         ) : (
-          <div className="space-y-4 text-md">
+          <div className="space-y-4 text-md mt-4">
           {paginatedQuestions.map((question) => {
             const sanitizedDescription = DOMPurify.sanitize(question.description);
 
@@ -162,8 +162,8 @@ export default function QuestionList({ selectedTags, setSelectedTags }: Question
                 質問ID: {question.id}
               </div>
               {question.is_resolved && (
-                <div className="absolute top-0 right-4 font-semibold text-red-400 px-4">
-                  <FontAwesomeIcon icon={faAward} className="mr-2 text-2xl text-yellow-300" />解決済み
+                <div className="absolute top-6 right-0 font-semibold text-sm text-red-400">
+                  <FontAwesomeIcon icon={faAward} className="mr-2 text-xl text-yellow-300" />解決済み
                 </div>
               )}
 

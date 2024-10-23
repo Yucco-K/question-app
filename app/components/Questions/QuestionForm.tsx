@@ -322,15 +322,15 @@ export default function QuestionForm({ initialTitle: propInitialTitle, initialBo
 
   const buttonData = [
     { label: '入力内容をリセット',
-      className: 'bg-blue-800 text-white text-sm',
+      className: 'bg-blue-800 text-white text-sm whitespace-nowrap',
       onClick: handleResetForm,
     },
     { label: '下書きに保存',
-      className: 'bg-blue-800 text-white text-sm',
+      className: 'bg-blue-800 text-white text-sm whitespace-nowrap',
       onClick: handleDraftSubmit,
     },
     { label: '投 稿',
-      className: 'bg-blue-800 text-white text-sm',
+      className: 'bg-blue-800 text-white text-sm whitespace-nowrap',
       onClick: handleSubmit,
     },
   ];

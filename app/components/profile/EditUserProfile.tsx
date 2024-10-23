@@ -2,9 +2,9 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
-import { faTrash, faUser } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import ButtonGroup from '@/app/components/ui/ButtonGroup';
+import { faTrash, faUser, faEnvelope, faPen, faArrowLeft, faCheck, faTimes, faImage } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Image from 'next/image';
@@ -355,37 +355,49 @@ export default function EditUserProfile({ userId }: EditUserProfileProps) {
       <div className="flex justify-between mb-4">
         <h2 className="text-2xl font-bold text-gray-500">プロフィール</h2>
         <div className='flex flex-col gap-10'>
-          <button className="bg-orange-400 text-white px-4 py-2 rounded-sm">編集中</button>
+
+          <button className="bg-orange-400 text-white px-4 py-2 rounded-sm cursor-auto">
+            <span className='mr-3'>編集中</span>
+            <FontAwesomeIcon icon={faPen} />
+          </button>
+          <div className="relative">
           <button
           className="p-2 border border-gray-500 font-bold text-gray-900 text-sm rounded"
           onClick={() => setIsConfirmingAccountDelete(true)}
         >
-          アカウントを削除
+          <span className='mr-2'>アカウントを削除</span>
+          <FontAwesomeIcon icon={faTrash} className="mr-2 text-gray-500" />
         </button>
         </div>
       </div>
 
-      {isConfirmingAccountDelete && (
-        <div className="absolute inset-0 bg-gray-500 bg-opacity-75 flex flex-col items-center justify-center" onClick={handleCancelDeleteAccount}>
-          <div className="bg-white p-10 rounded shadow-md" onClick={(e) => e.stopPropagation()}>
-            <p className="text-center mb-6">本当にアカウントを削除しますか？</p>
-            <div className="flex space-x-4 justify-center">
-              <button
-                className="py-2 px-6 mr-4 bg-red-500 text-white rounded"
-                onClick={handleAccountDelete}
-              >
-                削除
-              </button>
-              <button
-                className="py-2 px-6 bg-gray-300 text-black rounded"
-                onClick={handleCancelDeleteAccount}
-              >
-                キャンセル
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+    {isConfirmingAccountDelete && (
+    <div
+    className="
+    absolute top-36 right-4 sm:right-20 mt-32
+    w-11/12 sm:w-2/3 lg:w-1/3
+    bg-gray-100 p-6 rounded shadow-md
+    border border-gray-300 z-50"
+      onClick={(e) => e.stopPropagation()}
+    >
+      <p className="text-center text-xs mb-4">本当にアカウントを削除しますか？</p>
+      <div className="flex space-x-4 justify-center">
+        <button
+          className="py-2 px-6 bg-red-500 text-xs text-white rounded"
+          onClick={handleAccountDelete}
+        >
+          削除
+        </button>
+        <button
+          className="py-2 px-6 bg-gray-300 text-xs text-black rounded"
+          onClick={handleCancelDeleteAccount}
+        >
+          キャンセル
+        </button>
+      </div>
+    </div>
+  )}
+    </div>
 
       <div className="mb-6">
         <label className="block text-blue-900 text-md mb-2">プロフィール画像</label>
@@ -406,7 +418,7 @@ export default function EditUserProfile({ userId }: EditUserProfileProps) {
 
               {isHovered && (
                 <div
-                  className="absolute inset-0 bg-black bg-opacity-30 flex items-center justify-center"
+                  className="absolute inset-0 bg-black bg-opacity-30 flex items-center justify-center z-30"
                   onClick={() => setIsConfirmingDelete(true)}
                 >
                   <FontAwesomeIcon icon={faTrash} className="text-white text-sm" />
@@ -421,7 +433,7 @@ export default function EditUserProfile({ userId }: EditUserProfileProps) {
 
           {isConfirmingDelete && (
             <div
-              className="absolute top-0 right-full mr-4 bg-gray-500 bg-opacity-75 flex flex-col items-center justify-center"
+              className="absolute top-0 right-full mr-4 bg-gray-500 bg-opacity-75 flex flex-col items-center justify-center z-50"
               onClick={handleCancelDelete}
             >
 
@@ -469,6 +481,7 @@ export default function EditUserProfile({ userId }: EditUserProfileProps) {
                 onClick={() => document.getElementById('profileImageInput')?.click()}
                 className="p-2 bg-blue-800 text-white text-sm rounded hover:bg-blue-300 w-full sm:w-1/4"
               >
+                <FontAwesomeIcon icon={faImage} className="mr-2" />
                 画像を選択
               </button>
 
@@ -476,6 +489,7 @@ export default function EditUserProfile({ userId }: EditUserProfileProps) {
                 onClick={saveProfileImage}
                 className="p-2 bg-blue-500 text-white rounded text-xs w-full sm:w-1/4"
               >
+                <FontAwesomeIcon icon={faCheck} className="mr-2" />
                 保存
               </button>
 
@@ -483,6 +497,7 @@ export default function EditUserProfile({ userId }: EditUserProfileProps) {
                 onClick={() => setIsEditingImage(false)}
                 className="p-2 bg-gray-500 text-white rounded text-xs w-full sm:w-1/4"
               >
+                <FontAwesomeIcon icon={faTimes} className="mr-2" />
                 閉じる
               </button>
             </div>
@@ -493,7 +508,8 @@ export default function EditUserProfile({ userId }: EditUserProfileProps) {
               onClick={() => setIsEditingImage(true)}
               className="p-2 bg-blue-800 text-white text-sm rounded hover:bg-blue-300 w-full sm:w-1/4"
             >
-              画像を変更
+              <FontAwesomeIcon icon={faImage} className="mr-3" />
+              変更
             </button>
           </div>
         )}
@@ -531,25 +547,28 @@ export default function EditUserProfile({ userId }: EditUserProfileProps) {
                 }}
                 className="p-2 bg-blue-500 text-white rounded text-xs w-full sm:w-1/4"
               >
+                <FontAwesomeIcon icon={faCheck} className="mr-2" />
                 保存
               </button>
               <button
                 onClick={() => setIsEditingEmail(false)}
                 className="p-2 bg-gray-500 text-white rounded text-xs w-full sm:w-1/4"
               >
+                <FontAwesomeIcon icon={faTimes} className="mr-2" />
                 閉じる
               </button>
             </div>
           </>
         ) : (
           <div>
-            <p className='flex items-center justify-center'>{email}</p>
+            <p className='flex items-center justify-center text-blue-900 text-xl font-bold mb-4'>{email}</p>
             <div className="flex space-x-2 justify-end">
               <button
                 onClick={() => setIsEditingEmail(true)}
                 className="p-2 bg-blue-800 text-white text-sm rounded hover:bg-blue-300 w-full sm:w-1/4"
               >
-                メールアドレスを変更
+                <FontAwesomeIcon icon={faEnvelope} className="mr-3" />
+                変更
               </button>
             </div>
           </div>
@@ -575,25 +594,30 @@ export default function EditUserProfile({ userId }: EditUserProfileProps) {
                 }}
                 className="p-2 bg-blue-500 text-white rounded text-xs w-full sm:w-1/4"
               >
+                <FontAwesomeIcon icon={faCheck} className="mr-2" />
                 保存
               </button>
               <button
                 onClick={() => setIsEditingName(false)}
                 className="p-2 bg-gray-500 text-white rounded text-xs w-full sm:w-1/4"
               >
+                <FontAwesomeIcon icon={faTimes} className="mr-2" />
                 閉じる
               </button>
             </div>
           </>
         ) : (
           <div>
-            <p className='flex items-center justify-center'>{name}</p>
+            <p className='flex items-center justify-center text-blue-900 text-xl font-bold mb-4'>{name}
+              <span className='ml-2 text-sm font-semibold'>さん</span>
+            </p>
             <div className="flex space-x-2 justify-end">
               <button
                 onClick={() => setIsEditingName(true)}
                 className="p-2 bg-blue-800 text-white text-sm rounded hover:bg-blue-300 w-full sm:w-1/4"
               >
-                名前を変更
+                <FontAwesomeIcon icon={faPen} className="mr-3" />
+                変更
               </button>
             </div>
           </div>

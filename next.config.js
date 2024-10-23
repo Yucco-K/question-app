@@ -1,5 +1,9 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+    // Production source maps setting
+  productionBrowserSourceMaps: true,
+
+  // Image settings for remote patterns
   // images: {
   //   domains: ['paskvjemkyxnpmlrvzzt.supabase.co'],
   // },

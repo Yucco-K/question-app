@@ -51,7 +51,7 @@ const CategorySelect: React.FC<CategorySelectProps> = ({ onSelect, initialCatego
   };
 
   return (
-    <div className="relative category-dropdown w-64 max-w-[1400px] mx-auto">
+    <div className="relative category-dropdown w-64 max-w-[1400px] mb-4 mx-auto">
       <label htmlFor="category" className="block text-lg text-gray-400 my-8 flex flex-start whitespace-nowrap">
         リスト表示するカテゴリを選択して下さい。
       </label>

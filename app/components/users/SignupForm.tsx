@@ -142,15 +142,27 @@ export default function SignupForm() {
         setError(result.message || 'アカウント作成に失敗しました。');
         setShowNotification(true);
         setAttemptCount(attemptCount + 1);
+
+        resetForm();
       }
     } catch (err) {
       setError('サーバーエラーが発生しました。後ほど再試行してください。');
       setShowNotification(true);
       setAttemptCount(attemptCount + 1);
+
+      resetForm();
     }finally {
       setLoading(false);
     }
   }
+
+  const resetForm = () => {
+    setUsername('');
+    setEmail('');
+    setPassword('');
+    setConfirmPassword('');
+    setIsSendDisabled(true);
+  };
 
   const updatePasswordStrength = (password: string) => {
     const result = zxcvbn(password);
@@ -158,7 +170,7 @@ export default function SignupForm() {
   };
 
     const handleResendClick = async () => {
-    if (attemptCount < 7) {
+    if (attemptCount < 5) {
       setIsResendDisabled(true);
       setTimeout(() => {
         setIsResendDisabled(false);
@@ -181,6 +193,8 @@ export default function SignupForm() {
       setError('試行回数の上限を超えました。時間をおいてもう一度お試しください。');
       setShowNotification(true);
       setIsResendDisabled(true);
+
+      resetForm();
 
       setTimeout(() => {
         setError(null);

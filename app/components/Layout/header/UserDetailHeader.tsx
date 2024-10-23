@@ -42,14 +42,14 @@ export default function UserDetailHeader() {
 
   return (
     <header className="bg-gray-100 text-white py-1 fixed top-0 left-0 w-full z-50">
-      <div className="container mx-auto flex justify-between items-center w-[1200px]">
+      <div className="container pt-2 mx-auto flex justify-between items-center w-[1200px]">
 
-        <div className="logo cursor-pointer" onClick={handleLogoClick}>
+        <div className="logo cursor-pointer ml-4" onClick={handleLogoClick}>
           Engineers <span>Q&A</span> Board
         </div>
 
         <div className="relative">
-          <div onClick={handleProfileClick} className="cursor-pointer">
+          <div onClick={handleProfileClick} className="cursor-pointer mr-4">
             <CurrentUserProfileImage />
           </div>
 

@@ -56,15 +56,15 @@ export default function TagInput({
 
   return (
     <div className="max-w-[1400px] mx-auto mb-15">
-      <div className='flex items-center'>
-        <label className="block text-md font-semibold text-gray-700 m-6">
+      <div className='flex flex-col items-center'>
+        <label className="block text-md font-semibold text-gray-700 m-6 whitespace-nowrap">
           {tagLabel}
         </label>
         <p className='text-sm text-green-700'>
           ※ 編集の場合: タグを1つ以上、あらためて指定して下さい。
         </p>
       </div>
-      <div className="flex flex-wrap gap-2">
+      <div className="flex flex-wrap gap-2 justify-center">
 
         {availableTags.map((tag, index) => (
           <button

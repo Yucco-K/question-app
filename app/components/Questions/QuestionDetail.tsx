@@ -509,8 +509,8 @@ export default function QuestionDetail({ questionId }: { questionId: string }) {
             </div>
 
             {question.is_resolved && (
-              <div className="absolute top-4 right-20 font-semibold text-red-400 px-4 py-2 transition-transform duration-300 ease-in-out transform hover:scale-105">
-                <FontAwesomeIcon icon={faAward} className="mr-2 text-2xl text-yellow-300" />解決済み
+              <div className="absolute top-6 right-0 font-semibold text-sm text-red-400 py-2">
+                <FontAwesomeIcon icon={faAward} className="mr-2 text-xl text-yellow-300" />解決済み
               </div>
             )}
 

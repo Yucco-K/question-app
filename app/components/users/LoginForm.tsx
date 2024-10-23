@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
@@ -23,10 +23,32 @@ export default function LoginForm() {
   const { session, loading } = useAuth();
   const authContext = useAuthContext();
   const setSession = authContext?.setSession;
+  const [attemptCount, setAttemptCount] = useState(0);
+  const [isLoginDisabled, setIsLoginDisabled] = useState(false);
 
   if (loading) {
     return <div>ローディング中...</div>;
   }
+
+
+  // useEffect(() => {
+  //   let timer: NodeJS.Timeout | null = null;
+
+  //   if (attemptCount >= 7) {
+  //     timer = setTimeout(() => {
+  //       setAttemptCount(0);
+  //       setIsLoginDisabled(false);
+  //       setError(null);
+  //       setShowNotification(false);
+  //     }, 180000);
+  //   }
+
+  //   return () => {
+  //     if (timer) clearTimeout(timer);
+  //   };
+  // }, [attemptCount]);
+
+
 
   const validateUsernameOrEmail = () => {
     const atIndex = usernameOrEmail.indexOf('@');
@@ -43,7 +65,7 @@ export default function LoginForm() {
     setError('ユーザー名またはメールアドレスの形式が正しいことを確認してください。');
     setTimeout(() => {
       setShowNotification(true);
-    } , 5000);
+    } , 3000);
     return false;
   };
 
@@ -61,6 +83,7 @@ export default function LoginForm() {
     return true;
   };
 
+
   const handleSignIn = async () => {
 
     setShowNotification(false);
@@ -68,10 +91,30 @@ export default function LoginForm() {
     setError(null);
     setSuccess(null);
 
+    if (attemptCount >= 7) {
+      setError('試行回数が制限に達しました。しばらくしてから再度お試しください。');
+      setShowNotification(true);
+      setLoading(false);
+
+      let timer: NodeJS.Timeout | null = null;
+      if (attemptCount >= 7) {
+        timer = setTimeout(() => {
+          setAttemptCount(0);
+          setIsLoginDisabled(false);
+          setError(null);
+          setShowNotification(false);
+        }, 180000);
+      }
+
+      return;
+    }
+
     if (!validateUsernameOrEmail() || !validatePassword()) {
       setError('入力内容に誤りがあります');
       setShowNotification(true);
       setLoading(false);
+      setAttemptCount(attemptCount + 1);
+      console.log('Attempt count:', attemptCount);
       return;
     }
 
@@ -88,6 +131,10 @@ export default function LoginForm() {
         const errorData = await response.json();
         setError(errorData.message);
         setShowNotification(true);
+
+        setAttemptCount(attemptCount + 1);
+        console.log('Server Attempt count:', attemptCount);
+        return;
       } else {
 
         const result = await response.json();

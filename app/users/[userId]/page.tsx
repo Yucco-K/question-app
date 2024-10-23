@@ -4,7 +4,7 @@ import styles from '@/app/components/Questions/QuestionDetail.module.css';
 import { AwaitedReactNode, JSXElementConstructor, Key, ReactElement, ReactNode, ReactPortal, useEffect, useState } from 'react';
 import Card from '../../components/ui/Card';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faThumbsUp, faUserGraduate, faUser, faCrown, faAward, faChevronUp, faChevronDown } from '@fortawesome/free-solid-svg-icons';
+import { faThumbsUp, faUserGraduate, faUser, faCrown, faAward, faChevronUp, faChevronDown, faEnvelope } from '@fortawesome/free-solid-svg-icons';
 import UserProfileImage from '@/app/components/profile/UserProfileImage';
 import UserNameDisplay from '@/app/components/profile/UserNameDisplay';
 import DOMPurify from 'dompurify';
@@ -87,11 +87,11 @@ export default function MyPage() {
 
   const [questionCurrentPage, setQuestionCurrentPage] = useState(1);
   const [questionTotalPages, setQuestionTotalPages] = useState(1);
-  const questionsPerPage = 2;
+  const questionsPerPage = 8;
 
   const [bookmarkCurrentPage, setBookmarkCurrentPage] = useState(1);
   const [bookmarkTotalPages, setBookmarkTotalPages] = useState(1);
-  const bookmarksPerPage = 2;
+  const bookmarksPerPage = 8;
 
 
   const paginatedQuestions = questions.slice(
@@ -235,9 +235,9 @@ export default function MyPage() {
 
             <div className="w-1/2 pr-4">
               <div className="flex items-center mb-6 gap-10">
-                <label className="w-32 font-bold text-blue-900 whitespace-nowrap text-md">
+                {/* <label className="w-32 font-bold text-blue-900 whitespace-nowrap text-md">
                   プロフィール画像
-                </label>
+                </label> */}
                 {profileImage ? (
                   <Image
                   src={profileImage}
@@ -254,25 +254,31 @@ export default function MyPage() {
               </div>
 
               <div className="flex items-center mb-6 gap-10">
-                <label className="w-32 font-bold text-blue-900 text-sm">メールアドレス</label>
-                <p className="text-blue-900 text-md">{userData?.email || 'メールアドレスが登録されていません'}</p>
+                {/* <label className="w-32 font-bold text-blue-900 text-sm">メールアドレス</label> */}
+                <FontAwesomeIcon icon={faEnvelope} className="mr-3 text-2xl text-blue-400" />
+                <p className="text-blue-900 text-md font-bold">{userData?.email || 'メールアドレスが登録されていません'}</p>
               </div>
 
-              <div className="flex items-center mb-6 gap-10">
-                <label className="w-32 font-bold text-blue-900 text-sm">名前</label>
-                <p className="text-blue-900 text-md">{userData?.username || '名前が登録されていません'}</p>
+              <div className="flex items-center mb-6 gap-10  mt-8">
+                <label className="w-32 font-bold text-blue-900 text-sm whitespace-nowrap">名前</label>
+                <p className="text-blue-900 text-lg font-bold whitespace-nowrap">{userData?.username || 'ゲスト'}
+                  <span className='ml-2 text-sm font-semibold'>さん</span>
+                </p>
               </div>
             </div>
 
-            <div className="w-1/2 flex flex-col items-end space-y-4">
-              <div className="text-blue-900 text-md font-semibold">
-                <FontAwesomeIcon icon={faCrown} className="mr-11 mt-4 text-yellow-300 text-2xl" /><span className='mr-10'> ベストアンサー数: {userStatistics.bestAnswerCount}</span>
+            <div className="w-1/2 flex flex-col items-end">
+              <div className="text-blue-900 text-sm font-semibold mb-6">
+                <span className='mr-2 mb-2'> Best Answer: {userStatistics.bestAnswerCount}</span>
+                <FontAwesomeIcon icon={faCrown} className="mr-2 mt-2 text-yellow-300 text-lg" />
               </div>
-              <div className="text-blue-900 text-md font-semibold">
-                <FontAwesomeIcon icon={faThumbsUp} className="mr-14 mt-4 text-orange-300 text-2xl" /><span className='mr-10'> いいね獲得数: {userStatistics.totalLikes}</span>
+              <div className="text-blue-900 text-sm mb-8 font-semibold">
+                <span className='mr-2'> いいね獲得: {userStatistics.totalLikes}</span>
+                <FontAwesomeIcon icon={faThumbsUp} className="mr-2 text-orange-300 text-lg" />
               </div>
-              <div className="text-blue-900 text-md font-semibold">
-                <FontAwesomeIcon icon={faUserGraduate} className="mr-20 mt-4 text-indigo-500 text-2xl" /><span className='mr-10'> 総回答数: {userStatistics.totalAnswers}</span>
+              <div className="text-blue-900 text-sm mt-2 mb-6 font-semibold">
+                <span className='mr-2'> 総回答: {userStatistics.totalAnswers}</span>
+                <FontAwesomeIcon icon={faUserGraduate} className="mr-2 mt-2 text-indigo-500 text-lg" />
               </div>
             </div>
           </div>
@@ -331,8 +337,8 @@ export default function MyPage() {
                       }) : '作成日登録なし'}
                     </div>
                     {question.is_resolved && (
-                      <div className="absolute top-0 right-4 font-semibold text-red-400 px-4">
-                        <FontAwesomeIcon icon={faAward} className="mr-2 text-2xl text-yellow-300" />解決済み
+                      <div className="absolute top-6 right-0 font-semibold text-sm text-red-400">
+                        <FontAwesomeIcon icon={faAward} className="mr-2 text-xl text-yellow-300" />解決済み
                       </div>
                     )}
 
@@ -371,14 +377,14 @@ export default function MyPage() {
               })}
             </>
             ) : (
-            <p className="text-blue-900">質問がありません。</p>
+            <p className="text-blue-900 mt-4">質問がありません。</p>
           )}
           <Pagination
             currentPage={questionCurrentPage}
             totalPages={questionTotalPages}
             onPageChange={handleQuestionPageChange}
           />
-          <ScrollToBottomButton />
+          <ScrollToBottomButton isModalOpen={false} />
         </div>
       )}
     </section>
@@ -427,8 +433,8 @@ export default function MyPage() {
                     type={'bookmarks'}
                   >
                     {bookmark.is_resolved && (
-                      <div className="absolute top-0 right-4 font-semibold text-red-400 px-4">
-                        <FontAwesomeIcon icon={faAward} className="mr-2 text-2xl text-yellow-300" />解決済み
+                      <div className="absolute top-6 right-0 font-semibold text-sm text-gray-400">
+                        <FontAwesomeIcon icon={faAward} className="mr-2 text-xl text-yellow-300" />解決済み
                       </div>
                     )}
                     <div className="text-blue-900 text-sm mb-4">

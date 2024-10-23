@@ -1,3 +1,5 @@
+import { faSearch } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";
 
 interface KeywordSearchProps {
@@ -53,13 +55,17 @@ const KeywordSearch: React.FC<KeywordSearchProps> = ({ data = [],  onSearchResul
   };
 
   return (
-    <div className="w-full max-w-2xl mx-auto pb-3">
+    <div className="relative flex items-center w-full mb-4">
       <input
         type="text"
-        className="w-full p-3 text-md rounded-md border-2 border-solid border-gray-200"
+        className="w-full p-2 text-md rounded-md border-2 border-solid border-gray-200 hover:border-gray-300 focus:border-gray-300 focus:outline-none"
         placeholder={placeholderText}
         value={searchQuery}
         onChange={handleSearchChange}
+      />
+      <FontAwesomeIcon
+        icon={faSearch}
+        className="absolute right-4 text-gray-300"
       />
     </div>
   );

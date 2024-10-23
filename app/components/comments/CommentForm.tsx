@@ -7,7 +7,6 @@ import { useLoading } from '../../context/LoadingContext';
 import ScrollToBottomButton from '../ui/ScrollToBottomButton';
 import useAuth from '@/app/lib/useAuth';
 import { toast } from 'react-toastify';
-import { on } from 'events';
 
 interface CommentFormProps {
   initialComment?: string;
@@ -157,12 +156,12 @@ export default function CommentForm({ questionId,
   const buttons = [
     {
       label: '送信',
-      className: 'bg-blue-500 text-white text-sm',
+      className: 'bg-blue-500 text-white text-sm whitespace-nowrap',
       onClick: handleSubmit,
     },
     {
       label: 'キャンセル',
-      className: 'bg-blue-500 text-white text-sm',
+      className: 'bg-blue-500 text-white text-sm whitespace-nowrap',
       onClick: handleCancel,
     },
   ];
@@ -170,7 +169,7 @@ export default function CommentForm({ questionId,
   return (
     <>
       <div>
-        <ScrollToBottomButton />
+        <ScrollToBottomButton isModalOpen={false} />
         <Form
           titleLabel="コメントタイトル"
           titlePlaceholder="コメントタイトルを入力"

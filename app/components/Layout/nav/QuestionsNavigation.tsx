@@ -2,7 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
+import { faArrowLeft, faHome } from '@fortawesome/free-solid-svg-icons';
 import { useEffect, useState } from 'react';
 import useAuth from '@/app/lib/useAuth';
 import LogoutButton from '../../users/LogoutButton';
@@ -27,11 +27,6 @@ export default function QuestionsNavigation() {
     }
   };
 
-  const handleSearchCategory = () => {
-
-      router.push('/questions/search/category');
-
-  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -58,10 +53,10 @@ export default function QuestionsNavigation() {
     }`}
     >
     <div className="w-[1200px] mx-auto">
-      <ul className="flex space-x-6 text-sm items-center mt-2">
+      <ul className="flex text-sm items-center mt-2">
         <li>
           <button
-            className="text-blue-800 ml-4 hover:underline flex items-center"
+            className="text-blue-700 ml-4 font-bold hover:underline flex items-center"
             onClick={handleBack}
           >
             <FontAwesomeIcon icon={faArrowLeft} className="mr-2" />
@@ -71,25 +66,19 @@ export default function QuestionsNavigation() {
 
         <li className="text-gray-500 mx-2">＞</li>
 
-        <li className="text-gray-700">Top 画面</li>
+        <li className="text-gray-700">
+        <FontAwesomeIcon icon={faHome} className="mr-2 text-gray-500 font-bold" />
+          Top 画面
+        </li>
 
         <li className="text-gray-500 mx-2">＞</li>
 
         <li>
           <button
-            className="text-blue-800 ml-2 hover:underline"
+            className="text-blue-700 ml-2 font-bold hover:underline"
             onClick={handleAccountManagement}
           >
             マイページ
-          </button>
-        </li>
-
-        <li>
-          <button
-            className="text-blue-800 ml-2 hover:underline"
-            onClick={handleSearchCategory}
-          >
-            カテゴリ検索
           </button>
         </li>
 
@@ -98,11 +87,11 @@ export default function QuestionsNavigation() {
         <li>
           {!userLoading && session ? (
             <>
-              <LogoutButton className="text-blue-800 ml-2 hover:underline" />
+              <LogoutButton className="text-blue-700 ml-2 font-bold hover:underline" />
             </>
           ) : (
             <button
-              className="text-blue-800 ml-2 hover:underline"
+              className="text-blue-700 ml-2 font-bold hover:underline"
               onClick={() => handleNavigation('/users/login')}
             >
               ログイン

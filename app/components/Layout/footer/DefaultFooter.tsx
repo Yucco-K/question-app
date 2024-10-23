@@ -2,7 +2,7 @@ import Link from 'next/link';
 
 export default function DefaultFooter({ currentYear }: { currentYear: number }) {
   return (
-    <footer className="bg-blue-900 text-xs text-white py-4 mt-20">
+    <footer className="w-full bg-blue-900 text-xs text-white py-4 mt-20">
       <div className="container mx-auto text-center">
         <ul className="mt-4 flex justify-center space-x-4">
           <li>

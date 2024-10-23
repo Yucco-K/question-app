@@ -2,7 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
+import { faArrowLeft, faHome } from '@fortawesome/free-solid-svg-icons';
 import useAuth from '@/app/lib/useAuth';
 import { useEffect, useState } from 'react';
 
@@ -51,10 +51,10 @@ export default function QuestionDetailNav() {
     }`}
     >
     <div className="w-[1200px] mx-auto">
-      <ul className="flex space-x-6 text-sm items-center mt-2">
+      <ul className="flex text-sm items-center mt-2">
         <li>
           <button
-            className="text-blue-800 ml-4 hover:underline flex items-center"
+            className="text-blue-700 ml-4 font-bold hover:underline flex items-center"
             onClick={handleBack}
           >
             <FontAwesomeIcon icon={faArrowLeft} className="mr-2" />
@@ -64,11 +64,18 @@ export default function QuestionDetailNav() {
 
         <li>
           <button
-            className="text-blue-800 ml-10 hover:underline"
+            className="text-blue-700 ml-10 font-bold hover:underline"
             onClick={() => handleNavigation('/questions/public')}
           >
-            Top画面
+            <FontAwesomeIcon icon={faHome} className="mr-2 text-blue-500" />
+            Top 画面
           </button>
+        </li>
+
+        <li className="text-gray-500 mx-2">＞</li>
+
+        <li className="text-gray-700">
+          マイページ
         </li>
 
       </ul>

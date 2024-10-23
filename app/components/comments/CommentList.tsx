@@ -255,7 +255,7 @@ export default function CommentList({ questionId, answerId, categoryId, selected
 
   return (
     <>
-      <ScrollToBottomButton />
+      <ScrollToBottomButton isModalOpen={commentListModalOpen} />
       {!commentListModalOpen && (
         <div className="mt-4 flex justify-end">
           <button
@@ -263,7 +263,7 @@ export default function CommentList({ questionId, answerId, categoryId, selected
               setCommentListModalOpen(true);
               setShowNotification(false);
             }}
-            className="text-green-500 text-sm px-4 py-2 rounded hover:text-green-600 transition-transform duration-300 ease-in-out transform hover:scale-105"
+            className="text-green-500 text-sm px-4 py-2 rounded whitespace-nowrap hover:text-green-600 transition-transform duration-300 ease-in-out transform hover:scale-105"
           >
             <FontAwesomeIcon
               icon={faComments}
@@ -403,11 +403,12 @@ export default function CommentList({ questionId, answerId, categoryId, selected
                 )}
                 <div className="fixed inset-0 flex items-center justify-center z-50 overflow-auto">
                   <div
-                    className="fixed inset-0 bg-black opacity-70 backdrop-blur-xl"
+                    className="fixed inset-0 bg-black opacity-40 backdrop-blur-xl"
                     onClick={() => setCommentModalOpen(false)}
                   ></div>
 
-                  <div className="bg-white p-6 rounded-lg shadow-lg w-2/3 relative">
+                  {/* <div className="bg-white p-6 rounded-lg shadow-lg w-2/3 relative"> */}
+                  <div className="modal relative bg-white w-full h-full sm:w-auto sm:h-auto sm:max-w-2xl p-6 rounded-lg sm:rounded-xl overflow-y-auto sm:mx-auto">
                     <button
                       className="absolute top-6 right-6 text-gray-500 hover:text-gray-700 text-3xl"
                       onClick={() => setCommentModalOpen(false)}

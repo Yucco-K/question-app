@@ -56,9 +56,10 @@ body {
 
 .post-button {
   position: fixed;
-  bottom: 30px;
+  bottom: 40px;
   right: 20px;
-  margin-right: 20px;
+  /* background-color: #ff9800;
+  color: white; */
   padding: 10px 20px;
   cursor: pointer;
   z-index: 1000;
@@ -97,45 +98,4 @@ body {
   }
 }
 
-/* マウスホバーで文字が現れるスタイル */
-.hover-show-text {
-  opacity: 0;
-  transition: opacity 0.5s ease;
-}
 
-.hover-show-text-parent:hover .hover-show-text {
-  opacity: 1;
-}
-
-.hover-container {
-  position: relative;
-}
-
-.hover-container img {
-  width: 100%;
-  height: auto;
-}
-
-.hover-text {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  color: white;
-  font-size: 1.5rem;
-  opacity: 0;
-  transition: opacity 0.5s ease;
-}
-
-.hover-container:hover .hover-text {
-  opacity: 1;
-}
-
-/* 画像の拡大スタイル */
-.hover-zoom img {
-  transition: transform 0.5s ease-in-out;
-}
-
-.hover-zoom img:hover {
-  transform: scale(1.1);
-}

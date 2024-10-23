@@ -22,7 +22,7 @@ export default function SortQuestions() {
 
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const itemsPerPage = 5;
+  const itemsPerPage = 12;
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
@@ -69,7 +69,7 @@ export default function SortQuestions() {
   return (
     <>
         <div className="container max-w-[1200px] mx-auto px-4 py-8">
-          <h1 className="text-2xl font-bold mt-8 mb-4">質問のソート</h1>
+          <h1 className="text-xl text-center mt-8 mb-4">質問のソート</h1>
 
             <div className="mb-4 flex flex-col justify-center">
               <label htmlFor="sort" className="w-1/3 mx-auto block font-bold text-md my-4">ソート順を選択</label>
@@ -101,7 +101,7 @@ export default function SortQuestions() {
                       質問ID: {question.id}
                     </div>
                     <h2>
-                      <span className="question-label text-lg">質問タイトル: </span>{question.title}
+                      <span className="question-label text-md">質問タイトル: </span>{question.title}
                     </h2>
                     <p className="text-gray-600 mt-4">投稿日時: {question.created_at ? (
                       new Date(question.created_at).toLocaleString('ja-JP', {

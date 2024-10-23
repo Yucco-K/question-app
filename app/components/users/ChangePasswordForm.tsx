@@ -106,6 +106,8 @@ export default function ChangePasswordForm() {
     } catch (err) {
       setError((err as Error).message);
       setShowNotification(true);
+
+      resetForm();
     }finally {
       setLoading(false);
     }
@@ -150,6 +152,8 @@ export default function ChangePasswordForm() {
         } catch (err) {
           setError((err as Error).message);
           setShowNotification(true);
+
+          resetForm();
         }finally {
           setLoading(false);
         }
@@ -159,6 +163,8 @@ export default function ChangePasswordForm() {
       setShowNotification(true);
       setIsResendDisabled(true);
 
+      resetForm();
+
       setTimeout(() => {
         setError(null);
         setSuccess(null);
@@ -167,6 +173,11 @@ export default function ChangePasswordForm() {
       }, 180000);
     }
   }
+
+  const resetForm = () => {
+    setEmail('');
+    setIsSendDisabled(true);
+  };
 
   return (
     <UsersLayout

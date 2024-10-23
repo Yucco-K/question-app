@@ -37,7 +37,23 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const router = useRouter();
   const userId = session?.user?.id || null;
 
+
+  const excludedPaths = [
+    '/', '/users/change-password',
+    '/users/login', '/users/set-new-password', '/users/signup',
+  ];
+
+  const isExcludedPath = (path: string) => excludedPaths.includes(path);
+
   const checkSession = async () => {
+    const pathname = window.location.pathname;
+
+    if (isExcludedPath(pathname)) {
+      console.log(`認証不要のページです: ${pathname}`);
+      setLoading(false);
+      return;
+    }
+
     try {
       const response = await fetch('/api/check-session', {
         method: 'GET',

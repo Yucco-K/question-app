@@ -50,7 +50,7 @@ export default function PublicQuestionList({ selectedTags }: PublicQuestionListP
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
 
-  const itemsPerPage = 5;
+  const itemsPerPage = 8;
 
 
   const handlePageChange = (page: number) => {
@@ -145,9 +145,9 @@ export default function PublicQuestionList({ selectedTags }: PublicQuestionListP
       <div className={styles.questionBody}>
         <div className='flex justify-between'>
 
-          <h1 className="mb-1 mx-auto flex items-center justify-center text-blue-900">質問一覧</h1>
+          <h1 className="mb-4 mx-auto flex items-center justify-center text-blue-900">質問一覧</h1>
 
-          <ScrollToBottomButton />
+          <ScrollToBottomButton isModalOpen={false} />
         </div>
 
           <KeywordSearch data={questions} onSearchResults={handleSearchResults} />
@@ -198,8 +198,8 @@ export default function PublicQuestionList({ selectedTags }: PublicQuestionListP
                   質問ID: {question.id}
                 </div>
                 {question.is_resolved && (
-                  <div className="absolute top-0 right-4 font-semibold text-red-400 px-4 transition-transform duration-300 ease-in-out transform hover:scale-105">
-                    <FontAwesomeIcon icon={faAward} className="mr-2 text-2xl text-yellow-300" />解決済み
+                  <div className="absolute top-6 right-0 font-semibold text-sm text-red-400">
+                    <FontAwesomeIcon icon={faAward} className="mr-2 text-xl text-yellow-300" />解決済み
                   </div>
                 )}
 
@@ -238,49 +238,48 @@ export default function PublicQuestionList({ selectedTags }: PublicQuestionListP
                       </div>
                     </div>
                   </div>
-
                   </Card>
+
                   <Modal
-                    isOpen={isLoginPromptOpen}
-                    onClose={() => setLoginPromptOpen(false)}
-                    title="ログインしますか？"
+                  isOpen={isLoginPromptOpen}
+                  onClose={() => setLoginPromptOpen(false)}
+                  title="ログインしますか？"
+                >
+
+                  <div
+                    className="p-4 w-full md:w-2/3 md:flex justify-center items-center"
+                    style={{
+                      backgroundColor: 'rgb(176, 224, 230, 0.5)',
+                      borderRadius: '10px',
+                      boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
+                      maxWidth: '90%',
+                      margin: '0 auto',
+                      zIndex: 1500,
+                    }}
                   >
 
-                    <div
-                      className="p-4"
-                      style={{
-                        backgroundColor: 'rgb(176, 224, 230,0.5)',
-                        borderRadius: '10px',
-                        boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
-                        maxWidth: '50%',
-                        margin: '0 auto',
-                        zIndex: 1500,
+                    <div className="flex flex-col gap-4 items-center justify-center">
+                      <button
+                        className="bg-sky-500 text-white px-6 py-3 rounded-md hover:bg-blue-600 w-full max-w-xs whitespace-nowrap mt-8 md:px-8"
+                        onClick={async () => {
+                        setLoginPromptOpen(false);
+                        setTimeout(() => {
+                          router.push('/users/login');
+                        }, 1000);
                       }}
+                      >
+                        ログインする
+                    </button>
+                    <button
+                      className="bg-gray-500 text-white px-6 py-3 rounded-md hover:bg-gray-600 w-full max-w-xs mb-4 whitespace-nowrap"
+                      onClick={handleContinueWithoutLogin}
                     >
-
-                      <div className="flex justify-center space-x-5">
-                        <button
-                          className="bg-sky-500 text-white px-4 py-3 m-6 rounded-md hover:bg-blue-600"
-                          onClick={async () => {
-                            setLoginPromptOpen(false);
-                            setTimeout(() => {
-                              router.push('/users/login');
-                            }, 1000);
-                          }}
-                        >
-                          ログインする
-                        </button>
-                        <button
-                          className="bg-gray-500 text-white px-4 py-3 m-6 rounded-md hover:bg-gray-600"
-                          onClick={handleContinueWithoutLogin}
-                        >
-                          閉じる
-                        </button>
-                      </div>
+                      閉じる
+                    </button>
                     </div>
-                    <p className='flex justify-end text-sm text-semibold mt-3'>※ 詳細を見るにはログインが必要です。</p>
-                  </Modal>
-
+                  </div>
+                  <p className='flex justify-center text-sm text-semibold mt-12'> ※ 質問の詳細や回答・コメントの閲覧には、ログインが必要です。</p>
+                </Modal>
                 </>
               );
             })}

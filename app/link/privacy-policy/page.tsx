@@ -2,7 +2,7 @@ export default function PrivacyPolicyPage() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 mt-2">
       <div className="w-full max-w-3xl mx-auto px-6 py-8 bg-white shadow-lg rounded-lg">
-        <h1 className="text-2xl font-bold text-center mb-6">プライバシーポリシー</h1>
+        <h1 className="text-lg font-bold text-center mb-6">プライバシーポリシー</h1>
 
         <div className="bg-gray-100 text-gray-900 p-4 mb-6 text-center font-semibold">
           ※このページはダミーページです
@@ -56,7 +56,7 @@ export default function PrivacyPolicyPage() {
           </section>
           </div>
           <p className="text-center text-gray-600 hover:underline m-8">
-            <a href="/link/contact">お問い合わせページ からご連絡ください。</a>
+            <a href="/link/contact">お問い合わせページ から<br/>ご連絡ください。</a>
           </p>
       </div>
     </div>

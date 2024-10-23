@@ -20,7 +20,7 @@ export default function UsersHeader() {
 
         `}</style>
 
-        <div className="logo">
+        <div className="logo ml-4">
           Engineers <span>Q&A</span> Board
         </div>
       </div>
