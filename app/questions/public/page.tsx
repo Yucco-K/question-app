@@ -11,7 +11,6 @@ import Notification from '../../components/ui/Notification';
 import PublicQuestionList from '../../components/Questions/PublicQuestionList';
 import TagSearch from '@/app/components/ui/TagSearch';
 import PublicQuestionsHeader from '@/app/components/Layout/header/PublicQuestionsHeader';
-import SearchTool from '@/app/components/ui/SearchTool';
 
 
 export default function PublicQuestionsPage() {
@@ -30,9 +29,12 @@ export default function PublicQuestionsPage() {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
 
 
-  const toggleSearchTool = () => {
-    setIsSearchOpen(!isSearchOpen);
-  };
+  useEffect(() => {
+    const isMobile = () => /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+    if (isMobile()) {
+      router.push('/questions/public/mobile');
+    }
+  }, [router]);
 
 
   useEffect(() => {
@@ -42,6 +44,11 @@ export default function PublicQuestionsPage() {
       router.push('/questions');
     }
   }, [session, router]);
+
+
+  const toggleSearchTool = () => {
+    setIsSearchOpen(!isSearchOpen);
+  };
 
 
   const handleLogin = () => {
@@ -80,105 +87,7 @@ export default function PublicQuestionsPage() {
 
         <PublicQuestionsHeader toggleSearchTool={toggleSearchTool} />
 
-      {/* <div
-        className={`fixed inset-0 bg-white transform transition-transform duration-300 z-40 ${
-          isSearchOpen ? 'translate-x-0' : 'translate-x-full'
-        } md:hidden`}
-      >
-        <button
-          className="absolute top-4 right-4 text-gray-700"
-          onClick={toggleSearchTool}
-        >
-          閉じる
-        </button>
-          <h2 className="text-xl p-4">検索ツール</h2>
-          <div className="p-4">
-            <button
-              onClick={(e) => {
-                e.preventDefault();
-                if (isPublicScreen) {
-                  setIsSearchOpen(!isSearchOpen);
-                  setLoginPromptOpen(true);
-                } else {
-                  handleSortQuestions();
-                }
-                }}
-              className="block w-full text-gray-700 border border-gray-500 bg-white rounded-md p-2 hover: transition transform hover:scale-105 duration-300 ease-in-out">
-              ソート
-            </button>
-            <button
-              onClick={(e) => {
-                e.preventDefault();
-                if (isPublicScreen) {
-                  setIsSearchOpen(!isSearchOpen);
-                  setLoginPromptOpen(true);
-                } else {
-                  handleFilteredQuestions();
-                }
-              }}
-              className="block w-full text-gray-700 border border-gray-500 bg-white rounded-md p-2 hover: transition transform hover:scale-105 duration-300 ease-in-out">
-              フィルター
-            </button>
-            <button
-              onClick={(e) => {
-                e.preventDefault();
-                if (isPublicScreen) {
-                  setIsSearchOpen(!isSearchOpen);
-                  setLoginPromptOpen(true);
-                } else {
-                  handleSearchCategory();
-                }
-              }}
-              className="block w-full text-gray-700 border border-gray-500 bg-white rounded-md p-2 hover: transition transform hover:scale-105 duration-300 ease-in-out">
-              カテゴリ検索
-            </button>
-            <TagSearch onTagsSelected={setSelectedTags} />
-          </div>
-        </div> */}
-
       <div className="container mx-auto px-4 py-8 z-100">
-
-      {/* <Modal
-        isOpen={isLoginPromptOpen}
-        onClose={() => setLoginPromptOpen(false)}
-        title="ログインしますか？"
-      >
-      <div
-        className="p-4"
-        style={{
-          backgroundColor: 'rgb(176, 224, 230, 0.5)',
-          borderRadius: '10px',
-          boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
-          maxWidth: '90%',
-          margin: '0 auto',
-          zIndex: 1500,
-        }}
-      >
-
-        <div className="flex flex-col md:flex-row justify-center items-center space-y-3 md:space-y-0 md:space-x-5">
-          <button
-            className="bg-sky-500 text-white px-4 py-3 rounded-md hover:bg-blue-600 w-full md:w-auto"
-            onClick={async () => {
-              setLoginPromptOpen(false);
-              setTimeout(() => {
-                router.push('/users/login');
-              }, 1000);
-            }}
-          >
-            ログインする
-          </button>
-          <button
-            className="bg-gray-500 text-white px-4 py-3 rounded-md hover:bg-gray-600 w-full md:w-auto"
-            onClick={handleContinueWithoutLogin}
-          >
-            閉じる
-          </button>
-        </div>
-      </div>
-      <p className='flex justify-end text-sm text-semibold mt-3'>
-        ※ 詳細を見るにはログインが必要です。
-      </p>
-    </Modal> */}
 
     <Modal
       isOpen={isLoginPromptOpen}
@@ -200,7 +109,7 @@ export default function PublicQuestionsPage() {
 
       <div className="flex flex-col gap-4 items-center justify-center">
         <button
-          className="bg-sky-500 text-white px-6 py-3 rounded-md hover:bg-blue-600 w-full max-w-xs whitespace-nowrap mt-8 md:px-8"
+          className="bg-sky-500 text-white px-6 py-3 rounded-md hover:bg-blue-600 w-full max-w-xs whitespace-nowrap mt-8"
           onClick={async () => {
           setLoginPromptOpen(false);
           setTimeout(() => {
@@ -223,7 +132,7 @@ export default function PublicQuestionsPage() {
   </div>
 
 
-  <div className="flex justify-end items-center mt-8 mb-4 mr-4 sm:justify-end">
+  <div className="flex justify-end items-center mt-8 mb-4 mr-4">
         {!isModalOpen && (
           <button
             className="flex items-center bg-orange-400 text-white px-4 py-2 rounded-full hover:bg-orange-600 transition-transform duration-300 ease-in-out transform scale-105 ml-auto  whitespace-nowrap"
@@ -248,7 +157,7 @@ export default function PublicQuestionsPage() {
       />
     </div>
 
-    <div className="w-1/3 mt-20 hidden md:block">
+    <div className="w-1/3 mt-20">
       <div className="bg-white shadow-md border rounded-lg p-4 space-y-4">
 
         <div>
@@ -302,97 +211,6 @@ export default function PublicQuestionsPage() {
       </div>
     </div>
   </div>
-
-  <SearchTool
-      isSearchOpen={isSearchOpen}
-      setIsSearchOpen={setIsSearchOpen}
-      setLoginPromptOpen={setLoginPromptOpen}
-      setSelectedTags={setSelectedTags}
-      isPublicScreen={true}
-      handleSortQuestions={handleSortQuestions}
-      handleFilteredQuestions={handleFilteredQuestions}
-      handleSearchCategory={handleSearchCategory}
-  />
-
-    {/* <div
-      className={`fixed inset-0 bg-white transform transition-transform duration-300 ${
-        isSearchOpen ? 'translate-x-0' : 'translate-x-full'
-      } z-40 md:hidden`}
-    >
-      <button
-        className="absolute top-4 right-4 text-gray-700"
-        onClick={toggleSearchTool}
-      >
-        閉じる
-      </button>
-      <h2 className="text-xl p-4">検索ツール</h2>
-        <div>
-          <button
-            onClick={(e) => {
-              e.preventDefault();
-              if (isPublicScreen) {
-                setLoginPromptOpen(true);
-              } else {
-                handleSortQuestions();
-              }
-            }}
-            className="block w-full text-blue-700 border border-blue-500 bg-gray-100 rounded-md p-2 hover: transition transform hover:scale-105 duration-300 ease-in-out"
-          >
-            ソート
-          </button>
-        </div>
-
-        <div>
-          <button
-            onClick={(e) => {
-              e.preventDefault();
-              if (isPublicScreen) {
-                setLoginPromptOpen(true);
-              } else {
-                handleFilteredQuestions();
-              }
-            }}
-            className="block w-full text-blue-700 border border-blue-500 bg-gray-100  rounded-md p-2 hover: transition transform hover:scale-105 duration-300 ease-in-out"
-          >
-            フィルター
-          </button>
-        </div>
-
-        <div>
-          <button
-            onClick={(e) => {
-              e.preventDefault();
-              if (isPublicScreen) {
-                setLoginPromptOpen(true);
-              } else {
-                handleSearchCategory();
-              }
-            }}
-            className="block w-full text-blue-700 border border-blue-500 bg-gray-100 rounded-md p-2 hover: transition transform hover:scale-105 duration-300 ease-in-out"
-          >
-            カテゴリ検索
-          </button>
-        </div>
-
-        <TagSearch onTagsSelected={setSelectedTags} />
-
-      </div> */}
-
-        {/* <div className="flex justify-between items-center mt-8 sm:flex-row-reverse sm:justify-end sm:hidden md:block">
-          {!isModalOpen && (
-            <button
-              className="flex items-center bg-orange-400 text-white px-4 py-2 rounded-full hover:bg-orange-600 mr-60 post-button"
-          onClick={() =>{
-            setLoginPromptOpen(true);
-          }}
-        >
-          <span className="bg-orange-400 text-white rounded-full w-6 h-6 flex items-center justify-center mr-2 text-2xl">
-            ⊕
-          </span>
-          質問を投稿
-        </button>
-        )}
-      </div> */}
     </>
   );
 }

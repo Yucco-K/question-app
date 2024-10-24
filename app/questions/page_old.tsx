@@ -10,6 +10,7 @@ import '../globals.css';
 import Notification from '../components/ui/Notification';
 import TagSearch from '../components/ui/TagSearch';
 import QuestionHeader from '../components/Layout/header/QuestionHeader';
+import SearchTool from '../components/ui/SearchTool';
 
 
 export default function QuestionsPage() {
@@ -27,26 +28,15 @@ export default function QuestionsPage() {
   const [loginPromptOpen, setLoginPromptOpen] = useState(false);
 
 
-
-  useEffect(() => {
-    const isMobile = () => /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-    if (isMobile()) {
-      router.push('/questions/mobile');
-    }
-  }, [router]);
-
+  const toggleSearchTool = () => {
+    setIsSearchOpen(!isSearchOpen);
+  };
 
   useEffect(() => {
     if (!userLoading && !session) {
       router.push('/questions/public');
     }
   }, [userLoading, session, router]);
-
-
-  const toggleSearchTool = () => {
-    setIsSearchOpen(!isSearchOpen);
-  };
-
 
 
   const handleSortQuestions = () => {
@@ -77,7 +67,8 @@ export default function QuestionsPage() {
         />
       )}
 
-    <QuestionHeader toggleSearchTool={toggleSearchTool} />
+
+    {/* <QuestionHeader toggleSearchTool={toggleSearchTool} /> */}
 
 
     <div className="container mx-auto px-4 py-8">
@@ -96,7 +87,7 @@ export default function QuestionsPage() {
         />
       </Modal>
 
-      <div className="flex justify-center items-center mt-8 mb-4 mr-4">
+      <div className="flex justify-end items-center mt-8 mb-4 mr-4">
           {!isModalOpen && (
             <button
               className="flex items-center bg-orange-400 text-white px-4 py-2 rounded-full hover:bg-orange-600 transition-transform duration-300 ease-in-out transform scale-105 ml-auto  whitespace-nowrap"
@@ -145,9 +136,75 @@ export default function QuestionsPage() {
             </div>
 
             <TagSearch onTagsSelected={setSelectedTags} />
-
           </div>
         </div>
+      </div>
+
+      <SearchTool
+        isSearchOpen={isSearchOpen}
+        setIsSearchOpen={setIsSearchOpen}
+        setLoginPromptOpen={setLoginPromptOpen}
+        setSelectedTags={setSelectedTags}
+        isPublicScreen={false}
+        handleSortQuestions={handleSortQuestions}
+        handleFilteredQuestions={handleFilteredQuestions}
+        handleSearchCategory={handleSearchCategory}
+      />
+
+    </div>
+
+
+
+    <div className="container mx-auto px-4 py-8">
+
+      <Modal isOpen={isModalOpen} onClose={() => setModalOpen(false)} title="質問を投稿">
+        <QuestionForm
+          initialTitle={''}
+          initialBody={''}
+          initialTags={[]}
+          onSubmit={() => {
+            setModalOpen(false);
+          }}
+          onCancel={() => {
+            setModalOpen(false);
+          }}
+        />
+      </Modal>
+
+      <div className="flex justify-end items-center mt-8 sm:justify-end">
+          {!isModalOpen && (
+            <button
+              className="flex items-center bg-orange-400 text-white px-4 py-2 rounded-full hover:bg-orange-600 transition-transform duration-300 ease-in-out transform scale-105 ml-auto  whitespace-nowrap"
+              onClick={() =>{
+                setModalOpen(true);
+              }}
+            >
+              <span className="bg-orange-400 text-white rounded-full w-6 h-6 flex items-center justify-center mr-2 text-2xl">
+                ⊕
+              </span>
+              質問を投稿
+            </button>
+          )}
+      </div>
+
+      <div className="flex container mx-auto w-[1200px]">
+        <div className="flex-grow mr-8 w-full">
+          <QuestionList
+            selectedTags={selectedTags}
+            setSelectedTags={setSelectedTags}
+          />
+        </div>
+
+      <SearchTool
+        isSearchOpen={isSearchOpen}
+        setIsSearchOpen={setIsSearchOpen}
+        setLoginPromptOpen={setLoginPromptOpen}
+        setSelectedTags={setSelectedTags}
+        isPublicScreen={false}
+        handleSortQuestions={handleSortQuestions}
+        handleFilteredQuestions={handleFilteredQuestions}
+        handleSearchCategory={handleSearchCategory}
+      />
       </div>
     </div>
     </>

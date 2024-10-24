@@ -198,7 +198,7 @@ export default function PublicQuestionList({ selectedTags }: PublicQuestionListP
                   質問ID: {question.id}
                 </div>
                 {question.is_resolved && (
-                  <div className="absolute top-12 right-16 font-semibold text-sm text-red-400">
+                  <div className="absolute top-6 right-0 font-semibold text-sm text-red-400">
                     <FontAwesomeIcon icon={faAward} className="mr-2 text-xl text-yellow-300" />解決済み
                   </div>
                 )}

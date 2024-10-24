@@ -296,13 +296,14 @@ export default function Card({
       )}
       <div className="relative border rounded-lg shadow-md overflow-hidden bg-white max-w-[1400px]">
       {isNewPost() && (
-          <div className="absolute top-0 left-20 ml-20 bg-yellow-100 text-yellow-500 px-3 py-1 ml-10 rounded-b-md text-sm font-bold mt-4">
+          <div className="absolute top-20 right-4 ml-20 bg-yellow-100 text-yellow-500 px-3 py-1 ml-10 rounded-b-md text-sm font-bold mt-14 z-50
+          ">
             NEW
           </div>
         )}
         <div className="p-10">
           <div className={`card-base-styles ${className}`}>
-            <div className="absolute top-4 right-4 flex items-center space-x-10">
+            <div className="absolute top-4 right-4 flex items-center space-x-2">
               <span className=" text-blue-900 text-sm font-semibold">
                 {categoryName || 'カテゴリなし'}
               </span>
@@ -397,7 +398,7 @@ export default function Card({
             )}
 
 
-            <h3 className="text-lg mt-6 mb-4 font-bold">{title}</h3>
+            <h3 className="text-lg mt-4 mb-2 font-bold">{title}</h3>
 
               <>
               <div className="relative">

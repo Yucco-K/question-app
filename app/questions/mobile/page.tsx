@@ -1,15 +1,14 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import QuestionForm from '../components/Questions/QuestionForm';
+import QuestionForm from '../../components/Questions/QuestionForm';
 import { useEffect, useState } from 'react';
-import Modal from '../components/ui/Modal';
-import QuestionList from '../components/Questions/QuestionList';
-import useAuth from '../lib/useAuth';
-import '../globals.css';
-import Notification from '../components/ui/Notification';
-import TagSearch from '../components/ui/TagSearch';
-import QuestionHeader from '../components/Layout/header/QuestionHeader';
+import Modal from '../../components/ui/Modal';
+import QuestionList from '../../components/Questions/QuestionList';
+import useAuth from '../../lib/useAuth';
+import Notification from '../../components/ui/Notification';
+import SearchTool from '@/app/components/ui/SearchTool';
+import QuestionHeader from '../../components/Layout/header/QuestionHeader';
 
 
 export default function QuestionsPage() {
@@ -27,26 +26,15 @@ export default function QuestionsPage() {
   const [loginPromptOpen, setLoginPromptOpen] = useState(false);
 
 
-
-  useEffect(() => {
-    const isMobile = () => /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-    if (isMobile()) {
-      router.push('/questions/mobile');
-    }
-  }, [router]);
-
+  const toggleSearchTool = () => {
+    setIsSearchOpen(!isSearchOpen);
+  };
 
   useEffect(() => {
     if (!userLoading && !session) {
       router.push('/questions/public');
     }
   }, [userLoading, session, router]);
-
-
-  const toggleSearchTool = () => {
-    setIsSearchOpen(!isSearchOpen);
-  };
-
 
 
   const handleSortQuestions = () => {
@@ -96,7 +84,7 @@ export default function QuestionsPage() {
         />
       </Modal>
 
-      <div className="flex justify-center items-center mt-8 mb-4 mr-4">
+      <div className="flex justify-end items-center mt-8 mb-4 mr-4">
           {!isModalOpen && (
             <button
               className="flex items-center bg-orange-400 text-white px-4 py-2 rounded-full hover:bg-orange-600 transition-transform duration-300 ease-in-out transform scale-105 ml-auto  whitespace-nowrap"
@@ -112,43 +100,33 @@ export default function QuestionsPage() {
           )}
       </div>
 
-      <div className="flex container mx-auto w-[1200px]">
-        <div className="flex-grow mr-8 w-2/3">
-          <QuestionList
-            selectedTags={selectedTags}
-            setSelectedTags={setSelectedTags}
-          />
-        </div>
-
-        <div className="w-1/3 mt-20 hidden md:block">
-          <div className="bg-white shadow-md border rounded-lg p-4 space-y-4">
-
-            <div>
-              <button onClick={handleSortQuestions}
-                className="block w-full text-blue-700 border border-blue-500 bg-gray-100 rounded-md p-2 hover: transition transform hover:scale-105 duration-300 ease-in-out">
-                ソート
-              </button>
-            </div>
-
-            <div>
-              <button onClick={handleFilteredQuestions}
-                className="block w-full text-blue-700 border border-blue-500 bg-gray-100 rounded-md p-2 hover: transition transform hover:scale-105 duration-300 ease-in-out">
-                フィルター
-              </button>
-            </div>
-
-            <div>
-              <button onClick={handleSearchCategory}
-                className="block w-full text-blue-700 border border-blue-500 bg-gray-100 rounded-md p-2 hover: transition transform hover:scale-105 duration-300 ease-in-out">
-                カテゴリ検索
-              </button>
-            </div>
-
-            <TagSearch onTagsSelected={setSelectedTags} />
-
-          </div>
-        </div>
+      {/* 質問リスト */}
+      <div className="w-full">
+        <QuestionList
+          selectedTags={selectedTags}
+          setSelectedTags={setSelectedTags}
+        />
       </div>
+
+      {/* 検索ツール */}
+      <SearchTool
+        isSearchOpen={isSearchOpen}
+        setIsSearchOpen={setIsSearchOpen}
+        setLoginPromptOpen={setLoginPromptOpen}
+        setSelectedTags={setSelectedTags}
+        isPublicScreen={false}
+        handleSortQuestions={handleSortQuestions}
+        handleFilteredQuestions={handleFilteredQuestions}
+        handleSearchCategory={handleSearchCategory}
+      />
+
+      {showNotification && (error || success) && (
+        <Notification
+          message={error ?? success ?? ''}
+          type={error ? 'error' : 'success'}
+          onClose={() => setShowNotification(false)}
+        />
+      )}
     </div>
     </>
   );

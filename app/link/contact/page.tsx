@@ -19,7 +19,7 @@ export default function ContactPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 relative top-10">
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 relative top-30 mt-20">
       <div className="w-full max-w-xl mx-auto px-6 py-4 bg-white shadow-lg rounded-lg absolute">
         <h1 className="text-xl font-bold text-center mb-3">CONTACT</h1>
         <p className="text-center text-gray-600 mb-4">お問い合わせ</p>
@@ -72,7 +72,7 @@ export default function ContactPage() {
                 onChange={(e) => setMessage(e.target.value)}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="お問い合わせ内容を入力してください"
-                rows={5}
+                rows={2}
                 required
               />
             </div>

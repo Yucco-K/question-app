@@ -337,7 +337,7 @@ export default function MyPage() {
                       }) : '作成日登録なし'}
                     </div>
                     {question.is_resolved && (
-                      <div className="absolute top-6 right-0 font-semibold text-sm text-red-400">
+                      <div className="absolute top-5 right-0 font-semibold text-sm text-red-400 mb-4">
                         <FontAwesomeIcon icon={faAward} className="mr-2 text-xl text-yellow-300" />解決済み
                       </div>
                     )}
@@ -433,11 +433,11 @@ export default function MyPage() {
                     type={'bookmarks'}
                   >
                     {bookmark.is_resolved && (
-                      <div className="absolute top-6 right-0 font-semibold text-sm text-gray-400">
+                      <div className="absolute top-5 right-0 font-semibold text-sm text-red-400 mb-4">
                         <FontAwesomeIcon icon={faAward} className="mr-2 text-xl text-yellow-300" />解決済み
                       </div>
                     )}
-                    <div className="text-blue-900 text-sm mb-4">
+                    <div className="text-blue-900 text-sm mb-2">
                       質問ID: {bookmark.id}
                     </div>
                     <div className="text-blue-900 text-sm mb-4">
