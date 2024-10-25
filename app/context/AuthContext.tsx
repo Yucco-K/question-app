@@ -46,40 +46,40 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const isExcludedPath = (path: string) => excludedPaths.includes(path);
 
-  // const checkSession = async () => {
-  //   const pathname = window.location.pathname;
+  const checkSession = async () => {
+    const pathname = window.location.pathname;
 
-  //   if (isExcludedPath(pathname)) {
-  //     console.log(`認証不要のページです: ${pathname}`);
-  //     setLoading(false);
-  //     return;
-  //   }
+    if (isExcludedPath(pathname)) {
+      console.log(`認証不要のページです: ${pathname}`);
+      setLoading(false);
+      return;
+    }
 
-  //   try {
-  //     const response = await fetch('/api/check-session', {
-  //       method: 'GET',
-  //       credentials: 'include',
-  //     });
+    try {
+      const response = await fetch('/api/check-session', {
+        method: 'GET',
+        credentials: 'include',
+      });
 
-  //     if (response.ok) {
-  //       const data = await response.json();
-  //       setSession(data.session);
-  //     } else {
-  //       setSession(null);
-  //       router.push('/users/login');
-  //     }
-  //   } catch (error) {
-  //     console.error('セッション確認エラー:', error);
-  //     setError('認証に失敗しました');
-  //     setSession(null);
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
+      if (response.ok) {
+        const data = await response.json();
+        setSession(data.session);
+      } else {
+        setSession(null);
+        router.push('/users/login');
+      }
+    } catch (error) {
+      console.error('セッション確認エラー:', error);
+      setError('認証に失敗しました');
+      setSession(null);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-  // useEffect(() => {
-  //   checkSession();
-  // }, []);
+  useEffect(() => {
+    checkSession();
+  }, []);
 
   useEffect(() => {
     if (!userId) {
