@@ -149,7 +149,7 @@ export default function QuestionList({ selectedTags, setSelectedTags }: Question
                 isResolved={false}
                 isPublic={false}
                 showReadMoreButton={false}
-                footer={<a href={`/questions/${question.id}`}
+                footer={<a href={`/questions/${question.id}/mobile`}
                 className={`${styles.link} font-bold transition transform hover:scale-110 duration-300 ease-in-out px-3 py-1 rounded-md text-md font-semibold inline-block`}
                 >
                   詳細を見る
@@ -158,7 +158,7 @@ export default function QuestionList({ selectedTags, setSelectedTags }: Question
                 isDraft={false}
                 createdAt={question.created_at}
               >
-              <div className="text-blue-900 text-sm mb-4">
+              <div className="text-blue-900 text-sm">
                 質問ID: {question.id}
               </div>
               {question.is_resolved && (

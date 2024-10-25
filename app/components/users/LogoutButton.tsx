@@ -11,6 +11,7 @@ interface LogoutButtonProps {
 const LogoutButton: FC<LogoutButtonProps> = ({ className }) => {
   const [isLoading, setLoading] = useState(false);
   const router = useRouter();
+  const isMobile = () => /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 
   const handleLogout = async () => {
 
@@ -51,9 +52,15 @@ const LogoutButton: FC<LogoutButtonProps> = ({ className }) => {
 
         setTimeout(() => {
           window.location.reload();
-          router.push('/');
+
+          if (isMobile()) {
+            router.push('/questions/public/mobile');
+          } else {
+            router.push('/questions/public');
+          }
         }, 1000);
       }
+
     } catch (err) {
       console.log('予期しないエラーが発生しました。');
       toast.error('予期しないエラーが発生しました', {

@@ -143,9 +143,9 @@ export default function PublicQuestionList({ selectedTags }: PublicQuestionListP
       )}
 
       <div className={styles.questionBody}>
-        <div className='flex justify-between'>
+        <div className='Top-20 flex justify-between'>
 
-          <h1 className="mb-4 mx-auto flex items-center justify-center text-blue-900">質問一覧</h1>
+          <h1 className="mt-4 mb-4 mx-auto flex items-center justify-center text-blue-900">質問一覧</h1>
 
           <ScrollToBottomButton isModalOpen={false} />
         </div>
@@ -181,12 +181,12 @@ export default function PublicQuestionList({ selectedTags }: PublicQuestionListP
                     className={`${styles.link} font-bold transition transform hover:scale-110 duration-300 ease-in-out px-3 py-1 rounded-md text-md text-semibold inline-block`}
                     onClick={(e) => {
                       e.preventDefault();
-                      if (isPublicScreen) {
+                      // if (isPublicScreen) {
                         setLoginPromptOpen(true);
-                      } else {
-                        router.push(`/questions/${question.id}`);
-                      }
-                    } }
+                      // } else {
+                      //   router.push(`/questions/${question.id}`);
+                      // }
+                    }}
                   >
                     詳細を見る
                   </a>}
@@ -240,46 +240,45 @@ export default function PublicQuestionList({ selectedTags }: PublicQuestionListP
                   </div>
                   </Card>
 
-                  <Modal
-                  isOpen={isLoginPromptOpen}
-                  onClose={() => setLoginPromptOpen(false)}
-                  title="ログインしますか？"
-                >
-
-                  <div
-                    className="p-4 w-full md:w-2/3 md:flex justify-center items-center"
-                    style={{
-                      backgroundColor: 'rgb(176, 224, 230, 0.5)',
-                      borderRadius: '10px',
-                      boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
-                      maxWidth: '90%',
-                      margin: '0 auto',
-                      zIndex: 1500,
-                    }}
-                  >
-
-                    <div className="flex flex-col gap-4 items-center justify-center">
-                      <button
-                        className="bg-sky-500 text-white px-6 py-3 rounded-md hover:bg-blue-600 w-full max-w-xs whitespace-nowrap mt-8 md:px-8"
-                        onClick={async () => {
-                        setLoginPromptOpen(false);
-                        setTimeout(() => {
-                          router.push('/users/login');
-                        }, 1000);
-                      }}
-                      >
-                        ログインする
-                    </button>
-                    <button
-                      className="bg-gray-500 text-white px-6 py-3 rounded-md hover:bg-gray-600 w-full max-w-xs mb-4 whitespace-nowrap"
-                      onClick={handleContinueWithoutLogin}
+                  {isLoginPromptOpen && (
+                    <div
+                      className="fixed inset-0 bg-gray-500 bg-opacity-75 flex flex-col items-center justify-center z-50"
+                      onClick={() => setLoginPromptOpen(false)}
                     >
-                      閉じる
-                    </button>
+                      <div
+                        className="bg-white p-10 rounded shadow-md"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <p className="text-center mb-6">ログインしますか？</p>
+
+                        <div className="flex flex-col gap-4 items-center justify-center">
+                          <button
+                            className="bg-sky-500 text-white px-6 py-3 rounded-md hover:bg-blue-600 w-full max-w-xs whitespace-nowrap mt-8"
+                            onClick={() => {
+                              setLoginPromptOpen(false);
+                              setTimeout(() => {
+                                router.push('/users/login');
+                              }, 1000);}
+                            }
+                          >
+                            ログインする
+                          </button>
+
+                          <button
+                            className="bg-gray-500 text-white px-6 py-3 rounded-md hover:bg-gray-600 w-full max-w-xs mb-4 whitespace-nowrap"
+                            onClick={handleContinueWithoutLogin}
+                          >
+                            閉じる
+                          </button>
+                        </div>
+
+                        <p className="text-gray-500 text-sm mt-4">
+                          ※ 質問の詳細や回答・コメントの閲覧には、ログインが必要です。
+                        </p>
+                      </div>
                     </div>
-                  </div>
-                  <p className='flex justify-center text-sm text-semibold mt-12'> ※ 質問の詳細や回答・コメントの閲覧には、ログインが必要です。</p>
-                </Modal>
+                  )}
+
                 </>
               );
             })}

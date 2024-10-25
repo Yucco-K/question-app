@@ -1,13 +1,13 @@
 'use client';
 
 import useAuth from '@/app/lib/useAuth';
-import QuestionDetail from '../../components/Questions/QuestionDetail';
-import { usePathname } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import QuestionDetail from '../../../components/Questions/QuestionDetail';
 import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { usePathname } from 'next/navigation';
 
 
-export default function QuestionDetailPage() {
+export default function MobileQuestionDetailPage() {
   const pathname = usePathname();
   const questionId = pathname.split('/').pop();
   const { session, loading: userLoading } = useAuth();
@@ -18,23 +18,21 @@ export default function QuestionDetailPage() {
 
 
   useEffect(() => {
-    const isMobile = () => /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-    if (isMobile()) {
-      router.push('/questions/public/mobile');
-    }
-  }, [router]);
-
-
-  useEffect(() => {
     if (questionId) {
       setId(questionId);
       console.log('Question ID:', questionId);
     }
   }, [questionId]);
 
+
   return (
-    <div>
-      {id ? <QuestionDetail questionId={id} /> : null}
+    <div className="min-h-screen flex flex-col justify-center items-center">
+      {id ? (
+        <div className="w-full">
+          <QuestionDetail questionId={id} />
+        </div>
+      ) : null}
     </div>
+
   );
 }

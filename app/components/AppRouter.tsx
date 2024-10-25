@@ -52,7 +52,7 @@ const AppRouter = ({ children }: { children: React.ReactNode }) => {
         </>
       );
 
-    case pathname === '/questions/public':
+    case pathname === '/questions/public' || pathname === '/questions/public/mobile':
       return (
         <>
           <PublicQuestionsHeader toggleSearchTool={toggleSearchTool}  />
@@ -62,7 +62,7 @@ const AppRouter = ({ children }: { children: React.ReactNode }) => {
         </>
       );
 
-    case pathname === '/questions':
+    case pathname === '/questions' || pathname === '/questions/mobile':
       return (
         <>
           <QuestionHeader toggleSearchTool={toggleSearchTool} />

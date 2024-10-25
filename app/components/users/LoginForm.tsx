@@ -25,29 +25,11 @@ export default function LoginForm() {
   const setSession = authContext?.setSession;
   const [attemptCount, setAttemptCount] = useState(0);
   const [isLoginDisabled, setIsLoginDisabled] = useState(false);
+  const isMobile = () => /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 
   if (loading) {
     return <div>ローディング中...</div>;
   }
-
-
-  // useEffect(() => {
-  //   let timer: NodeJS.Timeout | null = null;
-
-  //   if (attemptCount >= 7) {
-  //     timer = setTimeout(() => {
-  //       setAttemptCount(0);
-  //       setIsLoginDisabled(false);
-  //       setError(null);
-  //       setShowNotification(false);
-  //     }, 180000);
-  //   }
-
-  //   return () => {
-  //     if (timer) clearTimeout(timer);
-  //   };
-  // }, [attemptCount]);
-
 
 
   const validateUsernameOrEmail = () => {
@@ -146,10 +128,23 @@ export default function LoginForm() {
         }
 
         setSuccess('ログインしました');
+
+        {success && (
+          <p className="whitespace-nowrap">
+            {success}
+          </p>
+        )}
+
         setShowNotification(true);
 
-        router.push('/questions');
+        if (isMobile()) {
+          router.push('/questions/mobile');
+        } else {
+          router.push('/questions');
+        }
+
       }
+
     } catch (err) {
 
       setError('予期しないエラーが発生しました');

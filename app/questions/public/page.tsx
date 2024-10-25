@@ -2,7 +2,6 @@
 
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import Modal from '../../components/ui/Modal';
 import useAuth from '../../lib/useAuth';
 import '../../globals.css';
 import { Session } from '@supabase/supabase-js';
@@ -87,52 +86,47 @@ export default function PublicQuestionsPage() {
 
         <PublicQuestionsHeader toggleSearchTool={toggleSearchTool} />
 
-      <div className="container mx-auto px-4 py-8 z-100">
-
-    <Modal
-      isOpen={isLoginPromptOpen}
-      onClose={() => setLoginPromptOpen(false)}
-      title="ログインしますか？"
-    >
-
-      <div
-        className="p-4 w-full md:w-2/3 md:flex justify-center items-center"
-        style={{
-          backgroundColor: 'rgb(176, 224, 230, 0.5)',
-          borderRadius: '10px',
-          boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
-          maxWidth: '90%',
-          margin: '0 auto',
-          zIndex: 50,
-        }}
-      >
-
-      <div className="flex flex-col gap-4 items-center justify-center">
-        <button
-          className="bg-sky-500 text-white px-6 py-3 rounded-md hover:bg-blue-600 w-full max-w-xs whitespace-nowrap mt-8"
-          onClick={async () => {
-          setLoginPromptOpen(false);
-          setTimeout(() => {
-            router.push('/users/login');
-          }, 1000);
-          }}
-          >
-            ログインする
-        </button>
-        <button
-          className="bg-gray-500 text-white px-6 py-3 rounded-md hover:bg-gray-600 w-full max-w-xs mb-4 whitespace-nowrap"
-          onClick={handleContinueWithoutLogin}
+      {isLoginPromptOpen && (
+        <div
+          className="fixed inset-0 bg-gray-500 bg-opacity-75 flex flex-col items-center justify-center z-50"
+          onClick={() => setLoginPromptOpen(false)}
         >
-          閉じる
-        </button>
-      </div>
-    </div>
-    <p className='flex justify-center text-sm text-semibold mt-12'>※ 投稿またはソート・フィルタリング・カテゴリ検索には、ログインが必要です。</p>
-  </Modal>
-  </div>
+          <div
+            className="bg-white p-10 rounded shadow-md"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <p className="text-center mb-6">ログインしますか？</p>
+
+            <div className="flex flex-col gap-4 items-center justify-center">
+              <button
+                className="bg-sky-500 text-white px-6 py-3 rounded-md hover:bg-blue-600 w-full max-w-xs whitespace-nowrap mt-8"
+                onClick={() => {
+                  setLoginPromptOpen(false);
+                  setTimeout(() => {
+                    router.push('/users/login');
+                  }, 1000);}
+                }
+              >
+                ログインする
+              </button>
+
+              <button
+                className="bg-gray-500 text-white px-6 py-3 rounded-md hover:bg-gray-600 w-full max-w-xs mb-4 whitespace-nowrap"
+                onClick={handleContinueWithoutLogin}
+              >
+                閉じる
+              </button>
+            </div>
+
+            <p className="text-gray-500 text-sm mt-4">
+              ※ 投稿またはソート・フィルタリング・カテゴリ検索には、ログインが必要です。
+            </p>
+          </div>
+        </div>
+      )}
 
 
-  <div className="flex justify-end items-center mt-8 mb-4 mr-4">
+      <div className="flex justify-end items-center mt-16 mb-4 mr-4">
         {!isModalOpen && (
           <button
             className="flex items-center bg-orange-400 text-white px-4 py-2 rounded-full hover:bg-orange-600 transition-transform duration-300 ease-in-out transform scale-105 ml-auto  whitespace-nowrap"

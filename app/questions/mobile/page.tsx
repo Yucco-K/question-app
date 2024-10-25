@@ -11,7 +11,7 @@ import SearchTool from '@/app/components/ui/SearchTool';
 import QuestionHeader from '../../components/Layout/header/QuestionHeader';
 
 
-export default function QuestionsPage() {
+export default function MobileQuestionsPage() {
   const [isModalOpen, setModalOpen] = useState(false);
   const [showNotification, setShowNotification] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -32,7 +32,7 @@ export default function QuestionsPage() {
 
   useEffect(() => {
     if (!userLoading && !session) {
-      router.push('/questions/public');
+      router.push('/questions/public/mobile');
     }
   }, [userLoading, session, router]);
 
@@ -42,11 +42,11 @@ export default function QuestionsPage() {
   };
 
   const handleFilteredQuestions = () => {
-    router.push('/questions/search/filter');
+    router.push('/questions/search/filter/mobile');
   };
 
   const handleSearchCategory = () => {
-    router.push('/questions/search/category');
+    router.push('/questions/search/category/mobile');
 };
 
   useEffect(() => {
@@ -100,7 +100,6 @@ export default function QuestionsPage() {
           )}
       </div>
 
-      {/* 質問リスト */}
       <div className="w-full">
         <QuestionList
           selectedTags={selectedTags}
@@ -108,7 +107,6 @@ export default function QuestionsPage() {
         />
       </div>
 
-      {/* 検索ツール */}
       <SearchTool
         isSearchOpen={isSearchOpen}
         setIsSearchOpen={setIsSearchOpen}

@@ -126,6 +126,7 @@ export default function SignupForm() {
 
       if (response.ok) {
         setSuccess('アカウントを作成しました。認証メールをご確認ください。');
+
         setShowNotification(true);
         setAttemptCount(0);
         setIsSendDisabled(true);

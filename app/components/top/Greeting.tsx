@@ -13,6 +13,7 @@ export default function Greeting() {
   const [fade, setFade] = useState(false);
   const router = useRouter();
   const greetingTimeout = 0.1 * 60 * 60 * 1000;
+  const isMobile = () => /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 
   useEffect(() => {
     const now = Date.now();
@@ -43,9 +44,16 @@ export default function Greeting() {
       setFade((prev) => !prev);
     }, 1000);
 
+
+
+
     setTimeout(() => {
+
+      if (isMobile()) {
+        router.push('/questions/public/mobile');
+      } else {
       router.push('/questions/public');
-    }, 1000);
+    }}, 1000);
 
     return () => clearInterval(interval);
 
