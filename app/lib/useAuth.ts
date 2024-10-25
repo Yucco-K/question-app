@@ -13,7 +13,7 @@ const useAuth = (requireAuth: boolean = true, redirectUrl?: string) => {
   const excludedPaths = [
     '/', '/users/change-password',
     '/users/login', '/users/set-new-password', '/users/signup',
-    // '/auth/v1',
+    '/auth/v1','/api',
   ];
 
   const isExcludedPath = (path: string) => excludedPaths.includes(path);
