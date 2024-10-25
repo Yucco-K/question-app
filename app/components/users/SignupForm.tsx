@@ -95,7 +95,6 @@ export default function SignupForm() {
 
   const handleSignup = async () => {
 
-    setLoading(true);
     setError(null);
     setSuccess(null);
     setShowNotification(false);
@@ -114,6 +113,7 @@ export default function SignupForm() {
     if (!isConfirmPasswordValid) return;
 
     try {
+      setLoading(true);
       const response = await fetch('/api/users/signup', {
         method: 'POST',
         headers: {

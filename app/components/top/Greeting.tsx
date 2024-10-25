@@ -45,15 +45,14 @@ export default function Greeting() {
     }, 1000);
 
 
-
-
     setTimeout(() => {
 
       if (isMobile()) {
         router.push('/questions/public/mobile');
       } else {
-      router.push('/questions/public');
-    }}, 1000);
+        router.push('/questions/public');
+      }
+    }, 1000);
 
     return () => clearInterval(interval);
 
