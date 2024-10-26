@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { supabaseAdmin } from '@/app/lib/supabaseAdmin';
+import supabase from '@/app/lib/supabaseClient';
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
@@ -9,7 +9,7 @@ export async function GET(request: Request) {
   const start = (page - 1) * limit;
   const end = start + limit - 1;
 
-  const { data, error } = await supabaseAdmin
+  const { data, error } = await supabase
     .from('User')
     .select('*')
     .range(start, end);
@@ -28,7 +28,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Bad Request', message: '必要なフィールドが不足しています。' }, { status: 400 });
   }
 
-  const { data: existingUser, error: checkError } = await supabaseAdmin
+  const { data: existingUser, error: checkError } = await supabase
     .from('User')
     .select('id')
     .eq('email', email)
@@ -44,14 +44,13 @@ export async function POST(request: Request) {
     }, { status: 409 });
   }
 
-  const { data, error } = await supabaseAdmin.auth.signUp({
+  const { data, error } = await supabase.auth.signUp({
     email,
     password,
     options: {
       data: {
         username
       },
-        emailRedirectTo: 'https://forum.yu-cco.com/questions',
     },
   });
 

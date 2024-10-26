@@ -149,7 +149,7 @@ export default function QuestionList({ selectedTags, setSelectedTags }: Question
                 isResolved={false}
                 isPublic={false}
                 showReadMoreButton={false}
-                footer={<a href={`/questions/${question.id}/mobile`}
+                footer={<a href={`/questions/${question.id}`}
                 className={`${styles.link} font-bold transition transform hover:scale-110 duration-300 ease-in-out px-3 py-1 rounded-md text-md font-semibold inline-block`}
                 >
                   詳細を見る

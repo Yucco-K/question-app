@@ -25,6 +25,9 @@ export default function ChangePasswordForm() {
     setResetUrl(`${origin}/users/set-new-password`);
   }, []);
 
+  // console.log('origin:', origin);
+  // console.log('resetUrl:', resetUrl);
+
   useEffect(() => {
     return () => {
       setAttemptCount(0);
@@ -45,7 +48,7 @@ export default function ChangePasswordForm() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ email }),
+        body: JSON.stringify({ email, redirectTo: resetUrl }),
       });
 
       const result = await response.json();
