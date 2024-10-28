@@ -142,147 +142,146 @@ export default function PublicQuestionList({ selectedTags }: PublicQuestionListP
         />
       )}
 
-      <div className={styles.questionBody}>
-        <div className='Top-20 flex justify-between'>
+    <div className={styles.questionBody}>
+      <div className='flex justify-between'>
 
-          <h1 className="mt-4 mb-4 mx-auto flex items-center justify-center text-blue-900">質問一覧</h1>
+        <h1 className="mb-4 mx-auto flex items-center justify-center text-blue-900">質問一覧</h1>
 
-          <ScrollToBottomButton isModalOpen={false} />
-        </div>
+        <ScrollToBottomButton isModalOpen={false} />
+      </div>
 
-          <KeywordSearch data={questions} onSearchResults={handleSearchResults} />
-
+      <KeywordSearch data={questions} onSearchResults={handleSearchResults} />
 
       {filteredQuestions.length === 0 ? (
-          <p className="text-blue-900">質問がありません。</p>
-        ) : paginatedQuestions.length === 0 ? (
-          <p className="text-blue-900">このページには質問がありません。</p>
-        ) : (
-          <div className="space-y-4 text-md">
-          {paginatedQuestions.map((question) => {
-            const sanitizedDescription = DOMPurify.sanitize(question.description);
+        <p className="text-blue-900">質問がありません。</p>
+      ) : paginatedQuestions.length === 0 ? (
+        <p className="text-blue-900">このページには質問がありません。</p>
+      ) : (
+      <div className="space-y-4 text-md">
+      {paginatedQuestions.map((question) => {
+        const sanitizedDescription = DOMPurify.sanitize(question.description);
 
-              const isPublicScreen = pathname === '/questions/public';
+        const isPublicScreen = pathname === '/questions/public';
 
-            return (
-              <>
-                <Card
-                  key={question.id}
-                  id={question.id}
-                  type="questions"
-                  title={question.title}
-                  categoryId={question.category_id}
-                  onRefresh={fetchQuestions}
-                  isResolved={false}
-                  isPublic={isPublic}
-                  showReadMoreButton={false}
-                  footer={<a
-                    href="#"
-                    className={`${styles.link} font-bold transition transform hover:scale-110 duration-300 ease-in-out px-3 py-1 rounded-md text-md text-semibold inline-block`}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      // if (isPublicScreen) {
-                        setLoginPromptOpen(true);
-                      // } else {
-                      //   router.push(`/questions/${question.id}`);
-                      // }
-                    }}
-                  >
-                    詳細を見る
-                  </a>}
-                  showMenuButton={false}
-                  isDraft={false}
-                  createdAt={question.created_at}
+          return (
+            <>
+              <Card
+                key={question.id}
+                id={question.id}
+                type="questions"
+                title={question.title}
+                categoryId={question.category_id}
+                onRefresh={fetchQuestions}
+                isResolved={false}
+                isPublic={isPublic}
+                showReadMoreButton={false}
+                footer={<a
+                  href="#"
+                  className={`${styles.link} font-bold transition transform hover:scale-110 duration-300 ease-in-out px-2 py-1 rounded-md text-md text-semibold inline-block`}
+                  onClick={(e) => {
+                    e.preventDefault();
+                      setLoginPromptOpen(true);
+                  }}
                 >
+                  詳細を見る
+                </a>}
+                showMenuButton={false}
+                isDraft={false}
+                createdAt={question.created_at}
+              >
+
                 <div className="text-blue-900 text-sm mb-4">
                   質問ID: {question.id}
                 </div>
+
                 {question.is_resolved && (
-                  <div className="absolute top-12 right-16 font-semibold text-sm text-red-400">
+                  <div className="absolute top-8 right-2 font-semibold text-sm text-red-400">
                     <FontAwesomeIcon icon={faAward} className="mr-2 text-xl text-yellow-300" />解決済み
                   </div>
                 )}
 
-                  <div className='my-10'>
-                    <div
-                      className={styles.questionBody}
-                      dangerouslySetInnerHTML={{ __html: sanitizedDescription }} />
+                <div className="flex items-center mt-4">
+                <UserProfileImage userId={question.user_id} />
+
+                  <div className="ml-4">
+                  <UserNameDisplay userId={question.user_id} />
+
+                    <div className="text-left text-sm mt-2">
+                      {question.created_at ? (
+                        new Date(question.created_at).toLocaleString('ja-JP', {
+                          year: 'numeric',
+                          month: '2-digit',
+                          day: '2-digit',
+                          hour: '2-digit',
+                          minute: '2-digit',
+                          second: '2-digit',
+                        })
+                      ) : (
+                        '作成日登録なし'
+                      )}
+                    </div>
                   </div>
-                  <div className="flex flex-wrap mt-4">
+                </div>
+
+                <div className="flex flex-wrap mt-4">
                     {question.tags?.map((tag, index) => (
                       <span key={index} className="bg-blue-500 text-white text-sm py-1 px-4 rounded-full mr-2 mb-2">
                         {tag}
                       </span>
                     ))}
-                  </div>
+                </div>
 
-                  <div className="flex items-center mt-4">
-                  <UserProfileImage userId={question.user_id} />
+                <div className='mt-4 mb-4'>
+                  <div
+                    className={styles.questionBody}
+                    dangerouslySetInnerHTML={{ __html: sanitizedDescription }} />
+                </div>
 
-                    <div className="ml-4">
-                    <UserNameDisplay userId={question.user_id} />
+              </Card>
 
-                      <div className="text-left text-sm mt-2">
-                        {question.created_at ? (
-                          new Date(question.created_at).toLocaleString('ja-JP', {
-                            year: 'numeric',
-                            month: '2-digit',
-                            day: '2-digit',
-                            hour: '2-digit',
-                            minute: '2-digit',
-                            second: '2-digit',
-                          })
-                        ) : (
-                          '作成日登録なし'
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                  </Card>
+              {isLoginPromptOpen && (
+                <div
+                  className="fixed inset-0 bg-gray-500 bg-opacity-75 flex flex-col items-center justify-center z-50"
+                  onClick={() => setLoginPromptOpen(false)}
+                >
+                  <div
+                    className="bg-white p-10 rounded shadow-md"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <p className="text-center mb-6">ログインしますか？</p>
 
-                  {isLoginPromptOpen && (
-                    <div
-                      className="fixed inset-0 bg-gray-500 bg-opacity-75 flex flex-col items-center justify-center z-50"
-                      onClick={() => setLoginPromptOpen(false)}
-                    >
-                      <div
-                        className="bg-white p-10 rounded shadow-md"
-                        onClick={(e) => e.stopPropagation()}
+                    <div className="flex flex-col gap-4 items-center justify-center">
+                      <button
+                        className="bg-sky-500 text-white px-6 py-3 rounded-md hover:bg-blue-600 w-full max-w-xs whitespace-nowrap mt-8"
+                        onClick={() => {
+                          setLoginPromptOpen(false);
+                          setTimeout(() => {
+                            router.push('/users/login');
+                          }, 1000);}
+                        }
                       >
-                        <p className="text-center mb-6">ログインしますか？</p>
+                        ログインする
+                      </button>
 
-                        <div className="flex flex-col gap-4 items-center justify-center">
-                          <button
-                            className="bg-sky-500 text-white px-6 py-3 rounded-md hover:bg-blue-600 w-full max-w-xs whitespace-nowrap mt-8"
-                            onClick={() => {
-                              setLoginPromptOpen(false);
-                              setTimeout(() => {
-                                router.push('/users/login');
-                              }, 1000);}
-                            }
-                          >
-                            ログインする
-                          </button>
-
-                          <button
-                            className="bg-gray-500 text-white px-6 py-3 rounded-md hover:bg-gray-600 w-full max-w-xs mb-4 whitespace-nowrap"
-                            onClick={handleContinueWithoutLogin}
-                          >
-                            閉じる
-                          </button>
-                        </div>
-
-                        <p className="text-gray-500 text-sm mt-4">
-                          ※ 質問の詳細や回答・コメントの閲覧には、ログインが必要です。
-                        </p>
-                      </div>
+                      <button
+                        className="bg-gray-500 text-white px-6 py-3 rounded-md hover:bg-gray-600 w-full max-w-xs mb-4 whitespace-nowrap"
+                        onClick={handleContinueWithoutLogin}
+                      >
+                        閉じる
+                      </button>
                     </div>
-                  )}
 
-                </>
-              );
-            })}
-          </div>
+                    <p className="text-gray-500 text-sm mt-4">
+                      ※ 質問の詳細や回答・コメントの閲覧には、ログインが必要です。
+                    </p>
+                  </div>
+                </div>
+              )}
+
+            </>
+          );
+          })}
+        </div>
         )}
       </div>
 

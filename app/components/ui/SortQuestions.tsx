@@ -75,7 +75,7 @@ export default function SortQuestions() {
               <label htmlFor="sort" className="w-1/3 mx-auto block font-bold text-md my-4">ソート順を選択</label>
               <select
                 id="sort"
-                className="w-1/3 mx-auto block border rounded-md p-2"
+                className="w-2/3 mx-auto block border rounded-md p-2 md:w-1/3"
                 value={sort}
                 onChange={(e) => setSort(e.target.value)}
               >
@@ -95,9 +95,9 @@ export default function SortQuestions() {
 
                 ) : (
                 paginatedQuestions.map((question) => (
-                  <div key={question.id} className="gap-4 bg-white p-4 rounded shadow flex items-center justify-between"> {/* 全体をflexで配置 */}
+                  <div key={question.id} className="gap-4 bg-white p-4 rounded shadow flex items-center justify-between">
                     <div>
-                    <div className="text-blue-900 text-sm mb-4">
+                    <div className="text-blue-900 text-sm my-2">
                       質問ID: {question.id}
                     </div>
                     <h2>
@@ -116,17 +116,18 @@ export default function SortQuestions() {
                         '作成日登録なし'
                       )}
                     </p>
-                    <div className='flex'>
+                    <div className='flex flex-col'>
                       <p className="mt-4 mr-4">閲覧数: {question.view_count}</p>
                       <p className="mt-4">ブックマーク数: {question.bookmark_count}</p>
                     </div>
                   </div>
-                  <div className="flex items-center justify-end">
+                  <div className="flex items-center mt-8 justify-end">
                     <button
                       onClick={() => window.location.href = `/questions/${question.id}`}
-                      className="items-center hoverScale border border-blue-500 text-blue-800 px-4 py-2 rounded-md text-md font-semibold transition-transform duration-300 ease-in-out transform hover:scale-105"
+                      className="items-center hoverScale border border-blue-500 text-blue-800 px-4 py-2 rounded-md text-md font-semibold transition-transform duration-300 ease-in-out transform hover:scale-105 whitespace-nowrap"
+                      style={{ letterSpacing: '0.1em' }}
                     >
-                      詳細を見る
+                      詳細
                     </button>
                   </div>
                 </div>

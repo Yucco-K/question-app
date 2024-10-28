@@ -81,7 +81,7 @@ const CategorySearch: React.FC<CategorySearchProps> = ({ categoryId = null }) =>
   }, [categoryId, setLoading]);
 
   return (
-    <>
+    <div className="container max-w-[1200px] mx-auto px-4 py-8">
       <div className={styles.questionBody}>
           {questions.length === 0 ? (
             <p className='text-blue-900'>このカテゴリに質問がありません。</p>
@@ -109,12 +109,12 @@ const CategorySearch: React.FC<CategorySearchProps> = ({ categoryId = null }) =>
                 >
                   <div className="text-blue-900 text-sm mb-4">質問ID: {question.id}</div>
                   {question.is_resolved && (
-                    <div className="absolute top-12 right-16 font-semibold text-sm text-red-400">
+                    <div className="absolute top-8 right-2 font-semibold text-sm text-red-400">
                       <FontAwesomeIcon icon={faAward} className="mr-2 text-xl text-yellow-300" />解決済み
                     </div>
                   )}
 
-                  <div className="text-blue-900 text-left text-sm mt-2">
+                  <div className="text-blue-900 text-left text-sm mt-12">
                     投稿日時:{' '}
                     {question.created_at ? (
                       new Date(question.created_at).toLocaleString('ja-JP', {
@@ -129,7 +129,7 @@ const CategorySearch: React.FC<CategorySearchProps> = ({ categoryId = null }) =>
                       '作成日登録なし'
                     )}
                   </div>
-                  <div className='my-10'>
+                  <div className='my-4 pb-4'>
                     <div
                       className={styles.questionBody}
                       dangerouslySetInnerHTML={{ __html: sanitizedDescription }}
@@ -146,7 +146,7 @@ const CategorySearch: React.FC<CategorySearchProps> = ({ categoryId = null }) =>
         totalPages={totalPages}
         onPageChange={handlePageChange}
       />
-    </>
+    </div>
   );
 };
 

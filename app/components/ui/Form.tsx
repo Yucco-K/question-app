@@ -123,7 +123,7 @@ export default function Form({
 
   return (
     <>
-      <form className="max-w-[1400px] mx-auto">
+      <form className="max-w-[1200px] mx-auto">
       {showTitle && (
         <div className="mb-4">
           <label className="block text-lg text-gray-600 font-semibold mb-6 mt-10">

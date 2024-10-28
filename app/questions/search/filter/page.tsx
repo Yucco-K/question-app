@@ -55,15 +55,16 @@ export default function FilteredQuestionsPage() {
   }, [filter]);
 
   return (
-    <div className="flex container mx-auto w-[1200px]">
-      <div className="container mx-auto px-4 py-8">
-        <h1 className="text-xl text-center mt-8 mb-4">質問リストのフィルタリング</h1>
+    // <div className="flex container mx-auto w-[1200px]">
+      <div className="container max-w-[1200px] mx-auto px-4 py-8">
+      {/* <div className="container mx-auto px-4 py-8"> */}
+        <h1 className="text-xl text-center mt-8 mb-4 whitespace-nowrap">質問リストのフィルタリング</h1>
 
         <div className="mb-4">
-          <label htmlFor="status" className="block font-bold text-md mb-4 w-1/3 mx-auto">フィルターを選択</label>
+          <label htmlFor="status" className="block font-bold text-md mb-4 w-1/3 mx-auto whitespace-nowrap">フィルターを選択</label>
           <select
             id="status"
-            className="block w-1/3 mx-auto border rounded-md p-2"
+            className="block w-1/3 mx-auto border rounded-md p-2 sm:1/2"
             value={filter}
             onChange={(e) => setFilter(e.target.value)}
           >
@@ -84,6 +85,7 @@ export default function FilteredQuestionsPage() {
           onPageChange={handlePageChange}
         />
       </div>
-    </div>
+    // </div>
+  // </div>
   );
 }

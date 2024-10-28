@@ -118,10 +118,10 @@ export default function MobilePublicQuestionsPage() {
       )}
 
 
-        <div className="flex justify-end items-center mt-12 mr-4 sm:justify-end">
+        <div className="flex justify-end items-center mt-20 mr-4 justify-end">
           {!isModalOpen && (
             <button
-              className="flex items-center mt-8 mb-4 bg-orange-400 text-white px-4 py-2 rounded-full hover:bg-orange-600 transition-transform duration-300 ease-in-out transform scale-105 ml-auto  whitespace-nowrap"
+              className="flex items-center mt-8 mb-2 bg-orange-400 text-white px-4 py-2 rounded-full hover:bg-orange-600 transition-transform duration-300 ease-in-out transform scale-105 ml-auto  whitespace-nowrap"
               onClick={() =>{
                 setLoginPromptOpen(true);
               }}

@@ -1,16 +1,18 @@
-import { useState, useEffect} from 'react';
+import { useState, useEffect, JSX} from 'react';
 
-interface QuestionHeaderProps {
-  toggleSearchTool: () => void;
-}
+// interface QuestionHeaderProps {
+//   toggleSearchTool: () => void;
+// }
+
 import useAuth from '../../../lib/useAuth';
 import { useRouter } from 'next/navigation';
 import LogoutButton from '../../users/LogoutButton';
 import CurrentUserNameDisplay from '../../profile/CurrentUserNameDisplay';
 import CurrentUserProfileImage from '../../profile/CurrentUserProfileImage';
 
-const QuestionHeader: React.FC<QuestionHeaderProps> = ({ toggleSearchTool }) => {
+const QuestionHeader: React.FC = () => {
   const [isDropdownOpen, setDropdownOpen] = useState(false);
+  const [isVisible, setIsVisible] = useState(true);
   const router = useRouter();
   const { session, loading: userLoading } = useAuth();
   const userId = (session?.user as { id?: string })?.id ?? null;
@@ -44,39 +46,57 @@ const QuestionHeader: React.FC<QuestionHeaderProps> = ({ toggleSearchTool }) => 
   };
 
 
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollTop = window.scrollY;
+      setIsVisible(scrollTop <= 10);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
+
+
   return (
-    <header className="bg-gray-100 text-white py-1 fixed top-0 left-0 w-full z-50">
-      <div className="container mx-auto flex justify-between items-center w-[1200px]">
+    <header
+      className={`fixed top-0 left-0 w-full bg-gray-100 text-white py-1 transition-opacity duration-500 ${
+        isVisible ? 'opacity-100' : 'opacity-0'
+      }`}
+      style={{ zIndex: 100 }}
+    >
+      <div className="container mx-auto flex justify-between items-center w-full px-4">
 
         <div className="logo cursor-pointer ml-4" onClick={handleLogoClick}>
           Engineers <span>Q&A</span> Board
         </div>
 
-        <button
+        {/* <button
           className="flex items-center bg-gray-400 text-white text-xs px-2 py-1 rounded-full hover:bg-gray-600 ml-10 transition-transform duration-300 ease-in-out transform hover:scale-105 md:hidden"
           onClick={toggleSearchTool}
         >
-          <span className="bg-gray-400 text-white rounded-full w-6 h-6 flex items-center justify-center mr-2 text-2xl">
+          <span className="bg-gray-500 text-white rounded-full w-6 h-6 flex items-center justify-center mr-2 text-2xl">
             ⊕
           </span>
             検索ツール
-        </button>
+        </button> */}
 
-        <div className="relative">
-          <div onClick={handleProfileClick} className="cursor-pointer mr-4">
+        <div className="relative z-100">
+          <div onClick={handleProfileClick} className="cursor-pointer mr-4 z-100">
             <CurrentUserProfileImage />
           </div>
 
           {isDropdownOpen && (
-            <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-2 z-10">
+            <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-2 z-100">
               {session && !userLoading ? (
                 <>
-                  <div className="ml-4 my-2 text-black whitespace-nowrap">
+                  <div className="ml-4 my-2 text-black whitespace-nowrap z-100">
                     <CurrentUserNameDisplay />
                   </div>
                   <button
                     onClick={handleAccountManagement}
-                    className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100"
+                    className="block w-full px-4 py-2 text-gray-700 hover:bg-gray-100 z-100 text-center"
                   >
                     マイページ
                   </button>
@@ -86,7 +106,7 @@ const QuestionHeader: React.FC<QuestionHeaderProps> = ({ toggleSearchTool }) => 
               ) : (
                 <button
                   onClick={() => router.push('/users/login')}
-                  className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100"
+                  className="block w-full px-4 py-2 text-gray-700 hover:bg-gray-100 z-100 text-center"
                 >
                   ログイン
                 </button>
@@ -111,6 +131,15 @@ const QuestionHeader: React.FC<QuestionHeaderProps> = ({ toggleSearchTool }) => 
           color: #1de9b6 /* Q&Aのアクセントカラー */
         }
 
+        @media (max-width: 640px) {
+          .logo {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            /*font-size: 1.2rem;*/
+            text-align: center;
+            margin-top: 2px;
+          }
         }
       `}</style>
     </header>

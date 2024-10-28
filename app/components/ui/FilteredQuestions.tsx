@@ -54,7 +54,7 @@ const FilteredQuestions: React.FC<FilteredQuestionsProps> = ({ questions, isLoad
                   質問ID: {question.id}
                 </div>
                 <h2>
-                  <span className="question-label text-lg">質問タイトル: </span>{question.title}
+                  <span className="question-label text-md">質問タイトル: </span>{question.title}
                 </h2>
                 <p className="text-gray-600 mt-4">投稿日時: {question.created_at ? (
                   new Date(question.created_at).toLocaleString('ja-JP', {
@@ -68,17 +68,18 @@ const FilteredQuestions: React.FC<FilteredQuestionsProps> = ({ questions, isLoad
                     '作成日登録なし'
                   )}
                 </p>
-                <div className="flex">
+                <div className="flex flex-col">
                   <p className="mt-4">回答数: {question.answer_count}</p>
-                  <p className="mt-4 ml-4">ステータス: {question.is_resolved ? '解決済み' : '未解決'}</p>
+                  <p className="mt-4">ステータス: {question.is_resolved ? '解決済み' : '未解決'}</p>
                 </div>
               </div>
-              <div className="flex items-center justify-end">
+              <div className="flex items-center mt-8 justify-end">
                 <button
                   onClick={() => window.location.href = `/questions/${question.id}`}
-                  className="items-center hoverScale border border-blue-500 text-blue-800 px-4 py-2 rounded-md text-md font-semibold transition-transform duration-300 ease-in-out transform hover:scale-105"
+                  className="items-center hoverScale border border-blue-500 text-blue-800 px-4 py-2 rounded-md text-md font-semibold transition-transform duration-300 ease-in-out transform hover:scale-105 whitespace-nowrap"
+                  style={{ letterSpacing: '0.1em' }}
                 >
-                  詳細を見る
+                  詳細
                 </button>
               </div>
             </div>

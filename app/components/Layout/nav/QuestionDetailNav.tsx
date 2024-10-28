@@ -5,13 +5,22 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowLeft, faHome } from '@fortawesome/free-solid-svg-icons';
 import { useEffect, useState } from 'react';
 import useAuth from '../../../lib/useAuth';
+import MobileDefaultNav from './MobileDefaultNav';
 
 export default function QuestionDetailNav() {
   const [isVisible, setIsVisible] = useState(true);
   const { session, loading: userLoading } = useAuth();
+  const [isMobile, setIsMobile] = useState(false);
   const userId = (session?.user as { id?: string })?.id ?? null;
   const router = useRouter();
   const pathname = usePathname();
+
+
+  useEffect(() => {
+    const checkIsMobile = () => /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+    setIsMobile(checkIsMobile());
+  }, []);
+
 
   const handleNavigation = (path: string) => {
     if (path !== pathname) {
@@ -58,6 +67,11 @@ export default function QuestionDetailNav() {
     };
   }, []);
 
+  if (isMobile) {
+    return <MobileDefaultNav />;
+  }
+
+
   return (
     <nav
       className={`fixed top-15 left-0 w-full bg-white text-gray-700 px-4 py-2 shadow-md rounded-sm transition-opacity duration-500 ${
@@ -65,13 +79,13 @@ export default function QuestionDetailNav() {
       }`}
     >
       <div className="w-[1200px] mx-auto">
-        <ul className="flex text-sm items-center mt-2">
+        <ul className="flex space-x-2 text-sm items-center mt-2 ml-4">
           <li>
             <button
               className="text-blue-700 font-bold hover:underline flex items-center"
               onClick={handleBack}
             >
-              <FontAwesomeIcon icon={faArrowLeft} className="mr-2" />
+              <FontAwesomeIcon icon={faArrowLeft} className="mx-2" />
               戻る
             </button>
           </li>
@@ -87,7 +101,7 @@ export default function QuestionDetailNav() {
               title="Home"
             >
               <FontAwesomeIcon icon={faHome} className="text-blue-500 mx-2" />
-
+              Top
             </button>
           </li>
 
@@ -97,7 +111,7 @@ export default function QuestionDetailNav() {
             <>
               <li>
                 <button
-                  className={`text-gray-700 ml-1 font-bold`}
+                  className={`text-gray-700 mx-1 font-bold`}
                 >
                   質問詳細
                 </button>

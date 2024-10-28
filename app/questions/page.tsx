@@ -9,8 +9,6 @@ import useAuth from '../lib/useAuth';
 import '../globals.css';
 import Notification from '../components/ui/Notification';
 import TagSearch from '../components/ui/TagSearch';
-import QuestionHeader from '../components/Layout/header/QuestionHeader';
-
 
 export default function QuestionsPage() {
   const [isModalOpen, setModalOpen] = useState(false);
@@ -25,7 +23,6 @@ export default function QuestionsPage() {
   const [localsession, setLocalSession] = useState<any>(null);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [loginPromptOpen, setLoginPromptOpen] = useState(false);
-
 
 
   useEffect(() => {
@@ -46,8 +43,6 @@ export default function QuestionsPage() {
   const toggleSearchTool = () => {
     setIsSearchOpen(!isSearchOpen);
   };
-
-
 
   const handleSortQuestions = () => {
     router.push('/questions/search/sort');
@@ -76,9 +71,6 @@ export default function QuestionsPage() {
           onClose={() => setShowNotification(false)}
         />
       )}
-
-    <QuestionHeader toggleSearchTool={toggleSearchTool} />
-
 
     <div className="container mx-auto px-4 py-8">
 

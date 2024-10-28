@@ -406,17 +406,25 @@ export default function QuestionDetail({ questionId }: { questionId: string }) {
   ];
 
 
+  const openAnswerModal = () => {
+    setAnswerModalOpen(false);
+    setTimeout(() => setAnswerModalOpen(true), 50);
+  };
+
+
   if (!question) {
     return null;
   }
 
   return (
     <>
-      <div className="flex items-center justify-center mt-10">
+      <div className="flex items-center justify-center mt-16">
         <h1 className="mx-auto flex items-center justify-center text-blue-900">質問詳細ページ</h1>
       </div>
 
-      <div className="container mx-auto px-4 py-8 w-[1200px]">
+      {/* <div className="container mx-auto px-4 py-8 w-[1200px]"> */}
+
+      <div className="container mx-auto px-4 py-8 sm:w-[95%] lg:w-[1200px]">
 
         {questionModalOpen ? (
           <Modal isOpen={questionModalOpen} onClose={handleCancel} title="質問を編集">
@@ -477,13 +485,23 @@ export default function QuestionDetail({ questionId }: { questionId: string }) {
             <div className="text-blue-900 text-sm mb-4">
               質問ID: {questionId}
             </div>
-            <div className="flex flex-wrap mb-4">
-              {question.tags?.map((tag, index) => (
-                <span key={index} className="bg-blue-500 text-white px-4 py-1 rounded-full mr-2 mb-2 text-sm">
-                  {tag.name}
-                </span>
-              ))}
-            </div>
+
+            {question.is_resolved && (
+              <div className="absolute top-8 right-2 font-semibold text-sm text-red-400 py-2">
+                <FontAwesomeIcon icon={faAward} className="mr-2 text-xl text-yellow-300" />解決済み
+              </div>
+            )}
+
+          <div>
+            {userId === question.user_id && !question.is_resolved && (
+              <button
+                onClick={triggerConfirmResolved}
+                className="absolute top-8 right-0 mb-4 ml-2 text-white text-xs px-3 py-2 rounded-full transition-transform duration-300 ease-in-out transform hover:scale-105 bg-gray-400"
+              >
+                解決済みにする
+              </button>
+            )}
+
             <div className="flex items-center mt-4">
               <UserProfileImage userId={question.user_id} />
 
@@ -508,21 +526,13 @@ export default function QuestionDetail({ questionId }: { questionId: string }) {
               </div>
             </div>
 
-            {question.is_resolved && (
-              <div className="absolute top-12 right-16 font-semibold text-sm text-red-400 py-2">
-                <FontAwesomeIcon icon={faAward} className="mr-2 text-xl text-yellow-300" />解決済み
-              </div>
-            )}
-
-          <div>
-            {userId === question.user_id && !question.is_resolved && (
-              <button
-                onClick={triggerConfirmResolved}
-                className="absolute top-20 right-10 ml-2 text-white text-sm px-3 py-2 rounded-full transition-transform duration-300 ease-in-out transform hover:scale-105 bg-gray-400"
-              >
-                解決済みにする
-              </button>
-            )}
+            <div className="flex flex-wrap mt-8">
+              {question.tags?.map((tag, index) => (
+                <span key={index} className="bg-blue-500 text-white px-4 py-1 rounded-full mr-2 mb-2 text-sm">
+                  {tag.name}
+                </span>
+              ))}
+            </div>
 
             {isConfirmingResolved && (
               <ConfirmationModal
@@ -532,7 +542,6 @@ export default function QuestionDetail({ questionId }: { questionId: string }) {
               />
             )}
           </div>
-
 
             <hr className="my-4 border-gray-300 text-bold" />
 
@@ -546,8 +555,7 @@ export default function QuestionDetail({ questionId }: { questionId: string }) {
               {!question.is_resolved && userId !== question.user_id && (
                 <button
                   className="flex items-center bg-orange-400 text-white px-4 py-2 rounded-full hover:bg-orange-600 ml-10 transition-transform duration-300 ease-in-out transform hover:scale-105"
-
-                  onClick={() => setAnswerModalOpen(true)}
+                  onClick={openAnswerModal}
                 >
                   <span className="bg-orange-400 text-white rounded-full w-6 h-6 flex items-center justify-center mr-2 text-2xl">
                     ⊕

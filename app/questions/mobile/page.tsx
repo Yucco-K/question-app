@@ -65,10 +65,22 @@ export default function MobileQuestionsPage() {
         />
       )}
 
-    <QuestionHeader toggleSearchTool={toggleSearchTool} />
+      <div className='relative mt-24 mr-8'>
+        <button
+          className="flex items-center bg-gray-400 text-white text-xs top-20 ml-auto px-2 py-1 rounded-full hover:bg-gray-600 ml-10 transition-transform duration-300 ease-in-out transform hover:scale-105 md:hidden"
+          onClick={toggleSearchTool}
+        >
+          <span className="bg-gray-500 text-white rounded-full w-6 h-6 flex items-center justify-center mr-2 text-2xl">
+            ⊕
+          </span>
+            検索ツール
+        </button>
+      </div>
 
 
-    <div className="container mx-auto px-4 py-8">
+
+    <div className="container mx-auto px-4">
+    <h1 className="mx-auto flex items-center justify-center text-blue-900 text-lg">質問一覧</h1>
 
       <Modal isOpen={isModalOpen} onClose={() => setModalOpen(false)} title="質問を投稿">
         <QuestionForm
@@ -84,10 +96,10 @@ export default function MobileQuestionsPage() {
         />
       </Modal>
 
-      <div className="flex justify-end items-center mt-8 mb-4 mr-4">
+      <div className="flex justify-end items-center mr-4">
           {!isModalOpen && (
             <button
-              className="flex items-center bg-orange-400 text-white px-4 py-2 rounded-full hover:bg-orange-600 transition-transform duration-300 ease-in-out transform scale-105 ml-auto  whitespace-nowrap"
+              className="flex items-center bg-orange-400 text-white mt-4 px-4 py-2 rounded-full hover:bg-orange-600 transition-transform duration-300 ease-in-out transform scale-105 ml-auto whitespace-nowrap"
               onClick={() =>{
                 setModalOpen(true);
               }}

@@ -24,7 +24,7 @@ export default function CurrentUserNameDisplay() {
           onClose={() => setShowNotification(false)}
         />
       )}
-      <div>
+      <div className='text-center'>
         <p>{displayName} さん</p>
       </div>
     </>

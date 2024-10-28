@@ -3,8 +3,7 @@ import { NextResponse } from 'next/server';
 import { extractTokensFromCookie } from '@/app/api/auth/utils';
 
 export async function GET(request: Request) {
-  console.log('GET /api/check-session', request);
-  console.log('GET /api/check-session', request.headers);
+
   const cookieHeader = request.headers.get('cookie');
   if (!cookieHeader) {
     return NextResponse.json({ error: 'クッキーがありません' }, { status: 401 });

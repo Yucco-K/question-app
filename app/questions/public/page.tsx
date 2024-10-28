@@ -140,71 +140,71 @@ export default function PublicQuestionsPage() {
           質問を投稿
         </button>
       )}
-  </div>
-
-
-  <div className="flex container mx-auto w-[1200px]">
-    <div className="flex-grow mr-8 w-2/3">
-      <PublicQuestionList
-        selectedTags={selectedTags}
-        setSelectedTags={setSelectedTags}
-      />
     </div>
 
-    <div className="w-1/3 mt-20">
-      <div className="bg-white shadow-md border rounded-lg p-4 space-y-4">
 
-        <div>
-          <button
-            onClick={(e) => {
-              e.preventDefault();
-              if (isPublicScreen) {
-                setLoginPromptOpen(true);
-              } else {
-                handleSortQuestions();
-              }
+    <div className="flex container mx-auto w-[1200px]">
+      <div className="flex-grow mr-8 w-2/3">
+        <PublicQuestionList
+          selectedTags={selectedTags}
+          setSelectedTags={setSelectedTags}
+        />
+      </div>
+
+      <div className="w-1/3 mt-20">
+        <div className="bg-white shadow-md border rounded-lg p-4 space-y-4">
+
+          <div>
+            <button
+              onClick={(e) => {
+                e.preventDefault();
+                if (isPublicScreen) {
+                  setLoginPromptOpen(true);
+                } else {
+                  handleSortQuestions();
+                }
+                }}
+              className="block w-full text-blue-700 border border-blue-500 bg-gray-100 rounded-md p-2 hover: transition transform hover:scale-105 duration-300 ease-in-out">
+              ソート
+            </button>
+          </div>
+
+          <div>
+            <button
+              onClick={(e) => {
+                e.preventDefault();
+                if (isPublicScreen) {
+                  setLoginPromptOpen(true);
+                } else {
+                  handleFilteredQuestions();
+                }
               }}
-            className="block w-full text-blue-700 border border-blue-500 bg-gray-100 rounded-md p-2 hover: transition transform hover:scale-105 duration-300 ease-in-out">
-            ソート
-          </button>
-        </div>
+              className="block w-full text-blue-700 border border-blue-500 bg-gray-100 rounded-md p-2 hover: transition transform hover:scale-105 duration-300 ease-in-out">
+              フィルター
+            </button>
+          </div>
 
-        <div>
-          <button
-            onClick={(e) => {
-              e.preventDefault();
-              if (isPublicScreen) {
-                setLoginPromptOpen(true);
-              } else {
-                handleFilteredQuestions();
-              }
-            }}
-            className="block w-full text-blue-700 border border-blue-500 bg-gray-100 rounded-md p-2 hover: transition transform hover:scale-105 duration-300 ease-in-out">
-            フィルター
-          </button>
-        </div>
+          <div>
+            <button
+              onClick={(e) => {
+                e.preventDefault();
+                if (isPublicScreen) {
+                  setLoginPromptOpen(true);
+                } else {
+                  handleSearchCategory();
+                }
+              }}
+              className="block w-full text-blue-700 border border-blue-500 bg-gray-100 rounded-md p-2 hover: transition transform hover:scale-105 duration-300 ease-in-out">
+              カテゴリ検索
+            </button>
+          </div>
 
-        <div>
-          <button
-            onClick={(e) => {
-              e.preventDefault();
-              if (isPublicScreen) {
-                setLoginPromptOpen(true);
-              } else {
-                handleSearchCategory();
-              }
-            }}
-            className="block w-full text-blue-700 border border-blue-500 bg-gray-100 rounded-md p-2 hover: transition transform hover:scale-105 duration-300 ease-in-out">
-            カテゴリ検索
-          </button>
-        </div>
+            <TagSearch onTagsSelected={setSelectedTags} />
 
-          <TagSearch onTagsSelected={setSelectedTags} />
-
+          </div>
         </div>
       </div>
     </div>
-  </div>
     </>
   );
 }

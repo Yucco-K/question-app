@@ -77,7 +77,7 @@ const LogoutButton: FC<LogoutButtonProps> = ({ className }) => {
     <div>
       <button
         onClick={handleLogout}
-        className={className || "block w-full text-left py-2 px-4 text-gray-700 hover:bg-gray-100"}
+        className={className || "block w-full text-center py-2 px-4 text-gray-700 hover:bg-gray-100"}
       >
         ログアウト
       </button>

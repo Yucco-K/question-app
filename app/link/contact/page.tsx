@@ -19,7 +19,7 @@ export default function ContactPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 relative top-30 mt-20">
+    <div className="min-h-screen flex items-center justify-center relative top-20">
       <div className="w-full max-w-xl mx-auto px-6 py-4 bg-white shadow-lg rounded-lg absolute">
         <h1 className="text-xl font-bold text-center mb-3">CONTACT</h1>
         <p className="text-center text-gray-600 mb-4">お問い合わせ</p>
@@ -96,9 +96,9 @@ export default function ContactPage() {
           <p className="text-gray-700">+81 123 456 789</p>
         </div>
 
-        <div className="mt-4 text-center">
+        <div className="my-4 text-center">
           <h2 className="text-sm font-semibold">住所</h2>
-          <p className="text-gray-700">〒123-4567 東京都△△区1-2-3</p>
+          <p className="text-gray-700">〒123-4567 東京都新宿区1-2-3</p>
         </div>
       </div>
     </div>

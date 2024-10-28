@@ -12,15 +12,17 @@ import UsersFooter from './Layout/footer/UsersFooter';
 import DefaultFooter from './Layout/footer/DefaultFooter';
 import QuestionDetailNav from './Layout/nav/QuestionDetailNav';
 import UsersNavigation from './Layout/nav/UsersNavigation';
-import UserDetailNav from './Layout/nav/UserDetailNav';
 import PublicQuestionsHeader from './Layout/header/PublicQuestionsHeader';
 import QuestionsNavigation from './Layout/nav/QuestionsNavigation';
 import PublicQuestionsNavigation from './Layout/nav/PublicQuestionsNavigation';
+import MobilePublicQuestionNav from './Layout/nav/MobilePublicQuestionsNav';
 import UserDetailLayout from './Layout/main/UserDetailLayout';
 // import UsersLayout from './Layout/main/UsersLayout';
 import UserDetailHeader from './Layout/header/UserDetailHeader';
 import QuestionHeader from './Layout/header/QuestionHeader';
 import { useState } from 'react';
+import DefaultNavigation from './Layout/nav/DefaultNavigation';
+import MobileQuestionsNav from './Layout/nav/MobileQuestionsNav';
 
 const AppRouter = ({ children }: { children: React.ReactNode }) => {
   const pathname = usePathname();
@@ -28,7 +30,7 @@ const AppRouter = ({ children }: { children: React.ReactNode }) => {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
 
   const toggleSearchTool = () => {
-    setIsSearchOpen(!isSearchOpen);  // 検索ツールの開閉
+    setIsSearchOpen(!isSearchOpen);
   };
 
   switch (true) {
@@ -46,13 +48,13 @@ const AppRouter = ({ children }: { children: React.ReactNode }) => {
       return (
         <>
           <UserDetailHeader />
-          <UserDetailNav />
+          <DefaultNavigation />
           <UserDetailLayout>{children}</UserDetailLayout>
           <DefaultFooter currentYear={new Date().getFullYear()} />
         </>
       );
 
-    case pathname === '/questions/public' || pathname === '/questions/public/mobile':
+    case pathname === '/questions/public':
       return (
         <>
           <PublicQuestionsHeader toggleSearchTool={toggleSearchTool}  />
@@ -62,12 +64,42 @@ const AppRouter = ({ children }: { children: React.ReactNode }) => {
         </>
       );
 
-    case pathname === '/questions' || pathname === '/questions/mobile':
+    case pathname === '/questions/public/mobile':
       return (
         <>
-          <QuestionHeader toggleSearchTool={toggleSearchTool} />
+          <PublicQuestionsHeader toggleSearchTool={toggleSearchTool}  />
+          <MobilePublicQuestionNav />
+          <QuestionsLayout>{children}</QuestionsLayout>
+          <DefaultFooter currentYear={new Date().getFullYear()} />
+        </>
+      );
+
+    case pathname === '/questions':
+      return (
+        <>
+          <QuestionHeader />
           <QuestionsNavigation />
           <QuestionsLayout>{children}</QuestionsLayout>
+          <DefaultFooter currentYear={new Date().getFullYear()} />
+        </>
+      );
+
+      case pathname === '/questions/mobile':
+      return (
+        <>
+          <QuestionHeader />
+          <MobileQuestionsNav />
+          <QuestionsLayout>{children}</QuestionsLayout>
+          <DefaultFooter currentYear={new Date().getFullYear()} />
+        </>
+      );
+
+    case pathname.startsWith('/questions/search'):
+      return (
+        <>
+          <DefaultHeader />
+          <DefaultNavigation />
+          <QuestionDetailLayout>{children}</QuestionDetailLayout>
           <DefaultFooter currentYear={new Date().getFullYear()} />
         </>
       );
@@ -93,7 +125,7 @@ const AppRouter = ({ children }: { children: React.ReactNode }) => {
       return (
         <>
           <DefaultHeader />
-          <UserDetailNav />
+          <DefaultNavigation />
           <DefaultLayout>{children}</DefaultLayout>
           <DefaultFooter currentYear={new Date().getFullYear()} />
         </>

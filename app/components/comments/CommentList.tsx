@@ -14,6 +14,7 @@ import ScrollToBottomButton from '../ui/ScrollToBottomButton';
 import UserProfileImage from '../profile/UserProfileImage';
 import useAuth from '@/app/lib/useAuth';
 import DOMPurify from 'dompurify';
+import DefaultHeader from '../Layout/header/DefaultHeader';
 
 interface Comment {
   id: string;
@@ -51,6 +52,12 @@ export default function CommentList({ questionId, answerId, categoryId, selected
   const [initialBody, setInitialBody] = useState<string>('');
   const { session, loading: userLoading } = useAuth();
   const userId = (session?.user as { id?: string })?.id ?? null;
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+
+  const toggleModal = () => {
+    setIsModalOpen(!isModalOpen);
+  };
 
 
   const fetchComments = async () => {
@@ -255,15 +262,18 @@ export default function CommentList({ questionId, answerId, categoryId, selected
 
   return (
     <>
+
+      {!commentListModalOpen && <DefaultHeader />}
+
       <ScrollToBottomButton isModalOpen={commentListModalOpen} />
       {!commentListModalOpen && (
-        <div className="mt-4 flex justify-end">
+        <div className="flex ml-2">
           <button
             onClick={() => {
               setCommentListModalOpen(true);
               setShowNotification(false);
             }}
-            className="text-green-500 text-sm px-4 py-2 rounded whitespace-nowrap hover:text-green-600 transition-transform duration-300 ease-in-out transform hover:scale-105"
+            className="text-green-500 text-xs font-bold px-4 rounded whitespace-nowrap hover:text-green-600 transition-transform duration-300 ease-in-out transform hover:scale-105"
           >
             <FontAwesomeIcon
               icon={faComments}
@@ -271,7 +281,8 @@ export default function CommentList({ questionId, answerId, categoryId, selected
                 commentCount >= 1 ? 'scale-150' : 'scale-100'
               }`}
             />
-            {commentCount}件のコメント
+            <span className='mx-2 sm:mt-4'>コメント:</span>
+            <span className="text-lg font-bold">{commentCount}</span>
           </button>
         </div>
       )}
@@ -292,7 +303,7 @@ export default function CommentList({ questionId, answerId, categoryId, selected
               全{comments ? comments.length : 0}件のコメント
             </h2>
 
-            <div className="space-y-5 flex flex-col w-4/5">
+            <div className="space-y-5 flex flex-col w-full sm:w-4/5 lg:w-3/5">
               {isLoading ? (
                 null
               ) : comments.length > 0 ? (
@@ -315,7 +326,7 @@ export default function CommentList({ questionId, answerId, categoryId, selected
                     >
                       <div className="text-sm text-blue-900 mb-2">コメントID: {comment.id}</div>
                       {isEditing && editingCommentId === comment.id ? (
-                        <div className="px-8">
+                        <div className="px-4 sm:px-1">
                           <Form
                             titleLabel="タイトル"
                             titlePlaceholder="タイトルを入力"
@@ -327,15 +338,15 @@ export default function CommentList({ questionId, answerId, categoryId, selected
                             onBodyChange={(value: string) => setEditingContent(value)}
                             showTitle={false}
                           />
-                          <div className="mx-auto w-1/2">
+                          <div className="mx-auto w-full sm:w-2/3">
                             <ButtonGroup
                               pattern={2}
                               buttons={[
                                 {
-                                  label: '更 新', className: 'bg-blue-600 text-white text-sm w-1/4', onClick: () => handleEditSubmit(comment.id),
+                                  label: '更 新', className: 'bg-blue-600 text-white text-sm w-1/3', onClick: () => handleEditSubmit(comment.id),
                                 },
                                 {
-                                  label: 'キャンセル', className: 'bg-gray-400 text-white text-sm w-1/4', onClick: () => setIsEditing(false),
+                                  label: 'キャンセル', className: 'bg-gray-400 text-white text-sm w-1/3 whitespace-nowrap', onClick: () => setIsEditing(false),
                                 }
                               ]}
                               buttonsPerRow={[2]}
@@ -366,9 +377,9 @@ export default function CommentList({ questionId, answerId, categoryId, selected
                             </div>
                           </div>
 
-                          <hr className="my-10 border-gray-300" />
+                          <hr className="my-4 border-gray-300" />
 
-                          <div className={`mt-8 mb-12 ${styles.commentBody}`}>
+                          <div className={`mt-4 mb-4 ${styles.commentBody}`}>
                             <div dangerouslySetInnerHTML={{ __html: sanitizedDescription }} />
                           </div>
                       </div>
@@ -379,12 +390,12 @@ export default function CommentList({ questionId, answerId, categoryId, selected
               ) : (
                 <p className='text-blue-900'>まだコメントはありません。</p>
               )}
-              <div className="fixed bottom-16 right-40 mr-20">
+              <div className="fixed bottom-16 right-40">
                     <button
-                      className="flex items-center bg-green-500 text-white px-4 py-2 rounded-full hover:bg-green-600 ml-10 transition-transform duration-300 ease-in-out transform hover:scale-105"
+                      className="flex items-center bg-green-500 text-white px-4 py-2 rounded-full hover:bg-green-600 ml-10 transition-transform duration-300 ease-in-out transform hover:scale-105 whitespace-nowrap"
                       onClick={() => setCommentModalOpen(true)}
                     >
-                      <span className="bg-green-500 text-white rounded-full w-6 h-6 flex items-center justify-center mr-2 pt-1 text-4xl">
+                      <span className="bg-green-500 text-white rounded-full w-6 h-6 flex items-center justify-center mr-2 py-1 text-3xl">
                         ⊕
                       </span>
                       コメントを投稿
@@ -407,8 +418,7 @@ export default function CommentList({ questionId, answerId, categoryId, selected
                     onClick={() => setCommentModalOpen(false)}
                   ></div>
 
-                  {/* <div className="bg-white p-6 rounded-lg shadow-lg w-2/3 relative"> */}
-                  <div className="modal relative bg-white w-full h-full sm:w-auto sm:h-auto sm:max-w-2xl p-6 rounded-lg sm:rounded-xl overflow-y-auto sm:mx-auto">
+                  <div className="modal relative bg-white w-full h-full">
                     <button
                       className="absolute top-6 right-6 text-gray-500 hover:text-gray-700 text-3xl"
                       onClick={() => setCommentModalOpen(false)}
@@ -429,13 +439,14 @@ export default function CommentList({ questionId, answerId, categoryId, selected
                       onSubmit={(title: any, body: any) => {
                         console.log('コメント送信:', title, body);
                         setCommentModalOpen(false);
-                      }}
+                      } }
                       onCancel={() => {
                         setCommentModalOpen(false);
                         setSelectedAnswerId(undefined);
-                      }}
+                      } }
                       fetchComments={fetchComments}
                       fetchCommentCount={fetchCommentCount}
+                      commentListModalOpen={false}
                     />
                   </div>
                 </div>

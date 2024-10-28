@@ -46,7 +46,7 @@ export default function SearchTool({
 
   return (
     <div
-      className={`fixed inset-x-0 bottom-0 bg-neutral-100 opacity-90 rounded-t-3xl z-5000 transition-transform duration-300 ease-in-out ${animationClass} md:hidden`}
+      className={`fixed inset-x-0 bottom-0 bg-neutral-300 opacity-90 rounded-t-3xl z-5000 transition-transform duration-300 ease-in-out ${animationClass} md:hidden`}
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
@@ -71,7 +71,7 @@ export default function SearchTool({
           </div>
         </div>
 
-        <div className="flex justify-between gap-4 px-4">
+        <div className="flex justify-between gap-4 px-4 pb-4">
           <button
             onClick={(e) => {
               e.preventDefault();

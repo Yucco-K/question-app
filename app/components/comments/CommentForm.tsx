@@ -7,6 +7,7 @@ import { useLoading } from '../../context/LoadingContext';
 import ScrollToBottomButton from '../ui/ScrollToBottomButton';
 import useAuth from '@/app/lib/useAuth';
 import { toast } from 'react-toastify';
+import DefaultHeader from '../Layout/header/DefaultHeader';
 
 interface CommentFormProps {
   initialComment?: string;
@@ -19,6 +20,7 @@ interface CommentFormProps {
   fetchComments?: () => void;
   fetchCommentCount?: () => void;
   openCommentListModal?: () => void;
+  commentListModalOpen: boolean;
 }
 
 
@@ -30,6 +32,7 @@ export default function CommentForm({ questionId,
   onSubmit,
   fetchComments,
   fetchCommentCount,
+  commentListModalOpen,
   }: CommentFormProps) {
 
   const [initialBody, setInitialBody] = useState('');
@@ -37,17 +40,16 @@ export default function CommentForm({ questionId,
   const [isLoading, setLoading] = useState(false);
   const [selectedCommentId, setSelectedCommentId] = useState<string | null>(null);
   const [commentId, setCommentId] = useState<string | null>(null);
-
   const { session, loading: userLoading } = useAuth();
   const contextUserId = (session?.user as { id?: string })?.id ?? null;
   const userId = propUserId || contextUserId;
+
 
   const handleCancel = () => {
     setSelectedCommentId(null);
     setInitialBody('');
     onCancel();
     };
-
 
 
   const fetchCommentsData = async () => {
@@ -155,19 +157,20 @@ export default function CommentForm({ questionId,
 
   const buttons = [
     {
-      label: '送信',
+      label: '送 信',
       className: 'bg-blue-500 text-white text-sm whitespace-nowrap',
       onClick: handleSubmit,
     },
     {
       label: 'キャンセル',
-      className: 'bg-blue-500 text-white text-sm whitespace-nowrap',
+      className: 'bg-gray-400 text-white text-sm whitespace-nowrap',
       onClick: handleCancel,
     },
   ];
 
   return (
     <>
+      {!commentListModalOpen && <DefaultHeader />}
       <div>
         <ScrollToBottomButton isModalOpen={false} />
         <Form

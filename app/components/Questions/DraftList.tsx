@@ -94,12 +94,7 @@ export default function DraftList({ onSelectDraft, categoryId }: DraftListProps)
     if (session) {
       fetchDrafts();
     }
-  }, [
-    // categoryId,
-    // session,
-    // router,
-    // userId
-  ]);
+  }, []);
 
 
   const handleDeleteDraft = async (id: string) => {
@@ -160,20 +155,17 @@ export default function DraftList({ onSelectDraft, categoryId }: DraftListProps)
 
   return (
     <>
-      <div className="className=flex flex-col items-center">
+      <div className="space-y-4 text-md mt-4">
         {draftList.length === 0 && !isLoading && (
           <p className='flex items-center justify-center text-lg'>下書きがありません。</p>
         )}
 
-        <p className='my-5 mx-auto w-4/5 text-sm text-green-700 ml-20'>
-          ※ 編集ボタンを押すと、 下書きをコピーして編集することができます。
-        </p>
 
         {draftList.map((draft, index) => {
           const sanitizedDescription = DOMPurify.sanitize(draft.description);
 
           return (
-            <div key={draft.id} className="my-5 mx-auto w-4/5">
+            <div key={draft.id} className="mx-auto w-full sm:w-full lg:w-4/5">
               <Card
                 key={draft.id}
                 id={draft.id}
@@ -182,20 +174,12 @@ export default function DraftList({ onSelectDraft, categoryId }: DraftListProps)
                 ownerId={draft.user_id}
                 categoryId={draft.category_id}
                 onRefresh={fetchDrafts}
-                className="relative"
                 onEdit={() => onSelectDraft(draft)}
                 onDelete={() => handleDeleteDraft(draft.id)}
                 isResolved={false}
                 showViewCount={false}
                 isDraft={false}
               >
-                <div>
-                  <p className="label"></p>
-                  <div
-                    className={styles.questionBody}
-                    dangerouslySetInnerHTML={{ __html: sanitizedDescription }}
-                  />
-                </div>
 
                 <div className="flex flex-wrap mt-4">
                   {draft.tags?.map((tag, index) => (
@@ -205,7 +189,15 @@ export default function DraftList({ onSelectDraft, categoryId }: DraftListProps)
                   ))}
                 </div>
 
-                <div className="flex items-center mt-4">
+                <div>
+                  <p className="label mt-4"></p>
+                  <div
+                    className={styles.questionBody}
+                    dangerouslySetInnerHTML={{ __html: sanitizedDescription }}
+                  />
+                </div>
+
+                <div className="flex items-center my-4">
                   <div className="ml-2">
                   <UserNameDisplay userId={draft.user_id} />
                     <p className="text-sm text-gray-500">
@@ -229,6 +221,11 @@ export default function DraftList({ onSelectDraft, categoryId }: DraftListProps)
             </div>
           );
         })}
+
+        <p className='my-4 w-4/5 text-sm text-center text-green-700'>
+          ※ 編集ボタンを押すと、 下書きをコピーして編集することができます。
+        </p>
+
       </div>
     </>
   );

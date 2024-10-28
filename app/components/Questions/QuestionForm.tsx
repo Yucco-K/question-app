@@ -406,14 +406,14 @@ export default function QuestionForm({ initialTitle: propInitialTitle, initialBo
           </div>
         )}
 
-      <Modal
-        isOpen={draftListModalOpen}
-        onClose={() => {setDraftListModalOpen(false);
-          router.push('/questions');
-        }}
-          title="下書きリスト">
-          <DraftList onSelectDraft={handleSelectDraft} categoryId={selectedCategory ?? null} />
-      </Modal>
+        <Modal
+          isOpen={draftListModalOpen}
+          onClose={() => {setDraftListModalOpen(false);
+            router.push('/questions');
+          }}
+            title="下書きリスト">
+            <DraftList onSelectDraft={handleSelectDraft} categoryId={selectedCategory ?? null} />
+        </Modal>
       </div>
 
       <div className="mx-auto max-w-[1200px] ">

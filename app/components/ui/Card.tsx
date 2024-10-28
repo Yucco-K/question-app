@@ -294,14 +294,16 @@ export default function Card({
           onClose={() => setShowNotification(false)}
         />
       )}
-      <div className="relative border rounded-lg shadow-md overflow-hidden bg-white max-w-[1400px]">
-      {isNewPost() && (
-          <div className="absolute top-16 right-4 ml-20 bg-yellow-100 text-yellow-500 px-3 py-1 ml-10 rounded-b-md text-sm font-bold mt-14
+
+      <div className="relative border rounded-lg shadow-md overflow-hidden bg-white max-w-[1200px]">
+        {isNewPost() && (
+          <div className="absolute top-24 right-4 ml-20 bg-yellow-100 text-yellow-500 px-3 py-1 rounded-b-md text-sm font-bold mt-20
           ">
             NEW
           </div>
         )}
-        <div className="p-10">
+
+        <div className="p-4 mt-4">
           <div className={`card-base-styles ${className}`}>
             <div className="absolute top-4 right-4 flex items-center space-x-2">
               <span className=" text-blue-900 text-sm font-semibold">
@@ -325,12 +327,12 @@ export default function Card({
                   className="text-blue-700 hover:text-blue-900 text-lg cursor-pointer"
                   title="More Options"
                 >
-                  <FontAwesomeIcon icon={faEllipsisV} />
+                  <FontAwesomeIcon icon={faEllipsisV} className='ml-4' />
                 </button>
               )}
 
               {isMenuOpen && (
-                <div className="absolute right-0 top-10 bg-white border shadow-md rounded-md z-50">
+                <div className="absolute right-0 top-0 bg-white border shadow-md rounded-md z-50">
                   <ul className="flex flex-col space-y-2 p-2">
                   {!isResolved && onEdit && (
                       <li>
@@ -365,7 +367,7 @@ export default function Card({
                 {bookmarks.some(bookmark => bookmark.question_id === id && bookmark.is_bookmark) ? (
                   <FontAwesomeIcon icon={faBookmark} className="text-blue-300" />
                 ) : (
-                  <p className="transition transform hover:scale-110 duration-300 ease-in-out px-3 py-1 rounded-md text-xs text-semibold">ブックマークに登録</p>
+                  <p className="transition transform hover:scale-110 duration-300 ease-in-out mx-1 my-2 rounded-md text-xs text-semibold">ブックマークに登録</p>
                 )}
               </button>
             )}
@@ -380,13 +382,13 @@ export default function Card({
                   <p className="text-center mb-6 z-70">本当に削除しますか？</p>
                   <div className="flex justify-center space-x-4 z-70">
                     <button
-                      className="py-2 px-6 bg-red-500 text-white rounded"
+                      className="py-2 px-6 bg-red-400 text-white rounded hover:bg-red-400 whitespace-nowrap"
                       onClick={handleDelete}
                     >
                       削除
                     </button>
                     <button
-                      className="py-2 px-6 bg-gray-300 text-black rounded"
+                      className="py-2 px-6 bg-gray-300 text-black rounded hover:bg-gray-400 whitespace-nowrap"
                       onClick={handleCancelDelete}
                     >
                       キャンセル
@@ -398,7 +400,7 @@ export default function Card({
             )}
 
 
-            <h3 className="text-lg mt-4 mb-2 font-bold">{title}</h3>
+            <h3 className="text-lg mt-8 mb-4">{title}</h3>
 
               <>
               <div className="relative">
@@ -441,7 +443,7 @@ export default function Card({
               {footer && <div className="text-sm text-bold text-blue-900 border-t pt-4">{footer}</div>}
 
               {showViewCount && (
-                <div className="absolute bottom-4 right-10 flex items-center text-gray-500 text-sm">
+                <div className="absolute bottom-4 right-4 flex items-center text-gray-500 text-sm">
                   <FontAwesomeIcon icon={faEye} className="mr-2" />
                   <span>ViewCount: {viewCounter}</span>
                 </div>

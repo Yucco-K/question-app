@@ -39,9 +39,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
 
   const excludedPaths = [
-    '/', '/users/change-password',
-    '/users/login', '/users/set-new-password', '/users/signup',
-    '/auth/v1','/api','users/check-email'
+    '/','/api','/auth/v1',
+    '/link/contact','/link/privacy-policy', '/link/terms',
+    '/users/signup','/users/login',
+    '/users/change-password','users/check-email','/users/set-new-password',
   ];
 
   const isExcludedPath = (path: string) => excludedPaths.includes(path);

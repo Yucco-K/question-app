@@ -17,14 +17,6 @@ export default function QuestionDetailPage() {
   const [id, setId] = useState<string | null>(null);
 
 
-  // useEffect(() => {
-  //   const isMobile = () => /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-  //   if (isMobile()) {
-  //     router.push('/questions/public/mobile');
-  //   }
-  // }, [router]);
-
-
   useEffect(() => {
     if (questionId) {
       setId(questionId);

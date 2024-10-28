@@ -161,6 +161,25 @@ export default function AnswerList({ questionId, categoryId, answers: initialAns
                 isDraft={false}
                 showViewCount={false}
                 className="mb-5"
+                footer={(
+                  <div className="bottom-0 flex sm:flex-row flex-col justify-center items-center sm:gap-x-2 gap-y-2">
+                    <Vote
+                      answerId={answer.id}
+                      userId={userId ?? ''}
+                      answerUserId={answer.user_id}
+                    />
+                      <div className="bottom-0 flex justify-center items-center sm:mt-0 mt-4">
+                        <CommentList
+                          questionId={questionId}
+                          answerId={answer.id}
+                          categoryId={categoryId}
+                          selectedAnswerId={selectedAnswerId}
+                          setSelectedAnswerId={setSelectedAnswerId}
+                          isResolved={isResolved}
+                        />
+                    </div>
+                  </div>
+                )}
               >
 
                 <div className="text-blue-900 text-sm mb-1">
@@ -197,7 +216,7 @@ export default function AnswerList({ questionId, categoryId, answers: initialAns
 
                 <hr className="my-4 border-gray-300" />
 
-                <div className={`mt-8 mb-12 ${styles.answerBody}`}>
+                <div className={`my-4 ${styles.answerBody}`}>
                   <div
                     dangerouslySetInnerHTML={{ __html: sanitizedDescription }}
                   />
@@ -213,14 +232,15 @@ export default function AnswerList({ questionId, categoryId, answers: initialAns
                   />
                 )}
 
-                <div className="absolute bottom-0 right-20 flex items-center justify-end gap-x-20">
+                {/* <div className="bottom-0 flex justify-center items-center gap-x-2"> */}
+                {/* <div className="bottom-0 flex sm:flex-row flex-col justify-center items-center gap-y-2 gap-x-2">
                   <Vote
                     answerId={answer.id}
                     userId={userId ?? ''}
                     answerUserId={answer.user_id}
                   />
 
-                    <div className="mt-6">
+                    <div className="bottom-0 flex justify-center items-center">
                       <CommentList
                         questionId={questionId}
                         answerId={answer.id}
@@ -230,7 +250,7 @@ export default function AnswerList({ questionId, categoryId, answers: initialAns
                         isResolved={isResolved}
                       />
                   </div>
-                </div>
+                </div> */}
 
               </Card>
             );

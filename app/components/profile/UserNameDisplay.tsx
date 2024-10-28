@@ -58,7 +58,7 @@ const UserNameDisplay: React.FC<UserNameDisplayProps> = ({ userId }) => {
           onClose={() => setShowNotification(false)}
         />
       )}
-      <div className='text-blue-900 text-sm'>
+      <div className='text-blue-900 text-sm mb-2'>
         {username}
       </div>
     </>

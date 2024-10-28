@@ -122,7 +122,7 @@ export default function QuestionList({ selectedTags, setSelectedTags }: Question
 
       <div className={styles.questionBody}>
         <div className='flex justify-between'>
-          <h1 className="mx-auto my-4 flex items-center justify-center text-blue-900">質問一覧</h1>
+          {/* <h1 className="mx-auto my-2 flex items-center justify-center text-blue-900">質問一覧</h1> */}
 
         <ScrollToBottomButton isModalOpen={false} />
       </div>
@@ -134,7 +134,7 @@ export default function QuestionList({ selectedTags, setSelectedTags }: Question
         ) : paginatedQuestions.length === 0 ? (
           <p className="text-blue-900">このページには質問がありません。</p>
         ) : (
-          <div className="space-y-4 text-md mt-4">
+          <div className="space-y-4 text-md">
           {paginatedQuestions.map((question) => {
             const sanitizedDescription = DOMPurify.sanitize(question.description);
 
@@ -150,7 +150,7 @@ export default function QuestionList({ selectedTags, setSelectedTags }: Question
                 isPublic={false}
                 showReadMoreButton={false}
                 footer={<a href={`/questions/${question.id}`}
-                className={`${styles.link} font-bold transition transform hover:scale-110 duration-300 ease-in-out px-3 py-1 rounded-md text-md font-semibold inline-block`}
+                  className={`${styles.link} font-bold transition transform hover:scale-110 duration-300 ease-in-out px-2 py-1 rounded-md text-md font-semibold inline-block`}
                 >
                   詳細を見る
                 </a>}
@@ -162,17 +162,34 @@ export default function QuestionList({ selectedTags, setSelectedTags }: Question
                 質問ID: {question.id}
               </div>
               {question.is_resolved && (
-                <div className="absolute top-12 right-16 font-semibold text-sm text-red-400">
+                <div className="absolute top-8 right-2 font-semibold text-sm text-red-400">
                   <FontAwesomeIcon icon={faAward} className="mr-2 text-xl text-yellow-300" />解決済み
                 </div>
               )}
 
-                <div className='my-10'>
-                  <div
-                    className={styles.questionBody}
-                    dangerouslySetInnerHTML={{ __html: sanitizedDescription }}
-                  />
+              <div className="flex items-center mt-4">
+                <UserProfileImage userId={question.user_id} />
+
+                <div className="ml-4">
+                  <UserNameDisplay userId={question.user_id} />
+
+                  <div className="text-left text-sm mt-2">
+                    {question.created_at ? (
+                      new Date(question.created_at).toLocaleString('ja-JP', {
+                        year: 'numeric',
+                        month: '2-digit',
+                        day: '2-digit',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        second: '2-digit',
+                      })
+                      ) : (
+                        '作成日登録なし'
+                      )}
+                    </div>
+                  </div>
                 </div>
+
                 <div className="flex flex-wrap mt-4">
                   {question.tags?.map((tag, index) => (
                     <span key={index} className="bg-blue-500 text-white text-sm py-1 px-4 rounded-full mr-2 mb-2">
@@ -181,28 +198,12 @@ export default function QuestionList({ selectedTags, setSelectedTags }: Question
                   ))}
                 </div>
 
-                <div className="flex items-center mt-4">
-                  <UserProfileImage userId={question.user_id} />
-
-                  <div className="ml-4">
-                    <UserNameDisplay userId={question.user_id} />
-
-                    <div className="text-left text-sm mt-2">
-                      {question.created_at ? (
-                        new Date(question.created_at).toLocaleString('ja-JP', {
-                          year: 'numeric',
-                          month: '2-digit',
-                          day: '2-digit',
-                          hour: '2-digit',
-                          minute: '2-digit',
-                          second: '2-digit',
-                        })
-                        ) : (
-                          '作成日登録なし'
-                        )}
-                      </div>
-                    </div>
-                  </div>
+                <div className='mt-4 mb-4'>
+                  <div
+                    className={styles.questionBody}
+                    dangerouslySetInnerHTML={{ __html: sanitizedDescription }}
+                  />
+                </div>
 
                 </Card>
               );

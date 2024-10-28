@@ -482,7 +482,7 @@ export default function EditUserProfile({ userId }: EditUserProfileProps) {
                 className="p-2 bg-blue-800 text-white text-sm rounded hover:bg-blue-300 w-full sm:w-1/4"
               >
                 <FontAwesomeIcon icon={faImage} className="mr-2" />
-                画像を選択
+                画像を<br/>選択
               </button>
 
               <button

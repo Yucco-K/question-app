@@ -2,7 +2,7 @@
 export default function UsersHeader() {
   return (
     <header className="bg-blue-900 text-white fixed py-2 pl-4 fixed top-0 left-0 w-full z-50">
-      <div className="container mx-auto flex justify-between items-center w-[1200px]">
+      <div className="container mx-auto flex justify-between items-center w-full px-4">
         <style jsx>{`
           .logo {
             font-family: 'Exo 2', sans-serif;

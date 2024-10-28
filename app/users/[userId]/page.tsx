@@ -253,14 +253,14 @@ export default function MyPage() {
                 )}
               </div>
 
-              <div className="flex items-center mb-6 gap-10">
+              <div className="flex items-center mb-6 gap-2">
                 {/* <label className="w-32 font-bold text-blue-900 text-sm">メールアドレス</label> */}
-                <FontAwesomeIcon icon={faEnvelope} className="mr-3 text-2xl text-blue-400" />
-                <p className="text-blue-900 text-md font-bold">{userData?.email || 'メールアドレスが登録されていません'}</p>
+                <FontAwesomeIcon icon={faEnvelope} className="mr-2 text-2xl text-blue-400" />
+                <p className="text-blue-900 text-sm font-bold whitespace-nowrap">{userData?.email || 'メールアドレスが登録されていません'}</p>
               </div>
 
-              <div className="flex items-center mb-6 gap-10  mt-8">
-                <label className="w-32 font-bold text-blue-900 text-sm whitespace-nowrap">名前</label>
+              <div className="flex items-center mb-6 gap-2  mt-8">
+                <label className="w-32 font-bold text-blue-900 text-sm whitespace-nowrap">名前:</label>
                 <p className="text-blue-900 text-lg font-bold whitespace-nowrap">{userData?.username || 'ゲスト'}
                   <span className='ml-2 text-sm font-semibold'>さん</span>
                 </p>
@@ -318,42 +318,23 @@ export default function MyPage() {
                     onRefresh={fetchPostHistory}
                     isResolved={question.is_resolved}
                     showReadMoreButton={false}
-                    footer={<a href={`/questions/${question.id}`} className="hoverScale px-3 py-1 rounded-md text-md text-semibold inline-block">詳細を見る</a>}
+                    footer={
+                      <a href={`/questions/${question.id}`} className="hoverScale px-2 py-1 rounded-md text-md text-semibold inline-block">
+                        詳細を見る
+                      </a>}
                     showMenuButton={false}
                     isDraft={question.is_draft}
                     createdAt={question.created_at}
                   >
-                    <div className="text-blue-900 text-sm mb-4">
-                      質問ID: {question.id}
-                    </div>
-                    <div className="text-blue-900 text-sm mb-4">
-                      投稿日時: {question.created_at ? new Date(question.created_at).toLocaleString('ja-JP', {
-                        year: 'numeric',
-                        month: '2-digit',
-                        day: '2-digit',
-                        hour: '2-digit',
-                        minute: '2-digit',
-                        second: '2-digit'
-                      }) : '作成日登録なし'}
-                    </div>
+
                     {question.is_resolved && (
-                      <div className="absolute top-5 right-0 font-semibold text-sm text-red-400 mb-4">
+                      <div className="absolute top-6 right-0 font-semibold text-sm text-red-400 mb-4">
                         <FontAwesomeIcon icon={faAward} className="mr-2 text-xl text-yellow-300" />解決済み
                       </div>
                     )}
 
-                    <div className='my-10'>
-                      <div
-                        className={styles.questionBody}
-                        dangerouslySetInnerHTML={{ __html: sanitizedDescription }}
-                      />
-                    </div>
-                    <div className="flex flex-wrap mt-4">
-                      {question.tags?.map((tag, index) => (
-                        <span key={index} className="bg-blue-500 text-white text-sm py-1 px-4 rounded-full mr-2 mb-2">
-                          {tag}
-                        </span>
-                      ))}
+                    <div className="text-blue-900 text-sm mb-4">
+                      質問ID: {question.id}
                     </div>
 
                     <div className="flex items-center mt-4">
@@ -372,6 +353,22 @@ export default function MyPage() {
                         </div>
                       </div>
                     </div>
+
+                    <div className="flex flex-wrap mt-4">
+                      {question.tags?.map((tag, index) => (
+                        <span key={index} className="bg-blue-500 text-white text-sm py-1 px-4 rounded-full mr-2 mb-2">
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+
+                    <div className='my-4'>
+                      <div
+                        className={styles.questionBody}
+                        dangerouslySetInnerHTML={{ __html: sanitizedDescription }}
+                      />
+                    </div>
+
                   </Card>
                 );
               })}
@@ -425,44 +422,22 @@ export default function MyPage() {
                     footer={
                       <a
                         href={`/questions/${bookmark.id}`}
-                        className="hoverScale px-3 py-1 rounded-md text-md text-semibold inline-block"
+                        className="hoverScale px-2 py-1 rounded-md text-md text-semibold inline-block"
                       >
                         詳細を見る
                       </a>
                     }
                     type={'bookmarks'}
                   >
+
                     {bookmark.is_resolved && (
-                      <div className="absolute top-5 right-0 font-semibold text-sm text-red-400 mb-4">
+                      <div className="absolute top-6 right-0 font-semibold text-sm text-red-400 mb-4">
                         <FontAwesomeIcon icon={faAward} className="mr-2 text-xl text-yellow-300" />解決済み
                       </div>
                     )}
+
                     <div className="text-blue-900 text-sm mb-2">
                       質問ID: {bookmark.id}
-                    </div>
-                    <div className="text-blue-900 text-sm mb-4">
-                      投稿日時: {bookmark.created_at ? new Date(bookmark.created_at).toLocaleString('ja-JP', {
-                        year: 'numeric',
-                        month: '2-digit',
-                        day: '2-digit',
-                        hour: '2-digit',
-                        minute: '2-digit',
-                        second: '2-digit'
-                      }) : '作成日登録なし'}
-                    </div>
-                    <div
-                      className={styles.questionBody}
-                      dangerouslySetInnerHTML={{ __html: sanitizedDescription }}
-                    />
-                    <div className="flex flex-wrap mt-4">
-                      {bookmark.tags.map((tag: string | number | bigint | boolean | ReactElement<any, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode> | null | undefined, index: Key | null | undefined) => (
-                        <span
-                          key={index}
-                          className="bg-blue-500 text-white text-sm py-1 px-4 rounded-full mr-2 mb-2"
-                        >
-                          {tag}
-                        </span>
-                      ))}
                     </div>
 
                     <div className="flex items-center mt-4">
@@ -483,6 +458,25 @@ export default function MyPage() {
                         </div>
                       </div>
                     </div>
+
+                    <div className="flex flex-wrap mt-4">
+                      {bookmark.tags.map((tag: string | number | bigint | boolean | ReactElement<any, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode> | null | undefined, index: Key | null | undefined) => (
+                        <span
+                          key={index}
+                          className="bg-blue-500 text-white text-sm py-1 px-4 rounded-full mr-2 mb-2"
+                        >
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+
+                    <div className='my-12'>
+                      <div
+                        className={styles.questionBody}
+                        dangerouslySetInnerHTML={{ __html: sanitizedDescription }}
+                      />
+                    </div>
+
                   </Card>
                 );
               })

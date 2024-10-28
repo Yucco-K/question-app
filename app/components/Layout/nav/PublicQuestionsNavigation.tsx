@@ -43,29 +43,29 @@ export default function PublicQuestionsNavigation() {
       }`}
     >
       <div className="max-w-[1200px] w-full mx-auto">
-        <ul className="flex space-x-6 text-sm items-center mt-2">
+        <ul className="flex space-x-2 text-sm items-center mt-2">
         <li>
           <button
-            className="text-blue-700 ml-4 hover:underline flex items-center font-bold"
+            className="text-blue-700 ml-2 hover:underline flex items-center font-bold whitespace-nowrap"
             onClick={handleBack}
           >
-            <FontAwesomeIcon icon={faArrowLeft} className="mr-2" />
+            <FontAwesomeIcon icon={faArrowLeft} className="mr-1" />
             戻る
           </button>
         </li>
 
-        <li className="text-gray-500 mx-2">＞</li>
+        <li className="text-gray-500 mx-1">＞</li>
 
-        <li className="text-gray-700 font-bold">
+        <li className="text-gray-700 font-bold whitespace-nowrap flex items-center">
         <FontAwesomeIcon icon={faHome} className="mr-2 text-gray-500" />
-          Top 画面 公開ページ
+          Top 公開ページ
         </li>
 
-        <li className="text-gray-500 mx-2">＞</li>
+        <li className="text-gray-500 mx-1">＞</li>
 
         <li>
           <button
-            className="text-blue-700 ml-2 font-bold hover:underline"
+            className="text-blue-700 ml-1 font-bold hover:underline whitespace-nowrap flex items-center"
             onClick={() => handleNavigation('/users/login')}
           >
             ログイン
