@@ -1,8 +1,8 @@
 import { useState, useEffect, JSX} from 'react';
 
-// interface QuestionHeaderProps {
-//   toggleSearchTool: () => void;
-// }
+interface QuestionHeaderProps {
+  style?: React.CSSProperties;
+}
 
 import useAuth from '../../../lib/useAuth';
 import { useRouter } from 'next/navigation';
@@ -10,7 +10,7 @@ import LogoutButton from '../../users/LogoutButton';
 import CurrentUserNameDisplay from '../../profile/CurrentUserNameDisplay';
 import CurrentUserProfileImage from '../../profile/CurrentUserProfileImage';
 
-const QuestionHeader: React.FC = () => {
+const QuestionHeader: React.FC<QuestionHeaderProps> = ({ style }) => {
   const [isDropdownOpen, setDropdownOpen] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
   const router = useRouter();
@@ -71,16 +71,6 @@ const QuestionHeader: React.FC = () => {
         <div className="logo cursor-pointer ml-4" onClick={handleLogoClick}>
           Engineers <span>Q&A</span> Board
         </div>
-
-        {/* <button
-          className="flex items-center bg-gray-400 text-white text-xs px-2 py-1 rounded-full hover:bg-gray-600 ml-10 transition-transform duration-300 ease-in-out transform hover:scale-105 md:hidden"
-          onClick={toggleSearchTool}
-        >
-          <span className="bg-gray-500 text-white rounded-full w-6 h-6 flex items-center justify-center mr-2 text-2xl">
-            ⊕
-          </span>
-            検索ツール
-        </button> */}
 
         <div className="relative z-100">
           <div onClick={handleProfileClick} className="cursor-pointer mr-4 z-100">

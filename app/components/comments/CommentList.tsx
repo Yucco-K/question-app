@@ -263,7 +263,7 @@ export default function CommentList({ questionId, answerId, categoryId, selected
   return (
     <>
 
-      {!commentListModalOpen && <DefaultHeader />}
+      <DefaultHeader style={{ display: 'none' }} />
 
       <ScrollToBottomButton isModalOpen={commentListModalOpen} />
       {!commentListModalOpen && (

@@ -12,8 +12,10 @@ import { useParams } from 'next/navigation';
 import { useRouter } from 'next/navigation';
 import Pagination from '@/app/components/ui/Pagination';
 import ScrollToBottomButton from '@/app/components/ui/ScrollToBottomButton';
-import Image from 'next/image';
 import { toast } from 'react-toastify';
+import CurrentUserEmailDisplay from '@/app/components/profile/CurrentUserEmailDisplay';
+import CurrentUserNameDisplay from '@/app/components/profile/CurrentUserNameDisplay';
+import CurrentUserProfileImage from '@/app/components/profile/CurrentUserProfileImage';
 
 
 interface UserData {
@@ -149,8 +151,12 @@ export default function MyPage() {
 
   const fetchUserStatistics = async () => {
     try {
+
+      console.log('fetching user statistics', userId);
+      console.log('fetching user statistics', `/api/users/${userId}/statistics`);
       const response = await fetch(`/api/users/${userId}/statistics`);
       const data = await response.json();
+      console.log('user statistics:', data);
       setUserStatistics({
         bestAnswerCount: data.bestAnswerCount,
         totalLikes: data.totalLikes,
@@ -197,7 +203,7 @@ export default function MyPage() {
   useEffect(() => {
     const fetchAllData = async () => {
       try {
-        await Promise.all([fetchUserData(), fetchPostHistory(), fetchBookmarks()]);
+        await Promise.all([fetchUserData(), fetchUserStatistics(), fetchPostHistory(), fetchBookmarks()]);
       } catch (error) {
         console.error('データの取得に失敗しました:', error);
         toast.error('データの取得に失敗しました', {
@@ -231,58 +237,49 @@ export default function MyPage() {
             </button>
           </div>
 
-          <div className="flex justify-between items-start border-t border-gray-300 text-md pt-6">
+          <div className="flex flex-col items-start border-t border-gray-300 text-md pt-6">
 
-            <div className="w-1/2 pr-4">
-              <div className="flex items-center mb-6 gap-10">
-                {/* <label className="w-32 font-bold text-blue-900 whitespace-nowrap text-md">
-                  プロフィール画像
-                </label> */}
-                {profileImage ? (
-                  <Image
-                  src={profileImage}
-                  alt="Profile"
-                  width={80}
-                  height={80}
-                  className="w-full h-full rounded-sm"
-                />
-                ) : (
-                  <div className="flex items-center justify-center w-16 h-16 border border-gray-300 rounded-sm">
-                    <FontAwesomeIcon icon={faUser} className="text-gray-500" size="2x" />
-                  </div>
-                )}
-              </div>
+            <div className="flex items-start">
 
-              <div className="flex items-center mb-6 gap-2">
-                {/* <label className="w-32 font-bold text-blue-900 text-sm">メールアドレス</label> */}
-                <FontAwesomeIcon icon={faEnvelope} className="mr-2 text-2xl text-blue-400" />
-                <p className="text-blue-900 text-sm font-bold whitespace-nowrap">{userData?.email || 'メールアドレスが登録されていません'}</p>
-              </div>
+              <CurrentUserProfileImage size={80} />
 
-              <div className="flex items-center mb-6 gap-2  mt-8">
-                <label className="w-32 font-bold text-blue-900 text-sm whitespace-nowrap">名前:</label>
-                <p className="text-blue-900 text-lg font-bold whitespace-nowrap">{userData?.username || 'ゲスト'}
-                  <span className='ml-2 text-sm font-semibold'>さん</span>
-                </p>
+              <div className="flex flex-col ml-4">
+                <div className="text-blue-900 text-center text-sm font-semibold mb-2">
+                  <span className="ml-2 mr-2">Best Answer: </span>
+                  <span className='ml-2 mr-4'>{userStatistics.bestAnswerCount}</span>
+                  <FontAwesomeIcon icon={faCrown} className="text-yellow-300 text-lg" />
+                </div>
+                <div className="text-blue-900 text-center text-sm font-semibold mb-2">
+                  <span className="ml-2 mr-5">いいね獲得: </span>
+                  <span className='ml-2 mr-4'>{userStatistics.totalLikes}</span>
+                  <FontAwesomeIcon icon={faThumbsUp} className="text-orange-300 text-lg" />
+                </div>
+                <div className="text-blue-900 text-center text-sm font-semibold">
+                  <span className="ml-2 mr-12">総回答: </span>
+                  <span className='ml-2 mr-4'>{userStatistics.totalAnswers}</span>
+                  <FontAwesomeIcon icon={faUserGraduate} className="text-indigo-500 text-lg" />
+                </div>
               </div>
             </div>
 
-            <div className="w-1/2 flex flex-col items-end">
-              <div className="text-blue-900 text-sm font-semibold mb-6">
-                <span className='mr-2 mb-2'> Best Answer: {userStatistics.bestAnswerCount}</span>
-                <FontAwesomeIcon icon={faCrown} className="mr-2 mt-2 text-yellow-300 text-lg" />
+            <div className="flex flex-col mt-6 gap-4">
+              <div className="flex items-center gap-4">
+                <FontAwesomeIcon icon={faEnvelope} className="text-2xl text-blue-400" />
+                <div className="text-blue-900 text-sm font-bold whitespace-nowrap">
+                  <CurrentUserEmailDisplay />
+                </div>
               </div>
-              <div className="text-blue-900 text-sm mb-8 font-semibold">
-                <span className='mr-2'> いいね獲得: {userStatistics.totalLikes}</span>
-                <FontAwesomeIcon icon={faThumbsUp} className="mr-2 text-orange-300 text-lg" />
-              </div>
-              <div className="text-blue-900 text-sm mt-2 mb-6 font-semibold">
-                <span className='mr-2'> 総回答: {userStatistics.totalAnswers}</span>
-                <FontAwesomeIcon icon={faUserGraduate} className="mr-2 mt-2 text-indigo-500 text-lg" />
+              <div className="flex gap-x-1">
+                <label className="w-16 font-bold text-blue-900 text-sm whitespace-nowrap mt-1">名前:</label>
+                <div className="text-blue-900 text-lg font-bold whitespace-nowrap">
+                  <CurrentUserNameDisplay />
+                </div>
               </div>
             </div>
+
           </div>
         </div>
+
       </section>
 
 

@@ -9,6 +9,7 @@ import Card from '../ui/Card';
 import DOMPurify from 'dompurify';
 import UserNameDisplay from '../profile/UserNameDisplay';
 import { toast } from 'react-toastify';
+import QuestionHeader from '../Layout/header/QuestionHeader';
 
 
 interface DraftItem {
@@ -155,6 +156,8 @@ export default function DraftList({ onSelectDraft, categoryId }: DraftListProps)
 
   return (
     <>
+      <QuestionHeader style={{ display: 'none' }} />
+
       <div className="space-y-4 text-md mt-4">
         {draftList.length === 0 && !isLoading && (
           <p className='flex items-center justify-center text-lg'>下書きがありません。</p>

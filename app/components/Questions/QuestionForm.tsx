@@ -14,6 +14,7 @@ import { useLoading } from '../../context/LoadingContext';
 import { useRouter } from 'next/navigation';
 import Category from '../ui/Category';
 import { toast } from 'react-toastify';
+import QuestionHeader from '../Layout/header/QuestionHeader';
 
 
 interface QuestionFormProps {
@@ -108,7 +109,7 @@ export default function QuestionForm({ initialTitle: propInitialTitle, initialBo
 
     if (!selectedCategory || selectedCategory === "カテゴリを選択") {
       console.error('カテゴリを選択してください');
-      toast.error('カテゴリを選択してください', {
+      toast.error('カテゴリを選択してください、または、改めてカテゴリを選択してください。', {
         position: "top-center",
         autoClose: 2000,
       });
@@ -393,6 +394,8 @@ export default function QuestionForm({ initialTitle: propInitialTitle, initialBo
 
   return (
     <>
+      <QuestionHeader style={{ display: 'none' }} />
+
       <div className="container mx-auto px-4 py-8 relative">
         {!draftListModalOpen && (
           <div className="absolute top-5 right-20 flex items-center space-x-2 z-[100]">

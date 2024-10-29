@@ -40,33 +40,34 @@ export default function EditUserProfile({ userId }: EditUserProfileProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
 
-  useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        setLoading(true);
-        const response = await fetch(`/api/users/${userId}`);
-
-        if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(errorData.error || 'ユーザー情報の取得に失敗しました');
-        }
-        const data = await response.json();
-        setEmail(data.email);
-        setNewEmail(data.email);
-        setName(data.username);
-        setProfileImage(data.profileImage);
-
-      } catch (err) {
-        console.error((err as Error).message);
-        // toast.error('ユーザー情報の取得に失敗しました', {
-        //   position: "top-center",
-        //   autoClose: 3000,
-        // });
-
-      } finally {
-        setLoading(false);
+  const fetchUserData = async () => {
+    try {
+      setLoading(true);
+      const response = await fetch(`/api/users/${userId}`);
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'ユーザー情報の取得に失敗しました');
       }
-    };
+      const data = await response.json();
+      setEmail(data.email);
+      setNewEmail(data.email);
+      setName(data.username);
+      setProfileImage(data.profileImage);
+      
+    } catch (err) {
+      console.error((err as Error).message);
+      // toast.error('ユーザー情報の取得に失敗しました', {
+      //   position: "top-center",
+      //   autoClose: 3000,
+      // });
+      
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
     fetchUserData();
   }, [userId]);
 
@@ -252,6 +253,8 @@ export default function EditUserProfile({ userId }: EditUserProfileProps) {
         position: "top-center",
         autoClose: 3000,
       })
+      setIsEditingImage(false);
+      fetchUserData();
     } catch (err) {
       console.error((err as Error).message);
       toast.error('プロフィール画像の保存に失敗しました', {
@@ -300,7 +303,10 @@ export default function EditUserProfile({ userId }: EditUserProfileProps) {
         setNewEmail('');
         setConfirmEmail('');
         setIsEditingEmail(false);
-      }, 3000);
+      }, 500);
+
+      fetchUserData();
+
     } catch (err) {
       console.error((err as Error).message);
       toast.error('メールアドレスの更新に失敗しました', {
@@ -333,6 +339,14 @@ export default function EditUserProfile({ userId }: EditUserProfileProps) {
         position: "top-center",
         autoClose: 3000,
       });
+
+      setTimeout(() => {
+        setName(name);
+        setIsEditingName(false);
+      }, 500);
+
+      fetchUserData();
+
     } catch (err) {
       console.error((err as Error).message);
       toast.error('名前の更新に失敗しました', {

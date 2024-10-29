@@ -5,7 +5,11 @@ import LogoutButton from '../../users/LogoutButton';
 import CurrentUserProfileImage from '../../profile/CurrentUserProfileImage';
 import CurrentUserNameDisplay from '../../profile/CurrentUserNameDisplay';
 
-export default function DefaultHeader() {
+interface DefaultHeaderProps {
+  style?: React.CSSProperties;
+}
+
+const DefaultHeader: React.FC<DefaultHeaderProps> = ({ style }) => {
   const [isDropdownOpen, setDropdownOpen] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
   const router = useRouter();
@@ -55,11 +59,10 @@ export default function DefaultHeader() {
 
 
   return (
-    <header
+    <header style={style}
       className={`fixed top-0 left-0 w-full bg-gray-100 text-white py-1 transition-opacity duration-500 ${
         isVisible ? 'opacity-100' : 'opacity-0'
       }`}
-      style={{ zIndex: 100 }}
     >
       <div className="container mx-auto flex justify-between items-center w-full px-4">
 
@@ -130,3 +133,5 @@ export default function DefaultHeader() {
     </header>
   );
 }
+
+export default DefaultHeader;

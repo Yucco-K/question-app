@@ -170,7 +170,8 @@ export default function CommentForm({ questionId,
 
   return (
     <>
-      {!commentListModalOpen && <DefaultHeader />}
+      <DefaultHeader style={{ display: 'none' }} />
+
       <div>
         <ScrollToBottomButton isModalOpen={false} />
         <Form

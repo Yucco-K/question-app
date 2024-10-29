@@ -232,26 +232,6 @@ export default function AnswerList({ questionId, categoryId, answers: initialAns
                   />
                 )}
 
-                {/* <div className="bottom-0 flex justify-center items-center gap-x-2"> */}
-                {/* <div className="bottom-0 flex sm:flex-row flex-col justify-center items-center gap-y-2 gap-x-2">
-                  <Vote
-                    answerId={answer.id}
-                    userId={userId ?? ''}
-                    answerUserId={answer.user_id}
-                  />
-
-                    <div className="bottom-0 flex justify-center items-center">
-                      <CommentList
-                        questionId={questionId}
-                        answerId={answer.id}
-                        categoryId={categoryId}
-                        selectedAnswerId={selectedAnswerId}
-                        setSelectedAnswerId={setSelectedAnswerId}
-                        isResolved={isResolved}
-                      />
-                  </div>
-                </div> */}
-
               </Card>
             );
           })

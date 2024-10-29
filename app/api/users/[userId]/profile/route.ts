@@ -12,7 +12,7 @@ export async function GET(request: Request, { params }: { params: { userId: stri
 
   const { data: user, error } = await supabase
     .from('User')
-    .select('id, username, profileImage')
+    .select('id, email,username, profileImage')
     .eq('id', userId)
     .single();
 
@@ -20,5 +20,5 @@ export async function GET(request: Request, { params }: { params: { userId: stri
     return NextResponse.json({ error: 'User not found', message: error?.message || 'No user found' }, { status: 404 });
   }
 
-  return NextResponse.json({ id: user.id, username: user.username, profileImage: user.profileImage }, { status: 200 });
+  return NextResponse.json({ id: user.id, email: user.email, username: user.username, profileImage: user.profileImage }, { status: 200 });
 }
