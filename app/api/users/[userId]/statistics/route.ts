@@ -10,34 +10,46 @@ export async function GET(request: Request, { params }: { params: { userId: stri
 
   try {
 
-    const { count: userBestAnswersCount, error: userBestAnswersError } = await supabase
-      .from('Question')
-      .select('best_answer_id', { count: 'exact' })
-      .eq('best_answer_id', userId);
+    const { data: bestAnswerData, error: bestAnswerDataError } = await supabase
+    .from('Question')
+    .select('best_answer_id')
+    .not('best_answer_id', 'is', null);
 
-      console.log('userBestAnswersCount', userBestAnswersCount);
+    if (bestAnswerDataError) {
+    throw new Error(`ベストアンサーIDの取得に失敗しました: ${bestAnswerDataError?.message}`);
+    }
+
+    const bestAnswerIds = bestAnswerData?.map((question: { best_answer_id: string }) => question.best_answer_id) || [];
+
+    if (bestAnswerIds.length === 0) {
+    return { bestAnswerCount: 0 };
+    }
+
+    const { count: userBestAnswersCount, error: userBestAnswersError } = await supabase
+    .from('Answer')
+    .select('id', { count: 'exact' })
+    .in('id', bestAnswerIds)
+    .eq('user_id', userId);
 
     if (userBestAnswersError) {
-      throw new Error(`ユーザーのベストアンサーの集計に失敗しました: ${userBestAnswersError.message}`);
+    throw new Error(`ユーザーのベストアンサーの集計に失敗しました: ${userBestAnswersError.message}`);
     }
+
 
     const { data: totalAnswersData, error: totalAnswersError } = await supabase
       .from('Answer')
       .select('id', { count: 'exact' })
       .eq('user_id', userId);
 
-      console.log('totalAnswersData', totalAnswersData);
-
     if (totalAnswersError) {
       throw new Error(`回答数の集計に失敗しました: ${totalAnswersError.message}`);
     }
+
 
     const { data: answerIdsData, error: answerIdsError } = await supabase
       .from('Answer')
       .select('id')
       .eq('user_id', userId);
-
-      console.log('answerIdsData', answerIdsData);
 
     if (answerIdsError || !answerIdsData) {
       throw new Error(`回答IDの取得に失敗しました: ${answerIdsError?.message}`);
@@ -51,8 +63,6 @@ export async function GET(request: Request, { params }: { params: { userId: stri
       .eq('type', 'up')
       .in('answer_id', answerIds);
 
-      console.log('totalLikesData', totalLikesData);
-
     if (totalLikesError) {
       throw new Error(`いいね数の集計に失敗しました: ${totalLikesError.message}`);
     }
@@ -62,7 +72,6 @@ export async function GET(request: Request, { params }: { params: { userId: stri
       bestAnswerCount: userBestAnswersCount || 0,
       totalAnswers: totalAnswersData?.length || 0,
       totalLikes: totalLikesData?.length || 0,
-
     }, { status: 200 });
 
   } catch (error: any) {

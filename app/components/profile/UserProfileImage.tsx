@@ -52,7 +52,7 @@ export default function UserProfileImage({ userId }: UserProfileImageProps) {
     };
 
     fetchUserProfile();
-  }, [userId, profileImage]);
+  }, [userId]);
 
   return (
     <>

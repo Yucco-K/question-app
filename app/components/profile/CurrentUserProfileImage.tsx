@@ -63,7 +63,7 @@ export default function CurrentUserProfileImage({ size = 40 }: CurrentUserProfil
     };
 
     fetchProfileData();
-  }, [userId, profileImage]);
+  }, [userId]);
 
   return (
     <>
