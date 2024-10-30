@@ -508,7 +508,6 @@ export default function QuestionDetail({ questionId }: { questionId: string }) {
               <div className="ml-4">
                 <UserNameDisplay userId={question.user_id} />
 
-
                 <div className="text-left text-sm mt-2">
                 {question.created_at ? (
                   new Date(question.created_at).toLocaleString('ja-JP', {

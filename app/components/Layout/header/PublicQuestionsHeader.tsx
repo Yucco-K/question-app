@@ -69,7 +69,7 @@ const PublicQuestionsHeader: React.FC<PublicQuestionHeaderProps> = ({ toggleSear
           className="flex items-center bg-gray-400 text-white text-xs px-2 py-1 my-2 mr-4 rounded-full hover:bg-gray-600 ml-10 transition-transform duration-300 ease-in-out transform hover:scale-105 md:hidden"
           onClick={toggleSearchTool}
         >
-          <span className="bg-gray-400 text-white rounded-full w-6 h-6 flex items-center flex justify-center mr-2 text-2xl">
+          <span className="bg-gray-400 text-white rounded-full w-6 h-6 flex items-center flex justify-center mr-2 text-2xl hover:bg-gray-600">
             ⊕
           </span>
             検索ツール

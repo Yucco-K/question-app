@@ -388,7 +388,7 @@ export default function CommentList({ questionId, answerId, categoryId, selected
                   );
                 })
               ) : (
-                <p className='text-blue-900'>まだコメントはありません。</p>
+                <p className='text-blue-900 text-center'>まだコメントはありません。</p>
               )}
               <div className="fixed bottom-16 right-32">
                     <button

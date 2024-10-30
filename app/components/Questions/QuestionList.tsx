@@ -130,9 +130,9 @@ export default function QuestionList({ selectedTags, setSelectedTags }: Question
       <KeywordSearch data={questions} onSearchResults={handleSearchResults} />
 
         {filteredQuestions.length === 0 ? (
-          <p className="text-blue-900">質問がありません。</p>
+          <p className="text-blue-900 text-center">質問がありません。</p>
         ) : paginatedQuestions.length === 0 ? (
-          <p className="text-blue-900">このページには質問がありません。</p>
+          <p className="text-blue-900 text-center">このページには質問がありません。</p>
         ) : (
           <div className="space-y-4 text-md">
           {paginatedQuestions.map((question) => {

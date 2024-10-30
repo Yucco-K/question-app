@@ -10,7 +10,7 @@ export async function GET(request: Request, { params }: { params: { userId: stri
 
   const { data: user, error } = await supabase
     .from('User')
-    .select('id, email,username, profileImage')
+    .select('id, email, username, profileImage')
     .eq('id', userId)
     .single();
 

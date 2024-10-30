@@ -152,8 +152,6 @@ export default function DraftList({ onSelectDraft, categoryId }: DraftListProps)
     }
   };
 
-  // if (isLoading) return <p>読み込み中...</p>;
-
   return (
     <>
       <QuestionHeader style={{ display: 'none' }} />
@@ -184,7 +182,6 @@ export default function DraftList({ onSelectDraft, categoryId }: DraftListProps)
                 isDraft={false}
               >
 
-                {/* <div className="flex items-center my-4"> */}
                   <div className="ml-2">
                     <UserNameDisplay userId={draft.user_id} />
                     <p className="text-sm text-gray-500">
@@ -213,14 +210,12 @@ export default function DraftList({ onSelectDraft, categoryId }: DraftListProps)
                   </div>
 
                   <div>
-                    {/* <p className="label mt-4"></p> */}
                     <div
                       className={styles.questionBody}
                       dangerouslySetInnerHTML={{ __html: sanitizedDescription }}
                     />
                   </div>
 
-                {/* </div> */}
               </Card>
             </div>
           );

@@ -64,7 +64,7 @@ export default function MobileQuestionsPage() {
           className="flex items-center bg-gray-400 text-white text-xs top-20 ml-auto px-2 py-1 rounded-full hover:bg-gray-600 ml-10 transition-transform duration-300 ease-in-out transform hover:scale-105 md:hidden"
           onClick={toggleSearchTool}
         >
-          <span className="bg-gray-400 text-white rounded-full w-6 h-6 flex items-center justify-center mr-2 text-2xl">
+          <span className="bg-gray-400 text-white rounded-full w-6 h-6 flex items-center justify-center mr-2 text-2xl hover:bg-gray-600">
             ⊕
           </span>
             検索ツール
@@ -74,7 +74,6 @@ export default function MobileQuestionsPage() {
 
 
     <div className="container mx-auto px-4">
-    {/* <h1 className="mx-auto flex items-center justify-center text-blue-900 text-lg">質問一覧</h1> */}
 
       <Modal isOpen={isModalOpen} onClose={() => setModalOpen(false)} title="質問を投稿">
         <QuestionForm
@@ -98,7 +97,7 @@ export default function MobileQuestionsPage() {
                 setModalOpen(true);
               }}
             >
-              <span className="bg-orange-400 text-white rounded-full w-6 h-6 flex items-center justify-center mr-2 text-2xl">
+              <span className="bg-orange-400 text-white rounded-full w-6 h-6 flex items-center justify-center mr-2 text-2xl  hover:bg-orange-600">
                 ⊕
               </span>
               質問を投稿

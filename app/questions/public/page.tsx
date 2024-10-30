@@ -134,7 +134,7 @@ export default function PublicQuestionsPage() {
             setLoginPromptOpen(true);
           }}
         >
-          <span className="bg-orange-400 text-white rounded-full w-6 h-6 flex items-center justify-center mr-2 text-2xl">
+          <span className="bg-orange-400 text-white rounded-full w-6 h-6 flex items-center justify-center mr-2 text-2xl hover:bg-orange-600">
             ⊕
           </span>
           質問を投稿
