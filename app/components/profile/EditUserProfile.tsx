@@ -44,7 +44,7 @@ export default function EditUserProfile({ userId }: EditUserProfileProps) {
     try {
       setLoading(true);
       const response = await fetch(`/api/users/${userId}`);
-      
+
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.error || 'ユーザー情報の取得に失敗しました');
@@ -54,14 +54,14 @@ export default function EditUserProfile({ userId }: EditUserProfileProps) {
       setNewEmail(data.email);
       setName(data.username);
       setProfileImage(data.profileImage);
-      
+
     } catch (err) {
       console.error((err as Error).message);
       // toast.error('ユーザー情報の取得に失敗しました', {
       //   position: "top-center",
       //   autoClose: 3000,
       // });
-      
+
     } finally {
       setLoading(false);
     }
@@ -221,7 +221,10 @@ export default function EditUserProfile({ userId }: EditUserProfileProps) {
         body: formData,
       });
       const data = await response.json();
-      setProfileImage(data.publicUrl);
+
+      const timestamp = new Date().getTime();
+      setProfileImage(`${data.publicUrl}?${timestamp}`);
+
     } catch (err) {
       console.error((err as Error).message);
       toast.error('エラーが発生しました', {
@@ -253,6 +256,7 @@ export default function EditUserProfile({ userId }: EditUserProfileProps) {
       })
       setIsEditingImage(false);
       fetchUserData();
+      window.location.reload();
     } catch (err) {
       console.error((err as Error).message);
       toast.error('プロフィール画像の保存に失敗しました', {
@@ -445,13 +449,13 @@ export default function EditUserProfile({ userId }: EditUserProfileProps) {
 
           {isConfirmingDelete && (
             <div
-              className="absolute top-0 right-full mr-4 bg-gray-500 bg-opacity-75 flex flex-col items-center justify-center z-50"
+              className="absolute top-0 left-full ml-4 bg-gray-500 bg-opacity-75 flex flex-col items-center justify-center z-50"
               onClick={handleCancelDelete}
             >
 
 
-            <div className="absolute left-full top-1/2 transform -translate-y-1/2">
-              <div className="w-0 h-0 border-t-[8px] border-b-[8px] border-l-[8px] border-transparent border-l-gray-300"></div>
+            <div className="absolute right-full top-1/2 transform -translate-y-1/2">
+              <div className="w-0 h-0 border-t-[8px] border-b-[8px] border-r-[8px] border-transparent border-r-gray-300"></div>
             </div>
 
 

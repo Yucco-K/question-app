@@ -41,6 +41,7 @@ export default function CurrentUserProfileImage({ size = 40 }: CurrentUserProfil
               setUsername(data.username);
               setSuccess("プロフィール画像が正常に取得されました。");
               // setShowNotification(true);
+            
             } else {
               setError("プロフィール画像を取得できませんでした。");
               setShowNotification(true);
@@ -62,7 +63,7 @@ export default function CurrentUserProfileImage({ size = 40 }: CurrentUserProfil
     };
 
     fetchProfileData();
-  }, [userId,profileImage]);
+  }, [userId, profileImage]);
 
   return (
     <>

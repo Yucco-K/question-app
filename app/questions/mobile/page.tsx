@@ -64,7 +64,7 @@ export default function MobileQuestionsPage() {
           className="flex items-center bg-gray-400 text-white text-xs top-20 ml-auto px-2 py-1 rounded-full hover:bg-gray-600 ml-10 transition-transform duration-300 ease-in-out transform hover:scale-105 md:hidden"
           onClick={toggleSearchTool}
         >
-          <span className="bg-gray-500 text-white rounded-full w-6 h-6 flex items-center justify-center mr-2 text-2xl">
+          <span className="bg-gray-400 text-white rounded-full w-6 h-6 flex items-center justify-center mr-2 text-2xl">
             ⊕
           </span>
             検索ツール

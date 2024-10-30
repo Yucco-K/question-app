@@ -11,6 +11,7 @@ import { useLoading } from '../../context/LoadingContext';
 import { toast } from 'react-toastify';
 
 export default function SignupForm() {
+  const [isMobile, setIsMobile] = useState(false);
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -35,6 +36,22 @@ export default function SignupForm() {
     password: false,
     confirmPassword: false,
   });
+
+
+  useEffect(() => {
+
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+
+    handleResize();
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
+
 
   useEffect(() => {
     return () => {
@@ -221,6 +238,23 @@ export default function SignupForm() {
       }, 180000);
     }
   }
+
+
+  if (isMobile) {
+    return (
+      <UsersLayout
+        title="サインアップ"
+        actionText="既にアカウントをお持ちの方は"
+        actionHref="/users/login"
+        actionLinkText="ログインへ"
+      >
+        <div className="text-center text-red-300 font-bold mt-8">
+          ※ アカウントの作成は<br/>PC画面から行ってください。
+        </div>
+      </UsersLayout>
+    );
+  }
+
 
   return (
       <UsersLayout
