@@ -243,17 +243,17 @@ export default function MyPage() {
 
               <div className="flex flex-col ml-4">
                 <div className="text-blue-900 text-center text-sm font-semibold mb-6">
-                  <span className="ml-2 mr-4 whitespace-nowrap">ベストアンサー</span>
+                  <span className="ml-2 mr-4 whitespace-nowrap">ベストアンサー</span><br/>
                   <span className='mr-4 text-lg'>{userStatistics.bestAnswerCount}</span>
                   <FontAwesomeIcon icon={faCrown} className="text-yellow-300 text-lg" />
                 </div>
                 <div className="text-blue-900 text-center text-sm font-semibold mb-6">
-                  <span className="ml-2 mr-10 whitespace-nowrap">いいね獲得</span>
+                  <span className="ml-2 mr-10 whitespace-nowrap">いいね獲得</span><br/>
                   <span className='mr-4 text-lg'>{userStatistics.totalLikes}</span>
                   <FontAwesomeIcon icon={faThumbsUp} className="text-orange-300 text-lg" />
                 </div>
                 <div className="text-blue-900 text-center text-sm font-semibold">
-                  <span className="ml-2 mr-14 whitespace-nowrap">総回答数</span>
+                  <span className="ml-2 mr-14 whitespace-nowrap">総回答数</span><br/>
                   <span className='mr-4 text-lg'>{userStatistics.totalAnswers}</span>
                   <FontAwesomeIcon icon={faUserGraduate} className="text-indigo-500 text-lg" />
                 </div>

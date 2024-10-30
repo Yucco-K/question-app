@@ -19,9 +19,12 @@ export async function GET() {
   //   return NextResponse.json({ message: 'User already exists', data: existingUser }, { status: 409 });
   // }
 
+
+  // ※ Create a new user: データ値を変更することで、新しいユーザーを作成することができます。プロパティ名などは変更せずに使用します。
+
   const { data, error } = await supabaseAdmin.auth.admin.createUser({
-    email: 'user1@example.com',
-    password: 'hashed_password1',
+    email: 'user2@example.com',
+    password: 'hashed_password2',
     email_confirm: true,
   });
 
@@ -36,11 +39,9 @@ export async function GET() {
     .upsert([
       {
         id: newUserId,
-        // email: 'user2@example.com',
-        // password_hash: 'hashed_password2',
-        username: 'user1',
-        role: 'Student',
-        created_at: '2023-01-01 10:00:00'
+        username: 'user2',
+        role: 'Asmin',
+        created_at: '2023-01-02 11:00:00'
       }
     ]);
 
