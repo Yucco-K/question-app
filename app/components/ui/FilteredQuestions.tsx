@@ -25,7 +25,7 @@ const FilteredQuestions: React.FC<FilteredQuestionsProps> = ({ questions, isLoad
   const [error, setError] = useState<string | null>(null);
 
   if (isLoading) {
-    return <p>データを読み込み中です...</p>;
+    return <p className='text-center'>データを読み込み中です...</p>;
   }
 
   if (error) {
@@ -40,7 +40,7 @@ const FilteredQuestions: React.FC<FilteredQuestionsProps> = ({ questions, isLoad
   }
 
   if (questions.length === 0) {
-    return <p>質問が見つかりませんでした。</p>;
+    return <p className='text-center'>質問が見つかりませんでした。</p>;
   }
 
   return (

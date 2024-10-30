@@ -84,9 +84,9 @@ const CategorySearch: React.FC<CategorySearchProps> = ({ categoryId = null }) =>
     <div className="container mx-auto max-w-[1200px] px-4">
       <div className={styles.questionBody}>
           {questions.length === 0 ? (
-            <p className='text-blue-900'>このカテゴリに質問がありません。</p>
+            <p className='text-blue-900 text-center'>このカテゴリに質問がありません。</p>
           ) : paginatedQuestions.length === 0 ? (
-            <p className='text-blue-900'>このページには質問がありません。</p>
+            <p className='text-blue-900 text-center'>このページには質問がありません。</p>
           ) : (
             <div className="space-y-4 text-md">
               {paginatedQuestions.map((question) => {

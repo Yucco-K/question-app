@@ -88,10 +88,10 @@ export default function SortQuestions() {
 
             <div className="space-y-4">
               {isLoading ? (
-                  <p>読み込み中です...</p>
+                  <p className='text-center'>読み込み中です...</p>
 
                 ) : paginatedQuestions.length === 0 && !error ? (
-                  <p>質問が見つかりませんでした。</p>
+                  <p className='text-center'>質問が見つかりませんでした。</p>
 
                 ) : (
                 paginatedQuestions.map((question) => (

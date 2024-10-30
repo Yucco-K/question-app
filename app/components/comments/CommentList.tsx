@@ -343,7 +343,7 @@ export default function CommentList({ questionId, answerId, categoryId, selected
                               pattern={2}
                               buttons={[
                                 {
-                                  label: '更 新', className: 'bg-blue-600 text-white text-sm w-1/3', onClick: () => handleEditSubmit(comment.id),
+                                  label: '更 新', className: 'bg-blue-600 text-white text-sm w-1/3 whitespace-nowrap', onClick: () => handleEditSubmit(comment.id),
                                 },
                                 {
                                   label: 'キャンセル', className: 'bg-gray-400 text-white text-sm w-1/3 whitespace-nowrap', onClick: () => setIsEditing(false),
@@ -390,7 +390,7 @@ export default function CommentList({ questionId, answerId, categoryId, selected
               ) : (
                 <p className='text-blue-900'>まだコメントはありません。</p>
               )}
-              <div className="fixed bottom-16 right-40">
+              <div className="fixed bottom-16 right-32">
                     <button
                       className="flex items-center bg-green-500 text-white px-4 py-2 rounded-full hover:bg-green-600 mr-20 transition-transform duration-300 ease-in-out transform hover:scale-105 whitespace-nowrap"
                       onClick={() => setCommentModalOpen(true)}

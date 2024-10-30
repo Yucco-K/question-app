@@ -395,12 +395,12 @@ export default function QuestionDetail({ questionId }: { questionId: string }) {
   const buttons = [
     {
       label: '更新',
-      className: 'bg-blue-500 text-white text-sm',
+      className: 'bg-blue-500 text-white text-sm whitespace-nowrap',
       onClick: handleUpdate,
     },
     {
       label: 'キャンセル',
-      className: 'bg-blue-500 text-white text-sm',
+      className: 'bg-blue-500 text-white text-sm whitespace-nowrap',
       onClick: handleCancel,
     },
   ];

@@ -17,7 +17,7 @@ export default function ConfirmationModal({
         <p className="text-center mb-6">{message}</p>
         <div className="flex space-x-4 justify-center">
           <button
-            className="py-2 px-6 mr-4 bg-red-500 text-white rounded"
+            className="py-2 px-6 mr-4 bg-red-400 text-white rounded"
             onClick={onConfirm}
           >
             確認
@@ -29,7 +29,7 @@ export default function ConfirmationModal({
             キャンセル
           </button>
         </div>
-        <p className="text-red-500 text-sm mt-4">※ この操作は元に戻せません。</p>
+        <p className="text-red-400 text-sm mt-4">※ この操作は元に戻せません。</p>
       </div>
     </div>
   );

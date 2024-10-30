@@ -146,6 +146,9 @@ export default function EditUserProfile({ userId }: EditUserProfileProps) {
         position: "top-center",
         autoClose: 3000,
       });
+      fetchUserData();
+      window.location.reload();
+
     } catch (err) {
       console.error((err as Error).message);
       toast.error('画像の削除に失敗しました', {
