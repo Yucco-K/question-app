@@ -36,7 +36,6 @@ export default function CurrentUserProfileImage({ size = 40 }: CurrentUserProfil
           const response = await fetch(`/api/users/${userId}/profile`);
           if (response.ok) {
             const data = await response.json();
-            console.log(data);
             if (data) {
               setProfileImage(data.profileImage);
               setUsername(data.username);
@@ -63,7 +62,7 @@ export default function CurrentUserProfileImage({ size = 40 }: CurrentUserProfil
     };
 
     fetchProfileData();
-  }, [userId]);
+  }, [userId,profileImage]);
 
   return (
     <>
@@ -74,7 +73,7 @@ export default function CurrentUserProfileImage({ size = 40 }: CurrentUserProfil
           onClose={() => setShowNotification(false)}
         />
       )}
-      <div className="hover:scale-150 transition-transform duration-300 cursor-pointer">
+      <div className="hover:scale-105 transition-transform duration-300 cursor-pointer">
         {profileImage ? (
           <Image
             src={profileImage}

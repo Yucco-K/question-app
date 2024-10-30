@@ -27,7 +27,6 @@ export default function CurrentUserEmailDisplay() {
           const response = await fetch(`/api/users/${userId}/profile`);
           if (response.ok) {
             const data = await response.json();
-            console.log(data);
             if (data.username) {
               setUsername(data.username);
               setSuccess("ユーザー名が正常に取得されました。");
@@ -51,7 +50,7 @@ export default function CurrentUserEmailDisplay() {
     };
 
     fetchProfileData();
-  }, [userId]);
+  }, [userId,username]);
 
   return (
     <>

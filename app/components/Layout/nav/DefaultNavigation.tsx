@@ -50,7 +50,7 @@ export default function DefaultNavigation() {
 
 
   let pageTitle = 'その他';
-  if (pathname.startsWith (`/users/${userId}`)) pageTitle = 'マイページ';
+  if (pathname.startsWith ('/users/')) pageTitle = 'マイページ';
   else if (pathname === '/questions/search/category') pageTitle = 'カテゴリ検索';
   else if (pathname === '/questions/search/sort') pageTitle = 'ソート';
   else if (pathname === '/questions/search/filter') pageTitle = 'フィルター';
@@ -66,11 +66,11 @@ export default function DefaultNavigation() {
 
   return (
   <nav
-    className={`fixed top-0 left-0 w-full bg-white text-gray-700 px-4 py-2 shadow-md rounded-sm transition-opacity duration-500 ${
+    className={`fixed top-14 left-32 w-2/3 bg-white text-gray-700 px-4 py-2 z-50 transition-opacity duration-500 ${
       isVisible ? 'opacity-100' : 'opacity-0'
     }`}
     >
-    <div className="w-[1200px] mx-auto">
+    <div className="w-[1600px] mx-auto">
       <ul className="flex space-x-2 text-sm items-center">
         <li>
           <button
@@ -94,7 +94,7 @@ export default function DefaultNavigation() {
 
         <li className="text-gray-500 mx-1">＞</li>
 
-        <li className="text-gray-700 whitespace-nowrap flex items-center">
+        <li className="text-gray-500 font-bold whitespace-nowrap flex items-center">
           {pageTitle}
         </li>
 

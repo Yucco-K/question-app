@@ -51,19 +51,19 @@ const CategorySelect: React.FC<CategorySelectProps> = ({ onSelect, initialCatego
   };
 
   return (
-    <div className="relative category-dropdown w-64 max-w-[1200px] mb-4 mx-auto">
+    <div className="category-dropdown w-64 mb-4 mx-auto">
       {/* <label htmlFor="category" className="block text-lg text-gray-400 my-4 max-auto flex flex-start whitespace-nowrap">
         カテゴリを選択して下さい。
       </label> */}
 
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full border border-gray-300 mt-12 px-3 py-2 text-md focus:outline-none focus:border-blue-600"
+        className="w-64 border border-gray-300 mt-12 px-3 py-2 text-md focus:outline-none focus:border-blue-600"
       >
         {selectedCategory
           ? categories.find((category) => category.id === selectedCategory)?.name || 'カテゴリを選択'
           : 'カテゴリを選択'}
-        <span className="absolute inset-y-0 top-12 right-0 flex items-center pr-2 pointer-events-none">
+        <span className="flex items-center justify-center ml-40 pointer-events-none">
           <svg
             className={`h-5 w-5 text-gray-500 transform ${isOpen ? 'rotate-180' : ''}`}
             xmlns="http://www.w3.org/2000/svg"
@@ -76,7 +76,7 @@ const CategorySelect: React.FC<CategorySelectProps> = ({ onSelect, initialCatego
       </button>
 
       {isOpen && (
-        <ul className="absolute z-10 mt-4 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto focus:outline-none">
+        <ul className="absolute z-10 mt-4 w-64 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto focus:outline-none">
           {categories.map((category) => (
             <li
               key={category.id}

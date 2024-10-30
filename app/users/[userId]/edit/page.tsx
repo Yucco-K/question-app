@@ -6,7 +6,7 @@ export default function EditUserProfilePage({ params }: { params: { userId: stri
   const { userId } = params;
 
   return (
-    <div>
+    <div className='z-0'>
       <EditUserProfile userId={userId} />
     </div>
   );

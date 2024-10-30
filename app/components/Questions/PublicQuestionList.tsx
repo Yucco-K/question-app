@@ -145,7 +145,7 @@ export default function PublicQuestionList({ selectedTags }: PublicQuestionListP
     <div className={styles.questionBody}>
       <div className='flex justify-between'>
 
-        <h1 className="mb-4 mx-auto flex items-center justify-center text-blue-900">質問一覧</h1>
+        <h1 className="my-4 mx-auto flex items-center justify-center text-blue-900">質問一覧</h1>
 
         <ScrollToBottomButton isModalOpen={false} />
       </div>

@@ -88,7 +88,7 @@ export default function QuestionsPage() {
         />
       </Modal>
 
-      <div className="flex justify-center items-center mt-8 mb-4 mr-4">
+      <div className="flex justify-center items-center mt-16 mb-4 ml-16 w-5/6">
           {!isModalOpen && (
             <button
               className="flex items-center bg-orange-400 text-white px-4 py-2 rounded-full hover:bg-orange-600 transition-transform duration-300 ease-in-out transform scale-105 ml-auto  whitespace-nowrap"

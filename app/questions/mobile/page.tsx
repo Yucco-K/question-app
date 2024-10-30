@@ -21,7 +21,6 @@ export default function MobileQuestionsPage() {
   const router = useRouter();
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const isPublicScreen = false;
-  const [localsession, setLocalSession] = useState<any>(null);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [loginPromptOpen, setLoginPromptOpen] = useState(false);
 
@@ -49,11 +48,6 @@ export default function MobileQuestionsPage() {
     router.push('/questions/search/category/mobile');
 };
 
-  useEffect(() => {
-      setLocalSession(session);
-      console.log('localsession:', session);
-  }, [session]);
-
 
   return (
     <>
@@ -80,7 +74,7 @@ export default function MobileQuestionsPage() {
 
 
     <div className="container mx-auto px-4">
-    <h1 className="mx-auto flex items-center justify-center text-blue-900 text-lg">質問一覧</h1>
+    {/* <h1 className="mx-auto flex items-center justify-center text-blue-900 text-lg">質問一覧</h1> */}
 
       <Modal isOpen={isModalOpen} onClose={() => setModalOpen(false)} title="質問を投稿">
         <QuestionForm

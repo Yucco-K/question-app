@@ -27,13 +27,13 @@ export default function Modal({ isOpen, onClose, title, children }: ModalProps) 
       >
 
         <button
-          className="absolute top-20 right-6 text-gray-500 hover:text-gray-700 text-2xl Z-200"
+          className="absolute top-16 mt-8 right-6 text-gray-500 hover:text-gray-700 text-2xl Z-200"
           onClick={onClose}
         >
           ×<span className='text-sm flex items-center hover:underline'>close</span>
         </button>
 
-        <h2 className="text-xl text-blue-900 mt-14 mb-10 text-center">{title}</h2>
+        <h2 className="text-xl text-blue-900 mt-20 mb-10 text-center">{title}</h2>
 
         <div>{children}</div>
       </div>

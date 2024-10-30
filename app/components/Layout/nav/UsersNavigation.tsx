@@ -14,9 +14,9 @@ export default function QuestionDetailNav() {
 
   return (
     <nav
-      className={`fixed top-15 left-0 w-full bg-stone-100 text-gray-700 px-4 py-2 shadow-md rounded-sm transition-opacity duration-500`}
+      className={`fixed top-16 left-0 w-full bg-stone-100 text-gray-700 px-4 py-2 shadow-md rounded-sm transition-opacity duration-500`}
       >
-      <div className="w-[1200px] mx-auto">
+      <div className="w-[1600px] mx-auto">
         <ul className="flex space-x-6 text-md items-center mt-2">
 
         <li>

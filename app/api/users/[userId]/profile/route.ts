@@ -1,5 +1,3 @@
-// app/api/users/[userId]/profile/route.ts
-
 import { NextResponse } from 'next/server';
 import { supabaseAdmin as supabase } from '@/app/lib/supabaseAdmin';
 

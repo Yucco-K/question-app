@@ -168,7 +168,7 @@ export default function AnswerForm({
 
   return (
     <>
-      <DefaultHeader style={{ display: 'none' }} />
+      {/* <DefaultHeader style={{ display: 'none' }} /> */}
 
 
       <ScrollToBottomButton isModalOpen={answerModalOpen} />

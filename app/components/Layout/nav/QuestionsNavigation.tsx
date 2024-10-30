@@ -48,11 +48,11 @@ export default function QuestionsNavigation() {
 
   return (
     <nav
-      className={`fixed top-15 left-0 w-full bg-white text-gray-700 px-4 py-2 shadow-md rounded-sm transition-opacity duration-500 ${
+      className={`fixed top-16 left-0 w-full bg-white text-gray-700 pb-2 shadow-md rounded-sm transition-opacity duration-500 ${
         isVisible ? 'opacity-100' : 'opacity-0'
       }`}
     >
-    <div className="w-[1200px] mx-auto">
+    <div className="w-[1500px] mx-auto">
       <ul className="flex text-sm items-center mt-2">
         <li>
           <button
@@ -66,7 +66,7 @@ export default function QuestionsNavigation() {
 
         <li className="text-gray-500 mx-1">＞</li>
 
-        <li className="text-gray-700">
+        <li className="text-gray-500 font-bold">
         <FontAwesomeIcon icon={faHome} className="mr-2 text-gray-500 font-bold" />
           Top
         </li>

@@ -184,25 +184,9 @@ export default function DraftList({ onSelectDraft, categoryId }: DraftListProps)
                 isDraft={false}
               >
 
-                <div className="flex flex-wrap mt-4">
-                  {draft.tags?.map((tag, index) => (
-                    <span key={index} className="bg-blue-500 text-white text-sm py-1 px-4 rounded-full mr-2 mb-2">
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-
-                <div>
-                  <p className="label mt-4"></p>
-                  <div
-                    className={styles.questionBody}
-                    dangerouslySetInnerHTML={{ __html: sanitizedDescription }}
-                  />
-                </div>
-
-                <div className="flex items-center my-4">
+                {/* <div className="flex items-center my-4"> */}
                   <div className="ml-2">
-                  <UserNameDisplay userId={draft.user_id} />
+                    <UserNameDisplay userId={draft.user_id} />
                     <p className="text-sm text-gray-500">
                       {draft.created_at ? (
                         new Date(draft.created_at).toLocaleString('ja-JP', {
@@ -219,7 +203,24 @@ export default function DraftList({ onSelectDraft, categoryId }: DraftListProps)
                       )}
                     </p>
                   </div>
-                </div>
+
+                  <div className="flex flex-wrap mt-4">
+                    {draft.tags?.map((tag, index) => (
+                      <span key={index} className="bg-blue-500 text-white text-sm py-1 px-4 rounded-full mr-2 mb-2">
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+
+                  <div>
+                    {/* <p className="label mt-4"></p> */}
+                    <div
+                      className={styles.questionBody}
+                      dangerouslySetInnerHTML={{ __html: sanitizedDescription }}
+                    />
+                  </div>
+
+                {/* </div> */}
               </Card>
             </div>
           );

@@ -122,7 +122,7 @@ export default function QuestionList({ selectedTags, setSelectedTags }: Question
 
       <div className={styles.questionBody}>
         <div className='flex justify-between'>
-          {/* <h1 className="mx-auto my-2 flex items-center justify-center text-blue-900">質問一覧</h1> */}
+          <h1 className="mx-auto my-2 flex items-center justify-center text-blue-900">質問一覧</h1>
 
         <ScrollToBottomButton isModalOpen={false} />
       </div>

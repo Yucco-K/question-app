@@ -22,21 +22,15 @@ if (bestAnswerCountError || !bestAnswerCountData || bestAnswerCountData.length =
 
 const bestAnswerIds = bestAnswerCountData.map((question: { best_answer_id: string }) => question.best_answer_id);
 
-console.log('bestAnswerIds:', bestAnswerIds);
-
 const { count: userBestAnswersCount, error: userBestAnswersError } = await supabase
   .from('Answer')
   .select('id', { count: 'exact' })
   .in('id', bestAnswerIds)
   .eq('user_id', userId);
 
-  console.log('userBestAnswersCount:', userBestAnswersCount);
-
 if (userBestAnswersError) {
   throw new Error(`ユーザーのベストアンサーの集計に失敗しました: ${userBestAnswersError.message}`);
 }
-
-console.log('userBestAnswersCount:', userBestAnswersCount);
 
     const { data: totalAnswersData, error: totalAnswersError } = await supabase
       .from('Answer')

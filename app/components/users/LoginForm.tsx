@@ -4,19 +4,16 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
-import Notification from '../ui/Notification';
 import UsersLayout from '../../components/Layout/main/UsersLayout';
 import { useLoading } from '../../context/LoadingContext';
 import useAuth from '../../lib/useAuth';
 import { useAuth as useAuthContext } from '../../context/AuthContext';
+import { toast } from 'react-toastify';
 
 export default function LoginForm() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState<string | null>(null);
-  const [showNotification, setShowNotification] = useState(false);
   const [usernameOrEmail, setUsernameOrEmail] = useState('');
   const router = useRouter();
   const { isLoading, setLoading } = useLoading();
@@ -44,10 +41,14 @@ export default function LoginForm() {
       return true;
     }
 
-    setError('ユーザー名またはメールアドレスの形式が正しいことを確認してください。');
+    console.error('ユーザー名またはメールアドレスの形式が正しいことを確認してください。');
     setTimeout(() => {
-      setShowNotification(true);
+      toast.error('ユーザー名またはメールアドレスの形式が正しいことを確認してください。', {
+        position: "top-center",
+        autoClose: 2000,
+      });
     } , 3000);
+
     return false;
   };
 
@@ -56,9 +57,12 @@ export default function LoginForm() {
     const hasNumber = /[0-9]/.test(password);
 
     if (password.length < 8 || !hasLetter || !hasNumber) {
-      setError('パスワードは8文字以上、英字、数字を含みます。');
+      console.error('パスワードは8文字以上、英字、数字を含みます。');
       setTimeout(() => {
-        setShowNotification(true);
+        toast.error('パスワードは8文字以上、英字、数字を含みます。', {
+          position: "top-center",
+          autoClose: 2000,
+        });
       } , 3000);
       return false;
     }
@@ -68,14 +72,14 @@ export default function LoginForm() {
 
   const handleSignIn = async () => {
 
-    setShowNotification(false);
     setLoading(true);
-    setError(null);
-    setSuccess(null);
 
     if (attemptCount >= 7) {
-      setError('試行回数が制限に達しました。しばらくしてから再度お試しください。');
-      setShowNotification(true);
+      console.error('試行回数が制限に達しました。しばらくしてから再度お試しください。');
+      toast.error('試行回数が制限に達しました。しばらくしてから再度お試しください。', {
+        position: "top-center",
+        autoClose: 2000,
+      });
       setLoading(false);
 
       let timer: NodeJS.Timeout | null = null;
@@ -83,8 +87,6 @@ export default function LoginForm() {
         timer = setTimeout(() => {
           setAttemptCount(0);
           setIsLoginDisabled(false);
-          setError(null);
-          setShowNotification(false);
         }, 180000);
       }
 
@@ -92,8 +94,11 @@ export default function LoginForm() {
     }
 
     if (!validateUsernameOrEmail() || !validatePassword()) {
-      setError('入力内容に誤りがあります');
-      setShowNotification(true);
+      console.error('入力内容に誤りがあります');
+      toast.error('入力内容に誤りがあります', {
+        position: "top-center",
+        autoClose: 2000,
+      });
       setLoading(false);
       setAttemptCount(attemptCount + 1);
       console.log('Attempt count:', attemptCount);
@@ -111,11 +116,14 @@ export default function LoginForm() {
 
       if (!response.ok) {
         const errorData = await response.json();
-        setError(errorData.message);
-        setShowNotification(true);
+        console.error(errorData.message);
+        toast.error(errorData.message, {
+          position: "top-center",
+          autoClose: 2000,
+        });
 
         setAttemptCount(attemptCount + 1);
-        console.log('Server Attempt count:', attemptCount);
+        // console.log('Server Attempt count:', attemptCount);
         return;
       } else {
 
@@ -127,15 +135,11 @@ export default function LoginForm() {
           setSession(session);
         }
 
-        setSuccess('ログインしました');
-
-        {success && (
-          <p className="whitespace-nowrap">
-            {success}
-          </p>
-        )}
-
-        setShowNotification(true);
+        console.log('ログインしました');
+        toast.success('ログインしました', {
+          position: "top-center",
+          autoClose: 2000,
+        });
 
         if (isMobile()) {
           router.push('/questions/mobile');
@@ -147,8 +151,11 @@ export default function LoginForm() {
 
     } catch (err) {
 
-      setError('予期しないエラーが発生しました');
-      setShowNotification(true);
+      console.error('予期しないエラーが発生しました');
+      toast.error('予期しないエラーが発生しました', {
+        position: "top-center",
+        autoClose: 2000,
+      });
 
     }finally {
 
@@ -167,13 +174,7 @@ export default function LoginForm() {
           { text: "パスワードをお忘れの方は", href: "/users/change-password", linkText: "パスワード変更へ" },
         ]}
       >
-        {showNotification && (error || success) && (
-          <Notification
-            message={error ?? success ?? ""}
-            type={error ? "error" : "success"}
-            onClose={() => setShowNotification(false)}
-          />
-        )}
+
         <form
           id="login-form"
           onSubmit={(e) => {
@@ -189,7 +190,6 @@ export default function LoginForm() {
               id="usernameOrEmail"
               value={usernameOrEmail}
               onChange={(e) => setUsernameOrEmail(e.target.value)}
-              // onBlur={validateUsernameOrEmail}
               autoComplete="usernameOrEmail"
               required
               className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
@@ -203,7 +203,6 @@ export default function LoginForm() {
                 id="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                // onBlur={validatePassword}
                 required
                 className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm pr-10"
               />

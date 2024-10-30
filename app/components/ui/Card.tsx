@@ -85,12 +85,14 @@ export default function Card({
     return currentDate.getTime() - createdDate.getTime() < oneWeekInMilliseconds;
   };
 
+
   const toggleMenu = () => {
     setIsMenuOpen((prev) => !prev);
   };
 
+
   const fetchBookmark = async () => {
-    setLoading(true);
+
     const questionId = id;
 
     if (isPublic || isPublicScreen) {
@@ -112,7 +114,7 @@ export default function Card({
     }
 
     try {
-
+      setLoading(true);
       const response = await fetch(`/api/bookmarks?question_id=${questionId}&user_id=${userId}`);
       const data = await response.json();
 
@@ -136,6 +138,7 @@ export default function Card({
       fetchBookmark();
 
   }, [userId, id]);
+
 
   const toggleBookmark = async () => {
     const questionId = id;
@@ -164,9 +167,11 @@ export default function Card({
 
     if (data.success) {
       fetchBookmark();
+      window.location.reload();
     }
   }
   setLoading(false);};
+
 
 
   const fetchViewCount = async () => {
@@ -190,6 +195,7 @@ export default function Card({
   useEffect(() => {
     fetchViewCount();
   }, []);
+
 
   const incrementViewCount = async () => {
     try {
@@ -226,9 +232,11 @@ export default function Card({
     setIsConfirmingDelete(true);
   };
 
+
   const handleCancelDelete = () => {
     setIsConfirmingDelete(false);
   };
+
 
   const handleDelete = () => {
     if (onDelete) {
@@ -252,6 +260,7 @@ export default function Card({
       }
     };
   }, [isMenuOpen]);
+
 
   useEffect(() => {
 
@@ -313,7 +322,7 @@ export default function Card({
               {onRefresh && (
                 <button
                   onClick={onRefresh}
-                  className="text-gray-500 bg-gray-100 p-1 text-sm rounded hover:text-gray-900"
+                  className="text-gray-500 bg-gray-100 p-1 text-lg rounded hover:text-gray-900"
                   title="最新の情報を取得"
                 >
                   <FontAwesomeIcon icon={faSync} />
@@ -327,7 +336,7 @@ export default function Card({
                   className="text-blue-700 hover:text-blue-900 text-lg cursor-pointer"
                   title="More Options"
                 >
-                  <FontAwesomeIcon icon={faEllipsisV} className='ml-4' />
+                  <FontAwesomeIcon icon={faEllipsisV} className='text-xl ml-4' />
                 </button>
               )}
 
@@ -338,7 +347,7 @@ export default function Card({
                       <li>
                         <button
                           onClick={onEdit}
-                          className="text-gray-500 hover:text-gray-700 text-lg cursor-pointer flex items-center space-x-2 p-2"
+                          className="text-gray-500 hover:text-gray-700 text-2xl cursor-pointer flex items-center space-x-2 p-2"
                           title="Edit"
                         >
                           <FontAwesomeIcon icon={faEdit} />
@@ -349,7 +358,7 @@ export default function Card({
                       <li>
                         <button
                           onClick={handleDeleteClick}
-                          className="text-gray-500 hover:text-gray-700 text-lg cursor-pointer flex items-center space-x-2 p-2"
+                          className="text-gray-500 hover:text-gray-700 text-2xl cursor-pointer flex items-center space-x-2 p-2"
                           title="Delete"
                         >
                           <FontAwesomeIcon icon={faTrashAlt} />
@@ -365,7 +374,7 @@ export default function Card({
               <button onClick={toggleBookmark} className="absolute top-4 left-4">
 
                 {bookmarks.some(bookmark => bookmark.question_id === id && bookmark.is_bookmark) ? (
-                  <FontAwesomeIcon icon={faBookmark} className="text-blue-300" />
+                  <FontAwesomeIcon icon={faBookmark} className="text-lg text-blue-300" />
                 ) : (
                   <p className="transition transform hover:scale-110 duration-300 ease-in-out mx-1 my-2 rounded-md text-xs text-semibold">ブックマークに登録</p>
                 )}

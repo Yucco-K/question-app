@@ -175,8 +175,6 @@ export default function EditUserProfile({ userId }: EditUserProfileProps) {
   const handleAccountDelete = async () => {
     try {
       setLoading(true);
-      console.log('userId:', userId);
-      console.log('DELETE /api/users/${userId}/edit', `DELETE /api/users/${userId}/edit`);
       const response = await fetch(`/api/users/${userId}/edit`, {
         method: 'DELETE',
       });
@@ -309,7 +307,7 @@ export default function EditUserProfile({ userId }: EditUserProfileProps) {
 
     } catch (err) {
       console.error((err as Error).message);
-      toast.error('メールアドレスの更新に失敗しました', {
+      toast.error(`メールアドレスの更新に失敗しました。${(err as Error).message}`, {
         position: "top-center",
         autoClose: 3000,
       });

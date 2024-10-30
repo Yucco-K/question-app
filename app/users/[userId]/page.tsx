@@ -152,11 +152,8 @@ export default function MyPage() {
   const fetchUserStatistics = async () => {
     try {
 
-      console.log('fetching user statistics', userId);
-      console.log('fetching user statistics', `/api/users/${userId}/statistics`);
       const response = await fetch(`/api/users/${userId}/statistics`);
       const data = await response.json();
-      console.log('user statistics:', data);
       setUserStatistics({
         bestAnswerCount: data.bestAnswerCount,
         totalLikes: data.totalLikes,
@@ -191,6 +188,7 @@ export default function MyPage() {
       const response = await fetch(`/api/users/${userId}/bookmarks`);
       const data = await response.json();
       setBookmarks(Array.isArray(data.bookmarks) ? data.bookmarks : []);
+
     } catch (error) {
       console.error('ブックマークの取得に失敗しました:', error);
       toast.error('ブックマークの取得に失敗しました', {
@@ -224,7 +222,7 @@ export default function MyPage() {
 
   return (
 
-    <div className="container mx-auto p-6">
+    <div className="container mx-auto p-6 z-0">
       <section className="my-8">
         <div className="p-8 bg-white rounded-md shadow-md w-full lg:w-2/3 mx-auto">
           <div className="flex justify-between mb-4">
@@ -237,32 +235,32 @@ export default function MyPage() {
             </button>
           </div>
 
-          <div className="flex flex-col items-start border-t border-gray-300 text-md pt-6">
+          <div className="flex flex-col items-center border-t border-gray-300 text-md pt-6">
 
-            <div className="flex items-start">
+            <div className="flex justify-center items-center gap-x-16 my-8">
 
               <CurrentUserProfileImage size={80} />
 
               <div className="flex flex-col ml-4">
-                <div className="text-blue-900 text-center text-sm font-semibold mb-2">
-                  <span className="ml-2 mr-2">Best Answer: </span>
-                  <span className='ml-2 mr-4'>{userStatistics.bestAnswerCount}</span>
+                <div className="text-blue-900 text-center text-sm font-semibold mb-6">
+                  <span className="ml-2 mr-4">ベストアンサー</span>
+                  <span className='mr-4 text-lg'>{userStatistics.bestAnswerCount}</span>
                   <FontAwesomeIcon icon={faCrown} className="text-yellow-300 text-lg" />
                 </div>
-                <div className="text-blue-900 text-center text-sm font-semibold mb-2">
-                  <span className="ml-2 mr-5">いいね獲得: </span>
-                  <span className='ml-2 mr-4'>{userStatistics.totalLikes}</span>
+                <div className="text-blue-900 text-center text-sm font-semibold mb-6">
+                  <span className="ml-2 mr-10">いいね獲得</span>
+                  <span className='mr-4 text-lg'>{userStatistics.totalLikes}</span>
                   <FontAwesomeIcon icon={faThumbsUp} className="text-orange-300 text-lg" />
                 </div>
                 <div className="text-blue-900 text-center text-sm font-semibold">
-                  <span className="ml-2 mr-12">総回答: </span>
-                  <span className='ml-2 mr-4'>{userStatistics.totalAnswers}</span>
+                  <span className="ml-2 mr-14">総回答数</span>
+                  <span className='mr-4 text-lg'>{userStatistics.totalAnswers}</span>
                   <FontAwesomeIcon icon={faUserGraduate} className="text-indigo-500 text-lg" />
                 </div>
               </div>
             </div>
 
-            <div className="flex flex-col mt-6 gap-4">
+            <div className="flex flex-col items-start gap-4">
               <div className="flex items-center gap-4">
                 <FontAwesomeIcon icon={faEnvelope} className="text-2xl text-blue-400" />
                 <div className="text-blue-900 text-sm font-bold whitespace-nowrap">
@@ -299,7 +297,7 @@ export default function MyPage() {
         </div>
 
       {isPostHistoryOpen && (
-        <div className="space-y-8 w-full lg:w-2/3 mx-auto">
+        <div className="space-y-4 w-full lg:w-2/3 mx-auto">
           {paginatedQuestions.length > 0 ? (
             <>
               {paginatedQuestions.map((question) => {
@@ -389,7 +387,7 @@ export default function MyPage() {
         onClick={toggleBookmarks}
       >
         <h3 className="text-xl font-bold text-center my-4 mr-8 font-bold text-blue-500">ブックマーク</h3>
-        <p className="ml-2 font-bold text-blue-400 my-4 mr-8">
+        <p className="font-bold text-blue-400 my-4 mr-12">
           ( 全 {bookmarks.length} 件 )
         </p>
           <FontAwesomeIcon
@@ -400,7 +398,7 @@ export default function MyPage() {
 
         {isBookmarksOpen && (
         <>
-          <div className="space-y-8 w-full lg:w-2/3 mx-auto mt-4">
+          <div className="space-y-4 w-full lg:w-2/3 mx-auto mt-4">
             {paginatedBookmarks.length > 0 ? (
               paginatedBookmarks.map((bookmark) => {
                 const sanitizedDescription = DOMPurify.sanitize(String(bookmark.description));

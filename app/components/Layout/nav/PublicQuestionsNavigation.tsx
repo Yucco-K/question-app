@@ -42,7 +42,7 @@ export default function PublicQuestionsNavigation() {
         isVisible ? 'opacity-100' : 'opacity-0'
       }`}
     >
-      <div className="max-w-[1200px] w-full mx-auto">
+      <div className="max-w-[1500px] w-full mx-auto">
         <ul className="flex space-x-2 text-sm items-center mt-2">
         <li>
           <button
@@ -56,7 +56,7 @@ export default function PublicQuestionsNavigation() {
 
         <li className="text-gray-500 mx-1">＞</li>
 
-        <li className="text-gray-700 font-bold whitespace-nowrap flex items-center">
+        <li className="text-gray-500 font-bold whitespace-nowrap flex items-center">
         <FontAwesomeIcon icon={faHome} className="mr-2 text-gray-500" />
           Top 公開ページ
         </li>

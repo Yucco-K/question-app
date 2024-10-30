@@ -4,20 +4,17 @@ import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
-import Notification from '../ui/Notification';
 import zxcvbn from 'zxcvbn';
 import UsersLayout from '../../components/Layout/main/UsersLayout';
 import  supabase from '../../lib/supabaseClient';
 import { useLoading } from '../../context/LoadingContext';
+import { toast } from 'react-toastify';
 
 export default function SignupForm() {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState(false);
-  const [showNotification, setShowNotification] = useState(false);
   const [passwordStrength, setPasswordStrength] = useState(0);
   const [confirmPassword, setConfirmPassword] = useState('');
   const [isSendDisabled, setIsSendDisabled] = useState(true);
@@ -51,22 +48,26 @@ export default function SignupForm() {
 
   const handleBlur = async (field: string): Promise<boolean> => {
     return new Promise((resolve) => {
-      setError(null);
-      setShowNotification(false);
 
       setTimeout(() => {
 
         if (field === 'username' && username.trim().length < 2) {
-          setError("ユーザー名を2文字以上入力してください。");
-          setShowNotification(true);
+          console.error("ユーザー名を2文字以上入力してください。");
+          toast.error("ユーザー名を2文字以上入力してください。", {
+            position: "top-center",
+            autoClose: 2000,
+          });
           return false;
         }
         if (field === 'email') {
           const atIndex = email.indexOf('@');
           const dotIndex = email.lastIndexOf('.');
           if (atIndex < 1 || dotIndex < atIndex + 2 || dotIndex >= email.length - 1) {
-            setError("有効なメールアドレスを入力してください。");
-            setShowNotification(true);
+            console.error("有効なメールアドレスを入力してください。");
+            toast.error("有効なメールアドレスを入力してください。", {
+              position: "top-center",
+              autoClose: 2000,
+            });
             return false;
           }
         }
@@ -76,14 +77,20 @@ export default function SignupForm() {
           const hasNumber = /[0-9]/.test(password);
 
           if (password.length < 8 || !hasLetter || !hasNumber) {
-          setError('パスワードは8文字以上、英字、数字を含めてください。');
-          setShowNotification(true);
+          console.error('パスワードは8文字以上、英字、数字を含めてください。');
+          toast.error('パスワードは8文字以上、英字、数字を含めてください。', {
+            position: "top-center",
+            autoClose: 2000,
+          });
           return false;
           }
         }
         if (field === 'confirmPassword' && confirmPassword !== password) {
-          setError("確認パスワードが一致しません。");
-          setShowNotification(true);
+          console.error("確認パスワードが一致しません。");
+          toast.error("確認パスワードが一致しません。", {
+            position: "top-center",
+            autoClose: 2000,
+          });
           return false;
         }
         setIsSendDisabled(false);
@@ -94,11 +101,6 @@ export default function SignupForm() {
 
 
   const handleSignup = async () => {
-
-    setError(null);
-    setSuccess(null);
-    setShowNotification(false);
-
 
       const isUsernameValid = await handleBlur('username');
     if (!isUsernameValid) return;
@@ -125,9 +127,11 @@ export default function SignupForm() {
       const result = await response.json();
 
       if (response.ok) {
-        setSuccess('アカウントを作成しました。認証メールをご確認ください。');
+        toast.success('アカウントを作成しました。認証メールをご確認ください。', {
+          position: "top-center",
+          autoClose: 2000,
+        });
 
-        setShowNotification(true);
         setAttemptCount(0);
         setIsSendDisabled(true);
 
@@ -140,15 +144,21 @@ export default function SignupForm() {
         }, 10000);
 
       } else {
-        setError(result.message || 'アカウント作成に失敗しました。');
-        setShowNotification(true);
+        console.error(result.message || 'アカウント作成に失敗しました。');
+        toast.error('アカウント作成に失敗しました。', {
+          position: "top-center",
+          autoClose: 2000,
+        });
         setAttemptCount(attemptCount + 1);
 
         resetForm();
       }
     } catch (err) {
-      setError('サーバーエラーが発生しました。後ほど再試行してください。');
-      setShowNotification(true);
+      console.error('サーバーエラーが発生しました。後ほど再試行してください。');
+      toast.error('サーバーエラーが発生しました。後ほど再試行してください。', {
+        position: "top-center",
+        autoClose: 2000,
+      });
       setAttemptCount(attemptCount + 1);
 
       resetForm();
@@ -184,22 +194,28 @@ export default function SignupForm() {
       });
 
       if (error) {
-        setError(error.message);
-        setShowNotification(true);
+        console.error(error.message);
+        toast.error(error.message, {
+          position: "top-center",
+          autoClose: 2000,
+        });
       } else {
-        setSuccess('認証メールを再送しました。受信メールをご確認ください。');
-        setShowNotification(true);
+        toast.success('認証メールを再送しました。受信メールをご確認ください。', {
+          position: "top-center",
+          autoClose: 2000,
+        });
       }
     } else {
-      setError('試行回数の上限を超えました。時間をおいてもう一度お試しください。');
-      setShowNotification(true);
+      console.error('試行回数の上限を超えました。時間をおいてもう一度お試しください。');
+      toast.error('試行回数の上限を超えました。時間をおいてもう一度お試しください。', {
+        position: "top-center",
+        autoClose: 2000,
+      });
       setIsResendDisabled(true);
 
       resetForm();
 
       setTimeout(() => {
-        setError(null);
-        setSuccess(null);
         setIsResendDisabled(false);
         setAttemptCount(0);
       }, 180000);
@@ -213,13 +229,7 @@ export default function SignupForm() {
         actionHref="/users/login"
         actionLinkText="ログインへ"
       >
-        {showNotification && (error || success) && (
-          <Notification
-            message={error ?? success ?? ""}
-            type={error ? "error" : "success"}
-            onClose={() => setShowNotification(false)}
-          />
-        )}
+
         <form
           onSubmit={(e) => {
             e.preventDefault();

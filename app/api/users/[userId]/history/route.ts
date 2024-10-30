@@ -40,31 +40,12 @@ export async function GET(request: Request, { params }: { params: { userId: stri
         .filter((qt: any) => qt?.question_id === question.id)
         .map((qt: any) => qt?.Tag?.name || 'Unknown');
 
-    console.log('tagsForQuestion:', tagsForQuestion);
-
     return {
       ...question,
       tags: tagsForQuestion,
       category: question.Category?.name || 'カテゴリ未指定'
     };
   });
-  // const { data: answers, error: answerError } = await supabase
-  //   .from('Answer')
-  //   .select('*')
-  //   .eq('user_id', userId);
-
-  // if (answerError) {
-  //   return NextResponse.json({ error: 'Server Error', message: answerError.message }, { status: 500 });
-  // }
-
-  // const { data: comments, error: commentError } = await supabase
-  //   .from('Comment')
-  //   .select('*')
-  //   .eq('user_id', userId);
-
-  // if (commentError) {
-  //   return NextResponse.json({ error: 'コメントの取得に失敗しました', message: commentError.message }, { status: 500 });
-  // }
 
   return NextResponse.json({
     questions: questionsWithTagsAndCategory || [],

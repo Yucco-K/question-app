@@ -74,11 +74,11 @@ export default function QuestionDetailNav() {
 
   return (
     <nav
-      className={`fixed top-15 left-0 w-full bg-white text-gray-700 px-4 py-2 shadow-md rounded-sm transition-opacity duration-500 ${
+      className={`fixed top-16 left-28 w-1/2 bg-white text-gray-700 px-4 pb-2 transition-opacity duration-500 ${
         isVisible ? 'opacity-100' : 'opacity-0'
       }`}
     >
-      <div className="w-[1200px] mx-auto">
+      <div className="w-[1500px] mx-auto">
         <ul className="flex space-x-2 text-sm items-center mt-2 ml-4">
           <li>
             <button
@@ -111,7 +111,7 @@ export default function QuestionDetailNav() {
             <>
               <li>
                 <button
-                  className={`text-gray-700 mx-1 font-bold`}
+                  className={`text-gray-500 mx-1 font-bold`}
                 >
                   質問詳細
                 </button>

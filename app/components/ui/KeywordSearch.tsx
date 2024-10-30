@@ -80,7 +80,7 @@ const KeywordSearch: React.FC<KeywordSearchProps> = ({ data = [], onSearchResult
   };
 
   return (
-    <div className="relative flex items-center w-full mb-4">
+    <div className="relative flex items-center max-w-[1200px]  mb-4">
       <input
         type="text"
         className="w-full p-2 text-md rounded-md border-2 border-solid border-gray-200 hover:border-gray-300 focus:border-gray-300 focus:outline-none"

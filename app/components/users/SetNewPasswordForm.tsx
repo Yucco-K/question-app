@@ -5,20 +5,17 @@ import supabase from '../../lib/supabaseClient';
 import { User } from '@supabase/supabase-js';
 import { useRouter } from 'next/navigation';
 import UsersLayout from '../../components/Layout/main/UsersLayout';
-import Notification from '../ui/Notification';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import zxcvbn from 'zxcvbn';
 import { useLoading } from '../../context/LoadingContext';
+import { toast } from 'react-toastify';
 
 export default function SetNewPasswordForm() {
   const [newPassword, setNewPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [passwordStrength, setPasswordStrength] = useState(0);
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [showNotification, setShowNotification] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState<string | null>(null);
   const [userId, setUserId] = useState<string | null>(null);
   const router = useRouter();
   const { isLoading, setLoading } = useLoading();
@@ -39,7 +36,11 @@ export default function SetNewPasswordForm() {
         .then(() => supabase.auth.getUser())
         .then(({ data, error }: { data: { user: User | null }, error: any }) => {
           if (error) {
-            setError('Failed to get user: ' + (error.message || 'Unknown error'));
+            console.error('Failed to get user: ' + (error.message || 'Unknown error'));
+            toast.error('Failed to get user: ' + (error.message || 'Unknown error'), {
+              position: "top-center",
+              autoClose: 2000,
+            });
           } else if (data.user) {
             const userId = data.user.id;
             setUserId(userId);
@@ -49,43 +50,55 @@ export default function SetNewPasswordForm() {
           }
         })
         .catch((error: { message: string; }) => {
-          setError('セッションの設定に失敗しました。再度メール内のリンクをクリックしてお試しください。リンクが期限切れの場合は再度ログインして、続きの操作を行ってください。: ' + error.message);
-          setShowNotification(true);
+          console.error('セッションの設定に失敗しました。再度メール内のリンクをクリックしてお試しください。リンクが期限切れの場合は再度ログインして、続きの操作を行ってください。: ' + error.message);
+          toast.error('セッションの設定に失敗しました。再度メール内のリンクをクリックしてお試しください。リンクが期限切れの場合は再度ログインして、続きの操作を行ってください。: ' + error.message, {
+            position: "top-center",
+            autoClose: 2000,
+          });
         });
     } else {
-      setError('アクセスに必要な情報がURLに含まれていません。再度メール内のリンクをクリックしてお試しください。リンクが期限切れの場合は再度ログインして、続きの操作を行ってください。');
-      setShowNotification(true);
+      console.error('アクセスに必要な情報がURLに含まれていません。再度メール内のリンクをクリックしてお試しください。リンクが期限切れの場合は再度ログインして、続きの操作を行ってください。');
+      toast.error('アクセスに必要な情報がURLに含まれていません。再度メール内のリンクをクリックしてお試しください。リンクが期限切れの場合は再度ログインして、続きの操作を行ってください。', {
+        position: "top-center",
+        autoClose: 2000,
+      });
     }
   }, []);
 
   const handlePasswordUpdate = async () => {
 
     setLoading(true);
-    setShowNotification(true);
-    setError(null);
-    setSuccess(null);
 
     const hasLetter = /[a-zA-Z]/.test(newPassword);
     const hasNumber = /[0-9]/.test(newPassword);
 
     if (newPassword.length < 8 || !hasLetter || !hasNumber) {
-      setError('パスワードは8文字以上、英字、数字を含めてください。');
-      setShowNotification(true);
+      console.error('パスワードは8文字以上、英字、数字を含めてください。');
+      toast.error('パスワードは8文字以上、英字、数字を含めてください。', {
+        position: "top-center",
+        autoClose: 2000,
+      });
       setLoading(false);
       return;
 
     }
 
     if (newPassword !== confirmPassword) {
-      setError("確認パスワードが一致しません。");
-      setShowNotification(true);
+      console.error("確認パスワードが一致しません。");
+      toast.error("確認パスワードが一致しません。", {
+        position: "top-center",
+        autoClose: 2000,
+      });
       setLoading(false);
       return;
     }
 
     if (!userId) {
-        setError('ユーザーIDが見つかりませんでした。再度ログインしてください。');
-        setShowNotification(true);
+        console.error('ユーザーIDが見つかりませんでした。再度ログインしてください。');
+        toast.error('ユーザーIDが見つかりませんでした。再度ログインしてください。', {
+          position: "top-center",
+          autoClose: 2000,
+        });
         setLoading(false);
         return;
     }
@@ -113,15 +126,18 @@ export default function SetNewPasswordForm() {
       localStorage.removeItem(accessTokenKey);
       localStorage.removeItem(refreshTokenKey);
 
-      setSuccess('パスワードの変更が完了しました。');
-      setShowNotification(true);
-      setError(null);
+      toast.success('パスワードの変更が完了しました。', {
+        position: "top-center",
+        autoClose: 2000,
+      })
       router.push('/users/login');
 
     } catch (error) {
-      setError(error instanceof Error ? error.message : 'パスワードの変更に失敗しました。');
-      setShowNotification(true);
-      setSuccess(null);
+      console.error(error instanceof Error ? error.message : 'パスワードの変更に失敗しました。');
+      toast.error(error instanceof Error ? error.message : 'パスワードの変更に失敗しました。', {
+        position: "top-center",
+        autoClose: 2000,
+      });
 
     } finally {
       setLoading(false);
@@ -140,13 +156,7 @@ export default function SetNewPasswordForm() {
       actionHref="/users/login"
       actionLinkText="こちらへ"
     >
-      {showNotification && (error || success) && (
-        <Notification
-          message={error ?? success ?? ""}
-          type={error ? "error" : "success"}
-          onClose={() => setShowNotification(false)}
-        />
-      )}
+
       <form
         onSubmit={(e) => {
           e.preventDefault();

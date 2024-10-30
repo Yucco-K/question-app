@@ -126,14 +126,14 @@ export default function PublicQuestionsPage() {
       )}
 
 
-      <div className="flex justify-end items-center mt-16 mb-4 mr-4">
-        {!isModalOpen && (
-          <button
-            className="flex items-center bg-orange-400 text-white px-4 py-2 rounded-full hover:bg-orange-600 transition-transform duration-300 ease-in-out transform scale-105 ml-auto  whitespace-nowrap"
-            onClick={() =>{
-              setLoginPromptOpen(true);
-            }}
-          >
+    <div className="flex justify-center items-center mt-16 mb-4 ml-8 w-5/6">
+      {!isModalOpen && (
+        <button
+          className="flex items-center bg-orange-400 text-white px-4 py-2 rounded-full hover:bg-orange-600 transition-transform duration-300 ease-in-out transform scale-105 ml-auto  whitespace-nowrap"
+          onClick={() =>{
+            setLoginPromptOpen(true);
+          }}
+        >
           <span className="bg-orange-400 text-white rounded-full w-6 h-6 flex items-center justify-center mr-2 text-2xl">
             ⊕
           </span>

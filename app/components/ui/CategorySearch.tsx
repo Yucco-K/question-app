@@ -81,7 +81,7 @@ const CategorySearch: React.FC<CategorySearchProps> = ({ categoryId = null }) =>
   }, [categoryId, setLoading]);
 
   return (
-    <div className="container max-w-[1200px] mx-auto px-4 py-8">
+    <div className="container mx-auto max-w-[1200px] px-4">
       <div className={styles.questionBody}>
           {questions.length === 0 ? (
             <p className='text-blue-900'>このカテゴリに質問がありません。</p>

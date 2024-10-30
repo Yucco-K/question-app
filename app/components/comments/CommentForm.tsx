@@ -173,7 +173,7 @@ export default function CommentForm({ questionId,
       <DefaultHeader style={{ display: 'none' }} />
 
       <div>
-        <ScrollToBottomButton isModalOpen={false} />
+        <ScrollToBottomButton isModalOpen={true} />
         <Form
           titleLabel="コメントタイトル"
           titlePlaceholder="コメントタイトルを入力"

@@ -2,14 +2,11 @@
 
 import { useEffect, useState } from 'react';
 import UsersLayout from '../../components/Layout/main/UsersLayout';
-import Notification from '../ui/Notification';
 import { useLoading } from '../../context/LoadingContext';
+import { toast } from 'react-toastify';
 
 export default function ChangePasswordForm() {
   const [email, setEmail] = useState('');
-  const [showNotification, setShowNotification] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState<string | null>(null);
   const [isSendDisabled, setIsSendDisabled] = useState(false);
   const [isResendDisabled, setIsResendDisabled] = useState(false);
   const [isResendVisible, setIsResendVisible] = useState(false);
@@ -25,8 +22,6 @@ export default function ChangePasswordForm() {
     setResetUrl(`${origin}/users/set-new-password`);
   }, []);
 
-  // console.log('origin:', origin);
-  // console.log('resetUrl:', resetUrl);
 
   useEffect(() => {
     return () => {
@@ -36,9 +31,6 @@ export default function ChangePasswordForm() {
 
   const checkEmailExists = async (email: string): Promise<boolean> => {
 
-    setError(null);
-    setSuccess(null);
-    setShowNotification(false);
     setIsSendDisabled(true);
     setLoading(true);
 
@@ -56,6 +48,10 @@ export default function ChangePasswordForm() {
 
     } catch (err) {
       console.error('Email存在チェックエラー:', err);
+      toast.error('Email存在チェックエラーが発生しました', {
+        position: "top-center",
+        autoClose: 2000,
+      });
       return false;
 
     }finally {
@@ -65,16 +61,16 @@ export default function ChangePasswordForm() {
 
   const handlePasswordReset = async () => {
 
-    setError(null);
-    setSuccess(null);
     setIsSendDisabled(true);
-    setShowNotification(false);
     setLoading(true);
 
     const emailExists = await checkEmailExists(email);
     if (!emailExists) {
-      setError('入力されたメールアドレスは存在しません。');
-      setShowNotification(true);
+      console.error('入力されたメールアドレスは存在しません。');
+      toast.error('入力されたメールアドレスは存在しません。', {
+        position: "top-center",
+        autoClose: 2000,
+      });
       setIsSendDisabled(false);
       return;
     }
@@ -102,13 +98,19 @@ export default function ChangePasswordForm() {
         console.log("Error response:", errorText);
         throw new Error(`サーバーエラー: ${response.status}`);
       }
-      setSuccess('パスワードリセットリンクを送信しました。受信メールをご確認ください。');
-      setShowNotification(true);
+      console.log('パスワードリセットリンクを送信しました。受信メールをご確認ください。');
+      toast.success('パスワードリセットリンクを送信しました。受信メールをご確認ください。', {
+        position: "top-center",
+        autoClose: 2000,
+      });
       setAttemptCount(0);
 
     } catch (err) {
-      setError((err as Error).message);
-      setShowNotification(true);
+      console.error((err as Error).message);
+      toast.error((err as Error).message, {
+        position: "top-center",
+        autoClose: 2000,
+      });
 
       resetForm();
     }finally {
@@ -118,9 +120,6 @@ export default function ChangePasswordForm() {
 
   const handleResendClick = async () => {
 
-    setError(null);
-    setSuccess(null);
-    setShowNotification(false);
     setLoading(true);
 
     if (attemptCount < 9) {
@@ -145,16 +144,22 @@ export default function ChangePasswordForm() {
           if (!response.ok) {
 
             const errorText = await response.text(); // JSONではないかもしれないので、テキストとして取得
-            console.log("Error response:", errorText);
+            console.error("Error response:", errorText);
             throw new Error(`サーバーエラー: ${response.status}`);
           }
-          setSuccess('パスワードリセットリンクを送信しました。受信メールをご確認ください。');
-          setShowNotification(true);
+          console.log('パスワードリセットリンクを送信しました。受信メールをご確認ください。');
+          toast.success('パスワードリセットリンクを送信しました。受信メールをご確認ください。', {
+            position: "top-center",
+            autoClose: 2000,
+          });
           setAttemptCount(0);
 
         } catch (err) {
-          setError((err as Error).message);
-          setShowNotification(true);
+          console.error((err as Error).message);
+          toast.error((err as Error).message, {
+            position: "top-center",
+            autoClose: 2000,
+          });
 
           resetForm();
         }finally {
@@ -162,15 +167,16 @@ export default function ChangePasswordForm() {
         }
 
     } else {
-      setError('試行回数の上限を超えました。時間をおいてもう一度お試しください。');
-      setShowNotification(true);
+      console.error('試行回数の上限を超えました。時間をおいてもう一度お試しください。');
+      toast.error('試行回数の上限を超えました。時間をおいてもう一度お試しください。', {
+        position: "top-center",
+        autoClose: 2000,
+      });
       setIsResendDisabled(true);
 
       resetForm();
 
       setTimeout(() => {
-        setError(null);
-        setSuccess(null);
         setIsResendDisabled(false);
         setAttemptCount(0);
       }, 180000);
@@ -189,13 +195,7 @@ export default function ChangePasswordForm() {
       actionHref="/users/login"
       actionLinkText="こちらへ"
     >
-      {showNotification && (error || success) && (
-        <Notification
-          message={error ?? success ?? ""}
-          type={error ? "error" : "success"}
-          onClose={() => setShowNotification(false)}
-        />
-      )}
+
       <form
         onSubmit={(e) => {
           e.preventDefault();

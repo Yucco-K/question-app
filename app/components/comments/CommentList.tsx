@@ -273,7 +273,7 @@ export default function CommentList({ questionId, answerId, categoryId, selected
               setCommentListModalOpen(true);
               setShowNotification(false);
             }}
-            className="text-green-500 text-xs font-bold px-4 rounded whitespace-nowrap hover:text-green-600 transition-transform duration-300 ease-in-out transform hover:scale-105"
+            className="text-green-500 text-sm font-bold px-4 rounded whitespace-nowrap hover:text-green-600 transition-transform duration-300 ease-in-out transform hover:scale-105"
           >
             <FontAwesomeIcon
               icon={faComments}
@@ -392,7 +392,7 @@ export default function CommentList({ questionId, answerId, categoryId, selected
               )}
               <div className="fixed bottom-16 right-40">
                     <button
-                      className="flex items-center bg-green-500 text-white px-4 py-2 rounded-full hover:bg-green-600 ml-10 transition-transform duration-300 ease-in-out transform hover:scale-105 whitespace-nowrap"
+                      className="flex items-center bg-green-500 text-white px-4 py-2 rounded-full hover:bg-green-600 mr-20 transition-transform duration-300 ease-in-out transform hover:scale-105 whitespace-nowrap"
                       onClick={() => setCommentModalOpen(true)}
                     >
                       <span className="bg-green-500 text-white rounded-full w-6 h-6 flex items-center justify-center mr-2 py-1 text-3xl">

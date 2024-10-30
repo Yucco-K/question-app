@@ -15,6 +15,7 @@ import { useRouter } from 'next/navigation';
 import Category from '../ui/Category';
 import { toast } from 'react-toastify';
 import QuestionHeader from '../Layout/header/QuestionHeader';
+import ScrollToBottomButton from '../ui/ScrollToBottomButton';
 
 
 interface QuestionFormProps {
@@ -395,6 +396,8 @@ export default function QuestionForm({ initialTitle: propInitialTitle, initialBo
   return (
     <>
       <QuestionHeader style={{ display: 'none' }} />
+
+      <ScrollToBottomButton isModalOpen={true} />
 
       <div className="container mx-auto px-4 py-8 relative">
         {!draftListModalOpen && (
