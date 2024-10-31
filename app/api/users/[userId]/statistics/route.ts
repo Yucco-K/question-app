@@ -9,7 +9,6 @@ export async function GET(request: Request, { params }: { params: { userId: stri
   }
 
   try {
-    // ベストアンサーIDの取得
     const { data: bestAnswerData, error: bestAnswerDataError } = await supabase
       .from('Question')
       .select('best_answer_id')
@@ -25,7 +24,6 @@ export async function GET(request: Request, { params }: { params: { userId: stri
       return NextResponse.json({ bestAnswerCount: 0, totalAnswers: 0, totalLikes: 0 }, { status: 200 });
     }
 
-    // ユーザーのベストアンサー数の取得
     const { count: userBestAnswersCount, error: userBestAnswersError } = await supabase
       .from('Answer')
       .select('id', { count: 'exact' })
@@ -36,7 +34,6 @@ export async function GET(request: Request, { params }: { params: { userId: stri
       throw new Error(`ユーザーのベストアンサーの集計に失敗しました: ${userBestAnswersError.message}`);
     }
 
-    // 回答数の集計
     const { count: totalAnswersCount, error: totalAnswersError } = await supabase
       .from('Answer')
       .select('id', { count: 'exact' })
@@ -46,7 +43,6 @@ export async function GET(request: Request, { params }: { params: { userId: stri
       throw new Error(`回答数の集計に失敗しました: ${totalAnswersError.message}`);
     }
 
-    // 回答IDの取得といいね数の集計
     const { data: answerIdsData, error: answerIdsError } = await supabase
       .from('Answer')
       .select('id')
@@ -68,7 +64,6 @@ export async function GET(request: Request, { params }: { params: { userId: stri
       throw new Error(`いいね数の集計に失敗しました: ${totalLikesError.message}`);
     }
 
-    // 成功レスポンスの返却
     return NextResponse.json({
       bestAnswerCount: userBestAnswersCount || 0,
       totalAnswers: totalAnswersCount || 0,
@@ -76,7 +71,6 @@ export async function GET(request: Request, { params }: { params: { userId: stri
     }, { status: 200 });
 
   } catch (error: any) {
-    // エラーレスポンスの返却
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
