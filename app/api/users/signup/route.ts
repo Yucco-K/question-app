@@ -51,6 +51,7 @@ export async function POST(request: Request) {
       data: {
         username
       },
+      emailRedirectTo: 'https://forum.yu-cco.com/',
     },
   });
 

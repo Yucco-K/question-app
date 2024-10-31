@@ -16,6 +16,7 @@ import { toast } from 'react-toastify';
 import CurrentUserEmailDisplay from '@/app/components/profile/CurrentUserEmailDisplay';
 import CurrentUserNameDisplay from '@/app/components/profile/CurrentUserNameDisplay';
 import CurrentUserProfileImage from '@/app/components/profile/CurrentUserProfileImage';
+import { set } from 'lodash';
 
 
 interface UserData {
@@ -212,7 +213,7 @@ export default function MyPage() {
     };
 
     fetchAllData();
-  }, [userId]);
+  }, [userId, setLoading]);
 
 
   const handleEditClick = () => {
