@@ -24,7 +24,7 @@ export async function GET() {
 
   const { data, error } = await supabaseAdmin.auth.admin.createUser({
     email: 'user2@example.com',
-    password: 'hashed_password2',
+    password:'',
     email_confirm: true,
   });
 
