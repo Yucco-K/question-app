@@ -20,6 +20,7 @@ export async function GET(request: Request, { params }: { params: { userId: stri
 
     const bestAnswerIds = bestAnswerData?.map((question: { best_answer_id: string }) => question.best_answer_id) || [];
 
+    // Best answer count response fix
     if (bestAnswerIds.length === 0) {
       return NextResponse.json({ bestAnswerCount: 0, totalAnswers: 0, totalLikes: 0 }, { status: 200 });
     }
@@ -64,11 +65,14 @@ export async function GET(request: Request, { params }: { params: { userId: stri
       throw new Error(`いいね数の集計に失敗しました: ${totalLikesError.message}`);
     }
 
-    return NextResponse.json({
-      bestAnswerCount: userBestAnswersCount || 0,
-      totalAnswers: totalAnswersCount || 0,
-      totalLikes: totalLikesCount || 0,
-    }, { status: 200 });
+    return NextResponse.json(
+      {
+        bestAnswerCount: userBestAnswersCount || 0,
+        totalAnswers: totalAnswersCount || 0,
+        totalLikes: totalLikesCount || 0,
+      },
+      { status: 200 }
+    );
 
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 500 });
