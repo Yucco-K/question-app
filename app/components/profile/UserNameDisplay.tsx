@@ -47,7 +47,7 @@ const UserNameDisplay: React.FC<UserNameDisplayProps> = ({ userId }) => {
     };
 
     fetchUsername();
-  }, [userId , setLoading]);
+  }, [userId, setLoading]);
 
   return (
     <>

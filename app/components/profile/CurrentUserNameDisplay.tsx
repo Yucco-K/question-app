@@ -13,7 +13,7 @@ export default function CurrentUserEmailDisplay() {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [showNotification, setShowNotification] = useState(false);
-  const { setLoading } = useLoading();
+  const { isLoading, setLoading } = useLoading();
 
   useEffect(() => {
     const fetchProfileData = async () => {

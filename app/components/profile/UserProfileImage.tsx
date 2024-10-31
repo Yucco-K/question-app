@@ -18,7 +18,7 @@ export default function UserProfileImage({ userId }: UserProfileImageProps) {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [showNotification, setShowNotification] = useState(false);
-  const { isLoading, setLoading } = useLoading();
+  const {isLoading, setLoading } = useLoading();
   const router = useRouter();
 
 
@@ -54,7 +54,7 @@ export default function UserProfileImage({ userId }: UserProfileImageProps) {
     };
 
     fetchUserProfile();
-  }, [userId, setLoading, router, profileImage]);
+  }, [userId, setLoading]);
 
   return (
     <>
@@ -73,6 +73,7 @@ export default function UserProfileImage({ userId }: UserProfileImageProps) {
             className="rounded-sm object-cover m-1"
             width={40}
             height={40}
+            style={{ width: 'auto', height: 'auto' }}
           />
         ) : (
           <div className="w-10 h-10 border bg-white border-gray-300 rounded-sm flex items-center justify-center">

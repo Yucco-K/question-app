@@ -16,7 +16,7 @@ interface CurrentUserProfileImageProps {
 
 export default function CurrentUserProfileImage({ size = 40 }: CurrentUserProfileImageProps) {
   const { session, loading: userLoading } = useAuth();
-  const { setLoading } = useLoading();
+  const { isLoading, setLoading } = useLoading();
   const userId: string | null = (session?.user as { id?: string })?.id ?? null;
   const [profileImage, setProfileImage] = useState<string | null>(null);
   const [username, setUsername] = useState<string | null>(null);
@@ -64,7 +64,7 @@ export default function CurrentUserProfileImage({ size = 40 }: CurrentUserProfil
 
   useEffect(() => {
     fetchProfileData();
-  }, [userId, setLoading, router, profileImage]);
+  }, [userId, setLoading]);
 
   const pathname = usePathname();
 
@@ -89,6 +89,7 @@ export default function CurrentUserProfileImage({ size = 40 }: CurrentUserProfil
             className="rounded-sm object-cover m-1"
             width={size}
             height={size}
+            style={{ width: 'auto', height: 'auto' }}
           />
         ) : (
           <div

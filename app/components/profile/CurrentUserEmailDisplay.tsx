@@ -7,7 +7,7 @@ import { useLoading } from '@/app/context/LoadingContext';
 
 export default function CurrentUserEmailDisplay() {
   const { session, loading: userLoading } = useAuth();
-  const { setLoading } = useLoading();
+  const { isLoading, setLoading } = useLoading();
   const userId: string | null = (session?.user as { id?: string })?.id ?? null;
   const [email, setEmail] = useState<string | null>(null);
   const displayEmail = email || '未登録';
