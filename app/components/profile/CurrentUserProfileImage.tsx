@@ -64,7 +64,7 @@ export default function CurrentUserProfileImage({ size = 40 }: CurrentUserProfil
 
   useEffect(() => {
     fetchProfileData();
-  }, [userId, setLoading]);
+  }, [userId, setLoading, router, profileImage]);
 
   const pathname = usePathname();
 

@@ -306,7 +306,7 @@ export default function Card({
 
       <div className="relative border rounded-lg shadow-md overflow-hidden bg-white max-w-[1200px]">
         {isNewPost() && (
-          <div className="absolute top-24 right-4 ml-20 bg-yellow-100 text-yellow-500 px-3 py-1 rounded-b-md text-sm font-bold mt-20
+          <div className="absolute top-24 right-4 ml-20 bg-yellow-100 text-yellow-500 px-3 py-1 rounded-b-md text-sm font-bold mt-24
           ">
             NEW
           </div>

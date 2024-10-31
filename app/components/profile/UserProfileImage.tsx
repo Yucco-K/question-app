@@ -6,6 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser } from '@fortawesome/free-solid-svg-icons';
 import Notification from '../ui/Notification';
 import { useLoading } from '../../context/LoadingContext';
+import { useRouter} from 'next/navigation';
 
 interface UserProfileImageProps {
   userId: string;
@@ -18,6 +19,7 @@ export default function UserProfileImage({ userId }: UserProfileImageProps) {
   const [success, setSuccess] = useState<string | null>(null);
   const [showNotification, setShowNotification] = useState(false);
   const { isLoading, setLoading } = useLoading();
+  const router = useRouter();
 
 
   useEffect(() => {
@@ -52,7 +54,7 @@ export default function UserProfileImage({ userId }: UserProfileImageProps) {
     };
 
     fetchUserProfile();
-  }, [userId , setLoading]);
+  }, [userId, setLoading, router, profileImage]);
 
   return (
     <>
