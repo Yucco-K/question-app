@@ -19,6 +19,16 @@ const nextConfig = {
         hostname: 'paskvjemkyxnpmlrvzzt.supabase.co',
         pathname: '/storage/v1/object/public/attachment_files/editor-uploads/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'forum.yu-cco.com',
+        pathname: '/storage/v1/object/public/avatar_files/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'forum.yu-cco.com',
+        pathname: '/storage/v1/object/public/attachment_files/editor-uploads/**',
+      },
     ],
   }
 };

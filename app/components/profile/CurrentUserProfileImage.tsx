@@ -7,6 +7,7 @@ import { useLoading } from '@/app/context/LoadingContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser } from '@fortawesome/free-solid-svg-icons';
 import Image from 'next/image';
+import { useRouter, usePathname } from 'next/navigation';
 
 
 interface CurrentUserProfileImageProps {
@@ -23,47 +24,53 @@ export default function CurrentUserProfileImage({ size = 40 }: CurrentUserProfil
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [showNotification, setShowNotification] = useState(false);
+  const router = useRouter();
 
-  useEffect(() => {
-    const fetchProfileData = async () => {
-      if (userId) {
-        try {
-          setError(null);
-          setSuccess(null);
-          setShowNotification(false);
-          setLoading(true);
+  const fetchProfileData = async () => {
+    if (userId) {
+      try {
+        setError(null);
+        setSuccess(null);
+        setShowNotification(false);
+        setLoading(true);
 
-          const response = await fetch(`/api/users/${userId}/profile`);
-          if (response.ok) {
-            const data = await response.json();
-            if (data) {
-              setProfileImage(data.profileImage);
-              setUsername(data.username);
-              setSuccess("プロフィール画像が正常に取得されました。");
-              // setShowNotification(true);
+        const response = await fetch(`/api/users/${userId}/profile`);
+        if (response.ok) {
+          const data = await response.json();
+          if (data) {
+            setProfileImage(data.profileImage);
+            setUsername(data.username);
+            setSuccess("プロフィール画像が正常に取得されました。");
+            // setShowNotification(true);
 
-            } else {
-              setError("プロフィール画像を取得できませんでした。");
-              setShowNotification(true);
-            }
           } else {
-            const errorData = await response.json();
-            setError(errorData.message || "プロファイルデータの取得に失敗しました。");
+            setError("プロフィール画像を取得できませんでした。");
             setShowNotification(true);
           }
-        } catch (error) {
-          console.error("Error fetching email:", error);
-          setError("エラーが発生しました。再度お試しください。");
+        } else {
+          const errorData = await response.json();
+          setError(errorData.message || "プロファイルデータの取得に失敗しました。");
           setShowNotification(true);
-        }finally{
-          setLoading(false);
-
         }
+      } catch (error) {
+        console.error("Error fetching email:", error);
+        setError("エラーが発生しました。再度お試しください。");
+        setShowNotification(true);
+      } finally {
+        setLoading(false);
       }
-    };
+    }
+  };
 
+  useEffect(() => {
     fetchProfileData();
-  }, [userId]);
+  }, [userId, setLoading]);
+
+  const pathname = usePathname();
+
+  useEffect(() => {
+    fetchProfileData();
+  }, [pathname]);
 
   return (
     <>

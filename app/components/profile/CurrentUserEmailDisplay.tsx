@@ -50,7 +50,7 @@ export default function CurrentUserEmailDisplay() {
     };
 
     fetchProfileData();
-  }, [userId]);
+  }, [userId, setLoading]);
 
   return (
     <>
