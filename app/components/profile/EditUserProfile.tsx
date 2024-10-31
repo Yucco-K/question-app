@@ -224,9 +224,7 @@ export default function EditUserProfile({ userId }: EditUserProfileProps) {
         body: formData,
       });
       const data = await response.json();
-
-      const timestamp = new Date().getTime();
-      setProfileImage(`${data.publicUrl}?${timestamp}`);
+      setProfileImage(data.publicUrl);
 
     } catch (err) {
       console.error((err as Error).message);
