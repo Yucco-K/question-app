@@ -69,7 +69,7 @@ export default function UserDetailHeader() {
 
         <div className="relative z-100">
           <div onClick={handleProfileClick} className="cursor-pointer mr-4">
-            <CurrentUserProfileImage />
+            <CurrentUserProfileImage size={40}/>
           </div>
 
           {isDropdownOpen && (

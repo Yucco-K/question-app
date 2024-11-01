@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
@@ -237,22 +237,6 @@ export default function SignupForm() {
         setAttemptCount(0);
       }, 180000);
     }
-  }
-
-
-  if (isMobile) {
-    return (
-      <UsersLayout
-        title="サインアップ"
-        actionText="既にアカウントをお持ちの方は"
-        actionHref="/users/login"
-        actionLinkText="ログインへ"
-      >
-        <div className="text-center text-red-300 font-bold mt-8">
-          ※ アカウントの作成は<br/>PC画面から行ってください。
-        </div>
-      </UsersLayout>
-    );
   }
 
 
