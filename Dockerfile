@@ -1,23 +1,24 @@
-# Node.jsの公式イメージをベースにする
-FROM node:18
+# ベースイメージとしてNode.jsを使用
+FROM node:18 AS builder
 
-# 作業ディレクトリを指定
-WORKDIR /usr/src/app
+# 作業ディレクトリの設定
+WORKDIR /app
 
-# 依存関係をインストールするためのファイルをコピー
+# package.jsonとpackage-lock.jsonをコピー
 COPY package*.json ./
 
-# 依存関係をインストール
+# 依存関係のインストール
 RUN npm install
 
-# アプリケーションのソースコードをコピー
+# アプリケーションファイルをコピー
 COPY . .
 
 # アプリケーションのビルド
 RUN npm run build
 
-# 必要なポートを公開
+# 本番用の軽量イメージを使用して、アプリケーションを実行
+FROM node:18-alpine
+WORKDIR /app
+COPY --from=builder /app ./
 EXPOSE 3000
-
-# アプリケーションを起動
 CMD ["npm", "start"]

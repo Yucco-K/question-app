@@ -4,7 +4,7 @@ import styles from '@/app/components/Questions/QuestionDetail.module.css';
 import { AwaitedReactNode, JSXElementConstructor, Key, ReactElement, ReactNode, ReactPortal, useEffect, useState } from 'react';
 import Card from '../../components/ui/Card';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faThumbsUp, faUserGraduate, faUser, faCrown, faAward, faChevronUp, faChevronDown, faEnvelope } from '@fortawesome/free-solid-svg-icons';
+import { faThumbsUp, faUserGraduate, faCrown, faAward, faChevronUp, faChevronDown, faEnvelope } from '@fortawesome/free-solid-svg-icons';
 import UserProfileImage from '@/app/components/profile/UserProfileImage';
 import UserNameDisplay from '@/app/components/profile/UserNameDisplay';
 import DOMPurify from 'dompurify';
@@ -16,15 +16,13 @@ import { toast } from 'react-toastify';
 import CurrentUserEmailDisplay from '@/app/components/profile/CurrentUserEmailDisplay';
 import CurrentUserNameDisplay from '@/app/components/profile/CurrentUserNameDisplay';
 import CurrentUserProfileImage from '@/app/components/profile/CurrentUserProfileImage';
-import { set } from 'lodash';
-
+import useAuth from '@/app/lib/useAuth';
 
 interface UserData {
   profileImage?: string;
   email?: string;
   username?: string;
   user_id: string;
-
 }
 
 interface Question {
@@ -74,6 +72,9 @@ export default function MyPage() {
   const router = useRouter();
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const { userId } = useParams() as { userId: string };
+  const { session } = useAuth();
+  const [email, setEmail] = useState('');
+  const [name, setName] = useState('');
   const [userStatistics, setUserStatistics] = useState<UserStatistics>({
     bestAnswerCount: 0,
     totalLikes: 0,
@@ -126,33 +127,87 @@ export default function MyPage() {
   };
 
 
+  // useEffect(() => {
+  //   if (session) {
+  //     setName(session.user?.username || '');
+  //     setEmail(session.user?.email || '');
+  //     setProfileImage(session.user?.profileImage || '');
+  //   }
+  //   console.log('session:', session);
+  //   console.log('userId:', userId);
+  //   console.log('profileImage1:', profileImage);
+  // }, [session]);
+
+
+  useEffect(() => {
+    const fetchProfileImage = async () => {
+      if (userId) {
+        try {
+          setLoading(true);
+
+          const response = await fetch(`/api/users/${userId}/profile`);
+          if (response.ok) {
+            const data = await response.json();
+            if (data.profileImage) {
+              setProfileImage(data.profileImage);
+              toast.success("プロフィール画像が正常に取得されました。", {
+                position: "top-center",
+                autoClose: 2000,
+              });
+            } else {
+              console.error("プロフィール画像が取得できませんでした。");
+              toast.error("プロフィール画像が取得できませんでした。", {
+                position: "top-center",
+                autoClose: 2000,
+              });
+            }
+          }
+        } catch (error) {
+          console.error("プロフィール画像の取得に失敗しました:", error);
+          toast.error("エラーが発生しました。再度お試しください。", {
+            position: "top-center",
+            autoClose: 2000,
+          });
+        }finally{
+          setLoading(false);
+        }
+      }
+    };
+
+    fetchProfileImage();
+  }, [userId, setLoading]);
+
+
   const fetchUserData = async () => {
     try {
       setLoading(true);
       const response = await fetch(`/api/users/${userId}`);
       if (!response.ok) throw new Error('ユーザー情報の取得に失敗しました');
-        // toast.error('ユーザー情報の取得に失敗しました', {
-        //   position: "top-center",
-        //   autoClose: 2000,
-        // });
+
       const data = await response.json();
       setUserData(data);
       setProfileImage(data.publicUrl);
+
     } catch (err) {
       console.error((err as Error).message);
       toast.error('エラーが発生しました', {
         position: "top-center",
         autoClose: 2000,
       });
+
     } finally {
       setLoading(false);
     }
   };
 
+  // useEffect(() => {
+  //   if (!session) fetchUserData();
+  // }, [userId, session]);
+
 
   const fetchUserStatistics = async () => {
     try {
-
+      setLoading(true);
       const response = await fetch(`/api/users/${userId}/statistics`);
       const data = await response.json();
       setUserStatistics({
@@ -160,32 +215,42 @@ export default function MyPage() {
         totalLikes: data.totalLikes,
         totalAnswers: data.totalAnswers,
       });
+
     } catch (error) {
       console.error('統計情報の取得に失敗しました:', error);
       toast.error('統計情報の取得に失敗しました', {
         position: "top-center",
         autoClose: 2000,
       });
+
+    }finally{
+      setLoading(false);
     }
   };
 
 
   const fetchPostHistory = async () => {
     try {
+      setLoading(true);
       const response = await fetch(`/api/users/${userId}/history`);
       const data = await response.json();
       setQuestions(data.questions || []);
+
     } catch (error) {
       console.error('投稿履歴の取得に失敗しました:', error);
       toast.error('投稿履歴の取得に失敗しました', {
         position: "top-center",
         autoClose: 2000,
       });
+
+    }finally{
+      setLoading(false);
     }
   };
 
   const fetchBookmarks = async () => {
     try {
+      setLoading(true);
       const response = await fetch(`/api/users/${userId}/bookmarks`);
       const data = await response.json();
       setBookmarks(Array.isArray(data.bookmarks) ? data.bookmarks : []);
@@ -196,24 +261,33 @@ export default function MyPage() {
         position: "top-center",
         autoClose: 2000,
       });
+
+    }finally{
+      setLoading(false);
     }
   };
 
   useEffect(() => {
     const fetchAllData = async () => {
       try {
+        setLoading(true);
         await Promise.all([fetchUserData(), fetchUserStatistics(), fetchPostHistory(), fetchBookmarks()]);
+
       } catch (error) {
         console.error('データの取得に失敗しました:', error);
         toast.error('データの取得に失敗しました', {
           position: "top-center",
           autoClose: 2000,
         });
+
+      }finally{
+        setLoading(false);
       }
     };
 
     fetchAllData();
-  }, [userId, setLoading]);
+    console.log('profileImage3:', profileImage);
+  }, [userId]);
 
 
   const handleEditClick = () => {

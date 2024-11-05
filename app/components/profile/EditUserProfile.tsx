@@ -147,7 +147,7 @@ export default function EditUserProfile({ userId }: EditUserProfileProps) {
         autoClose: 3000,
       });
       fetchUserData();
-      window.location.reload();
+      // window.location.reload();
 
     } catch (err) {
       console.error((err as Error).message);
@@ -224,7 +224,11 @@ export default function EditUserProfile({ userId }: EditUserProfileProps) {
         body: formData,
       });
       const data = await response.json();
-      setProfileImage(data.publicUrl);
+
+      const imageUrlWithTimestamp = `${data.publicUrl}?timestamp=${new Date().getTime()}`;
+      console.log(imageUrlWithTimestamp, 'imageUrlWithTimestamp');
+      setProfileImage(imageUrlWithTimestamp);
+      // setProfileImage(data.publicUrl);
 
     } catch (err) {
       console.error((err as Error).message);
@@ -239,6 +243,7 @@ export default function EditUserProfile({ userId }: EditUserProfileProps) {
 
   const saveProfileImage = async () => {
     try {
+      console.log('profileImage:', profileImage);
       setLoading(true);
       const response = await fetch(`/api/users/${userId}/edit`, {
         method: 'PUT',
@@ -257,7 +262,7 @@ export default function EditUserProfile({ userId }: EditUserProfileProps) {
       })
       setIsEditingImage(false);
       fetchUserData();
-      window.location.reload();
+      // window.location.reload();
     } catch (err) {
       console.error((err as Error).message);
       toast.error('プロフィール画像の保存に失敗しました', {
@@ -431,6 +436,7 @@ export default function EditUserProfile({ userId }: EditUserProfileProps) {
                 width={80}
                 height={80}
                 className="w-full h-full rounded-sm"
+                priority={true}
               />
 
               {isHovered && (

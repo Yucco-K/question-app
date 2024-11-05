@@ -74,6 +74,7 @@ export default function UserProfileImage({ userId }: UserProfileImageProps) {
             width={40}
             height={40}
             style={{ width: 'auto', height: 'auto' }}
+            priority={true}
           />
         ) : (
           <div className="w-10 h-10 border bg-white border-gray-300 rounded-sm flex items-center justify-center">

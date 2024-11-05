@@ -90,6 +90,7 @@ export default function CurrentUserProfileImage({ size = 40 }: CurrentUserProfil
             width={size}
             height={size}
             style={{ width: 'auto', height: 'auto' }}
+            priority={true}
           />
         ) : (
           <div
