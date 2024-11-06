@@ -43,7 +43,10 @@ export default function EditUserProfile({ userId }: EditUserProfileProps) {
   const fetchUserData = async () => {
     try {
       setLoading(true);
-      const response = await fetch(`/api/users/${userId}`);
+      // const response = await fetch(`/api/users/${userId}`);
+      const response = await fetch(`/api/users/${userId}`, {
+        cache: 'no-store',
+      });
 
       if (!response.ok) {
         const errorData = await response.json();
