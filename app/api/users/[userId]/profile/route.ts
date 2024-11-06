@@ -5,7 +5,17 @@ export async function GET(request: Request, { params }: { params: { userId: stri
   const { userId } = params;
 
   if (!userId) {
-    return NextResponse.json({ error: 'Bad Request', message: 'User ID is required' }, { status: 400 });
+    return NextResponse.json(
+      { error: 'Bad Request', message: 'User ID is required' },
+      {
+        status: 400,
+        headers: {
+          'Cache-Control': 'no-cache, no-store, must-revalidate',
+          'Pragma': 'no-cache',
+          'Expires': '0',
+        },
+      }
+    );
   }
 
   const { data: user, error } = await supabase
@@ -15,8 +25,28 @@ export async function GET(request: Request, { params }: { params: { userId: stri
     .single();
 
   if (error || !user) {
-    return NextResponse.json({ error: 'User not found', message: error?.message || 'No user found' }, { status: 404 });
+    return NextResponse.json(
+      { error: 'User not found', message: error?.message || 'No user found' },
+      {
+        status: 404,
+        headers: {
+          'Cache-Control': 'no-cache, no-store, must-revalidate',
+          'Pragma': 'no-cache',
+          'Expires': '0',
+        },
+      }
+    );
   }
 
-  return NextResponse.json({ id: user.id, email: user.email, username: user.username, profileImage: user.profileImage }, { status: 200 });
+  return NextResponse.json(
+    { id: user.id, email: user.email, username: user.username, profileImage: user.profileImage },
+    {
+      status: 200,
+      headers: {
+        'Cache-Control': 'no-cache, no-store, must-revalidate',
+        'Pragma': 'no-cache',
+        'Expires': '0',
+      },
+    }
+  );
 }
