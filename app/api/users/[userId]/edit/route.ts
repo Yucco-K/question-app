@@ -68,7 +68,6 @@ export async function PUT(request: Request, { params }: { params: { userId: stri
           return NextResponse.json({ error: 'auth.usersのメールアドレス更新に失敗しました。', message: authError.message }, { status: 500 });
         }
       }
-    //   // auth.users のメールアドレスを更新
 
     if (profileImage) {
       const { data, error } = await supabase

@@ -7,13 +7,13 @@ import { useLoading } from '@/app/context/LoadingContext';
 
 export default function CurrentUserEmailDisplay() {
   const { session, loading: userLoading } = useAuth();
+  const { isLoading, setLoading } = useLoading();
   const userId: string | null = (session?.user as { id?: string })?.id ?? null;
-  const [username, setUsername] = useState<string | null>(null);
-  const displayUsername = username || 'ゲスト';
+  const [email, setEmail] = useState<string | null>(null);
+  const displayEmail = email || '未登録';
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [showNotification, setShowNotification] = useState(false);
-  const { isLoading, setLoading } = useLoading();
 
   useEffect(() => {
     const fetchProfileData = async () => {
@@ -24,22 +24,14 @@ export default function CurrentUserEmailDisplay() {
           setShowNotification(false);
           setLoading(true);
 
-          const response = await fetch(`/api/users/${userId}/profile`, {
-            headers: {
-              'Cache-Control': 'no-cache, no-store, must-revalidate',
-              'Pragma': 'no-cache',
-              'Expires': '0',
-            },
-            cache: 'no-store',
-          });
-
+          const response = await fetch(`/api/users/${userId}/profile`);
           if (response.ok) {
             const data = await response.json();
-            if (data.username) {
-              setUsername(data.username);
-              setSuccess("ユーザー名が正常に取得されました。");
+            if (data.email) {
+              setEmail(data.email);
+              setSuccess("メールアドレスが正常に取得されました。");
             } else {
-              setError("ユーザー名を取得できませんでした。");
+              setError("メールアドレスが取得できませんでした。");
               setShowNotification(true);
             }
           } else {
@@ -69,8 +61,8 @@ export default function CurrentUserEmailDisplay() {
           onClose={() => setShowNotification(false)}
         />
       )}
-      <div className='text-center' style={{ letterSpacing: '0.1em' }}>
-        <p>{displayUsername}さん</p>
+      <div className='text-center'>
+        <p>{displayEmail}</p>
       </div>
     </>
   );

@@ -127,25 +127,21 @@ export default function MyPage() {
   };
 
 
-  // useEffect(() => {
-  //   if (session) {
-  //     setName(session.user?.username || '');
-  //     setEmail(session.user?.email || '');
-  //     setProfileImage(session.user?.profileImage || '');
-  //   }
-  //   console.log('session:', session);
-  //   console.log('userId:', userId);
-  //   console.log('profileImage1:', profileImage);
-  // }, [session]);
-
-
   useEffect(() => {
     const fetchProfileImage = async () => {
       if (userId) {
         try {
           setLoading(true);
 
-          const response = await fetch(`/api/users/${userId}/profile`);
+          const response = await fetch(`/api/users/${userId}/profile`, {
+            headers: {
+              'Cache-Control': 'no-cache, no-store, must-revalidate',
+              'Pragma': 'no-cache',
+              'Expires': '0',
+            },
+            cache: 'no-store',
+          });
+
           if (response.ok) {
             const data = await response.json();
             if (data.profileImage) {
@@ -181,7 +177,15 @@ export default function MyPage() {
   const fetchUserData = async () => {
     try {
       setLoading(true);
-      const response = await fetch(`/api/users/${userId}`);
+      const response = await fetch(`/api/users/${userId}`, {
+        headers: {
+          'Cache-Control': 'no-cache, no-store, must-revalidate',
+          'Pragma': 'no-cache',
+          'Expires': '0',
+        },
+        cache: 'no-store',
+      });
+
       if (!response.ok) throw new Error('ユーザー情報の取得に失敗しました');
 
       const data = await response.json();
@@ -248,6 +252,7 @@ export default function MyPage() {
     }
   };
 
+
   const fetchBookmarks = async () => {
     try {
       setLoading(true);
@@ -266,6 +271,7 @@ export default function MyPage() {
       setLoading(false);
     }
   };
+
 
   useEffect(() => {
     const fetchAllData = async () => {
@@ -286,7 +292,6 @@ export default function MyPage() {
     };
 
     fetchAllData();
-    console.log('profileImage3:', profileImage);
   }, [userId]);
 
 

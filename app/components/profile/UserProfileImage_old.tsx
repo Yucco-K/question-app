@@ -35,14 +35,7 @@ export default function UserProfileImage({ userId }: UserProfileImageProps) {
         setShowNotification(false);
         setLoading(true);
 
-        const response = await fetch(`/api/users/${userId}/profile`, {
-          headers: {
-            'Cache-Control': 'no-cache, no-store, must-revalidate',
-            'Pragma': 'no-cache',
-            'Expires': '0',
-          },
-          cache: 'no-store',
-        });
+        const response = await fetch(`/api/users/${userId}/profile`);
 
         const data = await response.json();
 

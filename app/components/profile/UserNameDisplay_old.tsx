@@ -3,7 +3,6 @@
 import React, { useEffect, useState } from 'react';
 import Notification from '../ui/Notification';
 import { useLoading } from '../../context/LoadingContext';
-import { set } from 'lodash';
 
 interface UserNameDisplayProps {
   userId: string;
@@ -29,15 +28,7 @@ const UserNameDisplay: React.FC<UserNameDisplayProps> = ({ userId }) => {
         setShowNotification(false);
         setLoading(true);
 
-        const response = await fetch(`/api/users/${userId}/profile`, {
-          headers: {
-            'Cache-Control': 'no-cache, no-store, must-revalidate',
-            'Pragma': 'no-cache',
-            'Expires': '0',
-          },
-          cache: 'no-store',
-        });
-
+        const response = await fetch(`/api/users/${userId}/profile`);
         const data = await response.json();
 
         if (response.ok) {

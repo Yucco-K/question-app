@@ -43,15 +43,7 @@ export default function EditUserProfile({ userId }: EditUserProfileProps) {
   const fetchUserData = async () => {
     try {
       setLoading(true);
-
-      const response = await fetch(`/api/users/${userId}`, {
-        headers: {
-          'Cache-Control': 'no-cache, no-store, must-revalidate',
-          'Pragma': 'no-cache',
-          'Expires': '0',
-        },
-        cache: 'no-store',
-      });
+      const response = await fetch(`/api/users/${userId}`);
 
       if (!response.ok) {
         const errorData = await response.json();
@@ -347,6 +339,7 @@ export default function EditUserProfile({ userId }: EditUserProfileProps) {
         },
         body: JSON.stringify({ username: name }),
       });
+
       if (!response.ok){
         const errorData = await response.json();
         throw new Error(errorData.error || '名前の更新に失敗しました');
