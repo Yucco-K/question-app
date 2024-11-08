@@ -16,7 +16,11 @@ export async function POST(request: Request) {
 
     const { data: storageData, error: storageError } = await supabase.storage
       .from('avatar_files')
-      .upload(filePath, file);
+      // .upload(filePath, file);
+      .upload(filePath, file, {
+        cacheControl: '0',
+        upsert: true,
+      });
 
     if (storageError) {
       throw new Error(`ファイルのアップロードに失敗しました: ${storageError.message}`);

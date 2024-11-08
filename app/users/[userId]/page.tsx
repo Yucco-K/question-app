@@ -152,10 +152,10 @@ export default function MyPage() {
               });
             } else {
               console.error("プロフィール画像が取得できませんでした。");
-              toast.error("プロフィール画像が取得できませんでした。", {
-                position: "top-center",
-                autoClose: 2000,
-              });
+              // toast.error("プロフィール画像が取得できませんでした。", {
+              //   position: "top-center",
+              //   autoClose: 2000,
+              // });
             }
           }
         } catch (error) {
