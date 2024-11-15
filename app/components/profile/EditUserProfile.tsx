@@ -222,16 +222,22 @@ export default function EditUserProfile({ userId }: EditUserProfileProps) {
     }
 
     const file = files[0];
+    console.log('file:', file);
     const formData = new FormData();
+    formData.append('file', file);
 
-    const fileExt = file.name.split('.').pop();
-    const timestamp = Date.now();
-    const baseName = file.name.split('.').slice(0, -1).join('.');
-
-    const fileNameWithTimestamp = `${baseName}_${timestamp}.${fileExt}`;
-    formData.append('file', file, fileNameWithTimestamp);
-
-    console.log('formData:', formData);
+    // const fileExt = file.name.split('.').pop();
+    // console.log('fileExt:', fileExt);
+    // const timestamp = Date.now();
+    // console.log('timestamp:', timestamp);
+    // const baseName = file.name.split('.').slice(0, -1).join('.');
+    // console.log('baseName:', baseName);
+    // const safeBaseName = encodeURIComponent(baseName);
+    // console.log('safeBaseName:', safeBaseName);
+    // const fileNameWithTimestamp = `${safeBaseName}_${timestamp}.${fileExt}`;
+    // console.log('fileNameWithTimestamp:', fileNameWithTimestamp);
+    // formData.append('file', file, fileNameWithTimestamp);
+    // console.log('formData:', formData);
 
     try {
       setLoading(true);
@@ -245,7 +251,7 @@ export default function EditUserProfile({ userId }: EditUserProfileProps) {
       // console.log(imageUrlWithTimestamp, 'imageUrlWithTimestamp');
       // setProfileImage(imageUrlWithTimestamp);
       setProfileImage(data.publicUrl);
-      console.log(data.publicUrl, 'data.publicUrl');
+      console.log('data.publicUrl', data.publicUrl);
 
     } catch (err) {
       console.error((err as Error).message);
