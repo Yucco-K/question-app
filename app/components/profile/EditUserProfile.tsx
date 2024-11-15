@@ -223,7 +223,15 @@ export default function EditUserProfile({ userId }: EditUserProfileProps) {
 
     const file = files[0];
     const formData = new FormData();
-    formData.append('file', file);
+
+    const fileExt = file.name.split('.').pop();
+    const timestamp = Date.now();
+    const baseName = file.name.split('.').slice(0, -1).join('.');
+
+    const fileNameWithTimestamp = `${baseName}_${timestamp}.${fileExt}`;
+    formData.append('file', file, fileNameWithTimestamp);
+
+    console.log('formData:', formData);
 
     try {
       setLoading(true);
@@ -233,10 +241,11 @@ export default function EditUserProfile({ userId }: EditUserProfileProps) {
       });
       const data = await response.json();
 
-      const imageUrlWithTimestamp = `${data.publicUrl}?timestamp=${new Date().getTime()}`;
-      console.log(imageUrlWithTimestamp, 'imageUrlWithTimestamp');
-      setProfileImage(imageUrlWithTimestamp);
-      // setProfileImage(data.publicUrl);
+      // const imageUrlWithTimestamp = `${data.publicUrl}?timestamp=${new Date().getTime()}`;
+      // console.log(imageUrlWithTimestamp, 'imageUrlWithTimestamp');
+      // setProfileImage(imageUrlWithTimestamp);
+      setProfileImage(data.publicUrl);
+      console.log(data.publicUrl, 'data.publicUrl');
 
     } catch (err) {
       console.error((err as Error).message);
@@ -505,7 +514,8 @@ export default function EditUserProfile({ userId }: EditUserProfileProps) {
               id="profileImageInput"
               className="hidden"
               onChange={handleProfileImageChange}
-              title="プロフィール画像を選択" />
+              title="プロフィール画像を選択"
+            />
             <div className="flex space-x-2 justify-end">
 
               <button

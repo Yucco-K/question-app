@@ -120,10 +120,10 @@ export async function PUT(request: Request, { params }: { params: { userId: stri
     }
 
     if (user.profileImage) {
-      const imagePath = user.profileImage.split('/').pop();
+      const imagePath = user.profileImage.split('/').pop()?.split('?')[0];
 
       const { error: storageError } = await supabase.storage
-        .from('avatar-files')
+        .from('avatar_files')
         .remove([imagePath]);
 
       if (storageError) {
