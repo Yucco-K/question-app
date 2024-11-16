@@ -226,19 +226,6 @@ export default function EditUserProfile({ userId }: EditUserProfileProps) {
     const formData = new FormData();
     formData.append('file', file);
 
-    // const fileExt = file.name.split('.').pop();
-    // console.log('fileExt:', fileExt);
-    // const timestamp = Date.now();
-    // console.log('timestamp:', timestamp);
-    // const baseName = file.name.split('.').slice(0, -1).join('.');
-    // console.log('baseName:', baseName);
-    // const safeBaseName = encodeURIComponent(baseName);
-    // console.log('safeBaseName:', safeBaseName);
-    // const fileNameWithTimestamp = `${safeBaseName}_${timestamp}.${fileExt}`;
-    // console.log('fileNameWithTimestamp:', fileNameWithTimestamp);
-    // formData.append('file', file, fileNameWithTimestamp);
-    // console.log('formData:', formData);
-
     try {
       setLoading(true);
       const response = await fetch('/api/users/avatar-upload', {
@@ -247,9 +234,6 @@ export default function EditUserProfile({ userId }: EditUserProfileProps) {
       });
       const data = await response.json();
 
-      // const imageUrlWithTimestamp = `${data.publicUrl}?timestamp=${new Date().getTime()}`;
-      // console.log(imageUrlWithTimestamp, 'imageUrlWithTimestamp');
-      // setProfileImage(imageUrlWithTimestamp);
       setProfileImage(data.publicUrl);
       console.log('data.publicUrl', data.publicUrl);
 
