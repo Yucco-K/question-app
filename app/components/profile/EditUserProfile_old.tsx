@@ -43,15 +43,7 @@ export default function EditUserProfile({ userId }: EditUserProfileProps) {
   const fetchUserData = async () => {
     try {
       setLoading(true);
-
-      const response = await fetch(`/api/users/${userId}`, {
-        headers: {
-          'Cache-Control': 'no-cache, no-store, must-revalidate',
-          'Pragma': 'no-cache',
-          'Expires': '0',
-        },
-        cache: 'no-store',
-      });
+      const response = await fetch(`/api/users/${userId}`);
 
       if (!response.ok) {
         const errorData = await response.json();
@@ -222,22 +214,8 @@ export default function EditUserProfile({ userId }: EditUserProfileProps) {
     }
 
     const file = files[0];
-    console.log('file:', file);
     const formData = new FormData();
     formData.append('file', file);
-
-    // const fileExt = file.name.split('.').pop();
-    // console.log('fileExt:', fileExt);
-    // const timestamp = Date.now();
-    // console.log('timestamp:', timestamp);
-    // const baseName = file.name.split('.').slice(0, -1).join('.');
-    // console.log('baseName:', baseName);
-    // const safeBaseName = encodeURIComponent(baseName);
-    // console.log('safeBaseName:', safeBaseName);
-    // const fileNameWithTimestamp = `${safeBaseName}_${timestamp}.${fileExt}`;
-    // console.log('fileNameWithTimestamp:', fileNameWithTimestamp);
-    // formData.append('file', file, fileNameWithTimestamp);
-    // console.log('formData:', formData);
 
     try {
       setLoading(true);
@@ -247,11 +225,10 @@ export default function EditUserProfile({ userId }: EditUserProfileProps) {
       });
       const data = await response.json();
 
-      // const imageUrlWithTimestamp = `${data.publicUrl}?timestamp=${new Date().getTime()}`;
-      // console.log(imageUrlWithTimestamp, 'imageUrlWithTimestamp');
-      // setProfileImage(imageUrlWithTimestamp);
-      setProfileImage(data.publicUrl);
-      console.log('data.publicUrl', data.publicUrl);
+      const imageUrlWithTimestamp = `${data.publicUrl}?timestamp=${new Date().getTime()}`;
+      console.log(imageUrlWithTimestamp, 'imageUrlWithTimestamp');
+      setProfileImage(imageUrlWithTimestamp);
+      // setProfileImage(data.publicUrl);
 
     } catch (err) {
       console.error((err as Error).message);
@@ -362,6 +339,7 @@ export default function EditUserProfile({ userId }: EditUserProfileProps) {
         },
         body: JSON.stringify({ username: name }),
       });
+
       if (!response.ok){
         const errorData = await response.json();
         throw new Error(errorData.error || '名前の更新に失敗しました');
@@ -520,8 +498,7 @@ export default function EditUserProfile({ userId }: EditUserProfileProps) {
               id="profileImageInput"
               className="hidden"
               onChange={handleProfileImageChange}
-              title="プロフィール画像を選択"
-            />
+              title="プロフィール画像を選択" />
             <div className="flex space-x-2 justify-end">
 
               <button

@@ -10,11 +10,14 @@ export async function POST(request: Request) {
   }
 
   try {
+    // サーバー側でファイル名を生成
     const fileExt = file.name.split('.').pop();
     const baseName = file.name.split('.').slice(0, -1).join('.');
     const timestamp = Date.now();
-    const filePath = `${timestamp}.${fileExt}`;
+    const safeBaseName = encodeURIComponent(baseName);
+    const filePath = `${safeBaseName}_${timestamp}.${fileExt}`;
 
+    // ファイルをアップロード
     const { data: storageData, error: storageError } = await supabase.storage
       .from('avatar_files')
       .upload(filePath, file, {
