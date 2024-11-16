@@ -3,7 +3,8 @@ import supabase from '../../../lib/supabaseClient';
 
 export async function POST(request: Request) {
   const formData = await request.formData();
-  const file = formData.get('file') as Blob;
+  // const file = formData.get('file') as Blob;
+  const file = formData.get('file') as File;
 
   if (!file) {
     return NextResponse.json({ error: 'ファイルが選択されていません' }, { status: 400 });
@@ -12,11 +13,13 @@ export async function POST(request: Request) {
   try {
     const fileExt = ((file as File).name || '').split('.').pop();
     const fileName = `${Date.now()}.${fileExt}`;
-    const filePath = `${fileName}`;
+    const timestamp = new Date().toISOString();
+    const filePath = `${fileName}?t=${encodeURIComponent(timestamp)}`;
+
+    console.log('filePath:', filePath);
 
     const { data: storageData, error: storageError } = await supabase.storage
       .from('avatar_files')
-      // .upload(filePath, file);
       .upload(filePath, file, {
         cacheControl: '0',
         upsert: true,

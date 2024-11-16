@@ -223,15 +223,7 @@ export default function EditUserProfile({ userId }: EditUserProfileProps) {
 
     const file = files[0];
     const formData = new FormData();
-
-    const fileExt = file.name.split('.').pop();
-    const timestamp = Date.now();
-    const baseName = file.name.split('.').slice(0, -1).join('.');
-
-    const fileNameWithTimestamp = `${baseName}_${timestamp}.${fileExt}`;
-    formData.append('file', file, fileNameWithTimestamp);
-
-    console.log('formData:', formData);
+    formData.append('file', file);
 
     try {
       setLoading(true);
@@ -240,10 +232,6 @@ export default function EditUserProfile({ userId }: EditUserProfileProps) {
         body: formData,
       });
       const data = await response.json();
-
-      // const imageUrlWithTimestamp = `${data.publicUrl}?timestamp=${new Date().getTime()}`;
-      // console.log(imageUrlWithTimestamp, 'imageUrlWithTimestamp');
-      // setProfileImage(imageUrlWithTimestamp);
       setProfileImage(data.publicUrl);
       console.log(data.publicUrl, 'data.publicUrl');
 
