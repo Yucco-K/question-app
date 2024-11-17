@@ -96,15 +96,6 @@ export default function MobileDefaultNav() {
                 </button>
               </li>
 
-              {/* <li>
-                <button
-                  className="text-blue-700 ml-1 mt-2  mb-1 font-bold hover:underline"
-                  onClick={handleAccountManagement}
-                >
-                  マイページ
-                </button>
-              </li> */}
-
               <li className="text-gray-400 font-bold whitespace-nowrap flex items-center mt-4">
                 {pageTitle}
               </li>

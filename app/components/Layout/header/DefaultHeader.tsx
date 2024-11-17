@@ -76,15 +76,15 @@ const DefaultHeader: React.FC<DefaultHeaderProps> = ({ style }) => {
           </div>
 
           {isDropdownOpen && (
-            <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-2 z-100">
+            <div className="absolute right-0 mt-2 w-48 text-sm bg-white rounded-md shadow-lg py-2 z-100">
               {session && !userLoading ? (
                 <>
-                  <div className="ml-4 my-2 text-black whitespace-nowrap">
+                  <div className="ml-4 mt-2 mb-1 text-black whitespace-nowrap">
                     <CurrentUserNameDisplay />
                   </div>
                   <button
                     onClick={handleAccountManagement}
-                    className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 text-center"
+                    className="block w-full text-left px-4 py-1 text-gray-700 hover:bg-gray-100 text-center"
                   >
                     マイページ
                   </button>
@@ -93,7 +93,7 @@ const DefaultHeader: React.FC<DefaultHeaderProps> = ({ style }) => {
               ) : (
                 <button
                   onClick={() => router.push('/users/login')}
-                  className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 text-center"
+                  className="block w-full text-left px-4 py-1 text-gray-700 hover:bg-gray-100 text-center"
                 >
                   ログイン
                 </button>
