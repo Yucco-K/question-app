@@ -66,7 +66,7 @@ export default function DefaultNavigation() {
 
   return (
   <nav
-    className={`fixed top-14 left-32 w-2/3 bg-white text-gray-700 px-4 py-2 z-50 transition-opacity duration-500 ${
+    className={`fixed top-20 left-32 w-2/3 bg-white text-gray-700 px-4 py-2 z-50 transition-opacity duration-500 ${
       isVisible ? 'opacity-100' : 'opacity-0'
     }`}
     >

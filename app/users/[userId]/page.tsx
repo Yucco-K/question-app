@@ -146,10 +146,10 @@ export default function MyPage() {
             const data = await response.json();
             if (data.profileImage) {
               setProfileImage(data.profileImage);
-              toast.success("プロフィール画像が正常に取得されました。", {
-                position: "top-center",
-                autoClose: 2000,
-              });
+              // toast.success("プロフィール画像が正常に取得されました。", {
+              //   position: "top-center",
+              //   autoClose: 2000,
+              // });
             } else {
               console.error("プロフィール画像が取得できませんでした。");
               // toast.error("プロフィール画像が取得できませんでした。", {

@@ -49,7 +49,6 @@ export default function CurrentUserProfileImage({ size = 40 }: CurrentUserProfil
             setProfileImage(data.profileImage);
             setUsername(data.username);
             setSuccess("プロフィール画像が正常に取得されました。");
-            // setShowNotification(true);
 
           } else {
             setError("プロフィール画像を取得できませんでした。");

@@ -48,7 +48,7 @@ export default function QuestionsNavigation() {
 
   return (
     <nav
-      className={`fixed top-16 left-0 w-full bg-white text-gray-700 pb-2 shadow-md rounded-sm transition-opacity duration-500 ${
+      className={`fixed top-20 left-28 w-full bg-white text-gray-700 pb-2 rounded-sm transition-opacity duration-500 ${
         isVisible ? 'opacity-100' : 'opacity-0'
       }`}
     >

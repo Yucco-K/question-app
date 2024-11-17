@@ -74,7 +74,7 @@ export default function QuestionDetailNav() {
 
   return (
     <nav
-      className={`fixed top-16 left-28 w-1/2 bg-white text-gray-700 px-4 pb-2 transition-opacity duration-500 ${
+      className={`fixed top-20 left-28 w-1/2 bg-white text-gray-700 px-4 pb-2 transition-opacity duration-500 ${
         isVisible ? 'opacity-100' : 'opacity-0'
       }`}
     >
