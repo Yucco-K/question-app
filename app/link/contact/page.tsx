@@ -19,7 +19,7 @@ export default function ContactPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center relative top-20">
+    <div className="min-h-screen flex items-center justify-center relative top-20 mt-20">
       <div className="w-full max-w-xl mx-auto px-6 py-4 bg-white shadow-lg rounded-lg absolute">
         <h1 className="text-xl font-bold text-center mb-3">CONTACT</h1>
         <p className="text-center text-gray-600 mb-4">お問い合わせ</p>
