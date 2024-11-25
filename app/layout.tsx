@@ -7,8 +7,7 @@ import { ModalProvider } from './context/ModalContext';
 import { LoadingProvider } from './context/LoadingContext';
 import CustomToastContainer from './components/ui/CustomToastContainer';
 import { AuthProvider } from './context/AuthContext';
-import { UserProvider } from './context/UserContext';
-import Head from 'next/head';
+// import { UserProvider } from './context/UserContext';
 
 const inter = Inter({ subsets: ["latin"] });
 const notoSans = Noto_Sans({ subsets: ["latin"], weight: ["400", "700"] });
@@ -18,6 +17,11 @@ export const metadata = {
   description: 'WEBエンジニアが質問や回答を共有するためのプラットフォーム',
 };
 
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1.0,
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -25,15 +29,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ja">
-      <Head>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <meta charSet="UTF-8" />
-      </Head>
+
       <body className={notoSans.className}>
 
       <CustomToastContainer />
         <LoadingProvider>
-          <UserProvider>
+          {/* <UserProvider> */}
             <ModalProvider>
               <AuthProvider>
                 <AppRouter>
@@ -41,7 +42,7 @@ export default function RootLayout({
                 </AppRouter>
               </AuthProvider>
             </ModalProvider>
-          </UserProvider>
+          {/* </UserProvider> */}
         </LoadingProvider>
       </body>
     </html>

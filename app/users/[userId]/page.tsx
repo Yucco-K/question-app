@@ -408,9 +408,9 @@ export default function MyPage() {
                       </div>
                     )}
 
-                    <div className="text-blue-900 text-sm mb-4">
+                    {/* <div className="text-blue-900 text-sm mb-4">
                       質問ID: {question.id}
-                    </div>
+                    </div> */}
 
                     <div className="flex items-center mt-4">
                       <UserProfileImage userId={question.user_id} />
@@ -511,9 +511,9 @@ export default function MyPage() {
                       </div>
                     )}
 
-                    <div className="text-blue-900 text-sm mb-2">
+                    {/* <div className="text-blue-900 text-sm mb-2">
                       質問ID: {bookmark.id}
-                    </div>
+                    </div> */}
 
                     <div className="flex items-center mt-4">
                       <UserProfileImage userId={bookmark.user_id} />

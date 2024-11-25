@@ -97,9 +97,9 @@ export default function SortQuestions() {
                 paginatedQuestions.map((question) => (
                   <div key={question.id} className="gap-4 bg-white p-4 rounded shadow flex items-center justify-between">
                     <div>
-                    <div className="text-blue-900 text-sm my-2">
+                    {/* <div className="text-blue-900 text-sm my-2">
                       質問ID: {question.id}
-                    </div>
+                    </div> */}
                     <h2>
                       <span className="question-label text-md">質問タイトル: </span>{question.title}
                     </h2>

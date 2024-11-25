@@ -422,8 +422,6 @@ export default function QuestionDetail({ questionId }: { questionId: string }) {
         <h1 className="mx-auto flex items-center justify-center text-blue-900">質問詳細ページ</h1>
       </div>
 
-      {/* <div className="container mx-auto px-4 py-8 w-[1200px]"> */}
-
       <div className="container mx-auto px-4 py-8 sm:w-[95%] lg:w-[1200px]">
 
         {questionModalOpen ? (
@@ -482,9 +480,9 @@ export default function QuestionDetail({ questionId }: { questionId: string }) {
             }}
             onDelete={handleDelete}
           >
-            <div className="text-blue-900 text-sm mb-4">
+            {/* <div className="text-blue-900 text-sm mb-4">
               質問ID: {questionId}
-            </div>
+            </div> */}
 
             {question.is_resolved && (
               <div className="absolute top-8 right-2 font-semibold text-sm text-red-400 py-2">

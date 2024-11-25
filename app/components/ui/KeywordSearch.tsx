@@ -56,7 +56,7 @@ const KeywordSearch: React.FC<KeywordSearchProps> = ({ data = [], onSearchResult
               (word === "解決済み" && item.is_resolved === true) ||
               regex.test(normalizedTitle) ||
               regex.test(normalizedDescription) ||
-              regex.test(normalizedId) ||
+              // regex.test(normalizedId) || // ID検索を有効にする場合はコメントアウトを解除
               regex.test(normalizedUsername) ||
               regex.test(normalizedCategory) ||
               regex.test(dateFormatted)

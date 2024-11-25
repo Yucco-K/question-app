@@ -43,7 +43,7 @@ export default function Form({
 
   const openPreview = () => {
     if (editorRef.current) {
-      editorRef.current.execCommand('mcePreview'); // TinyMCEのプレビューコマンドを実行
+      editorRef.current.execCommand('mcePreview');
     } else {
       console.error('エディターが初期化されていません');
       toast.error('エディターが初期化されていません', {

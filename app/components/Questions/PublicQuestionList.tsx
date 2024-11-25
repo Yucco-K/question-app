@@ -190,9 +190,9 @@ export default function PublicQuestionList({ selectedTags }: PublicQuestionListP
                 createdAt={question.created_at}
               >
 
-                <div className="text-blue-900 text-sm mb-4">
+                {/* <div className="text-blue-900 text-sm mb-4">
                   質問ID: {question.id}
-                </div>
+                </div> */}
 
                 {question.is_resolved && (
                   <div className="absolute top-8 right-2 font-semibold text-sm text-red-400">

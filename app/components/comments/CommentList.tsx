@@ -324,7 +324,7 @@ export default function CommentList({ questionId, answerId, categoryId, selected
                       isDraft={false}
                       showViewCount={false}
                     >
-                      <div className="text-sm text-blue-900 mb-2">コメントID: {comment.id}</div>
+                      {/* <div className="text-sm text-blue-900 mb-2">コメントID: {comment.id}</div> */}
                       {isEditing && editingCommentId === comment.id ? (
                         <div className="px-4 sm:px-1">
                           <Form

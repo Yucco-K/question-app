@@ -107,7 +107,7 @@ const CategorySearch: React.FC<CategorySearchProps> = ({ categoryId = null }) =>
                   </a>}
                   isDraft={false}
                 >
-                  <div className="text-blue-900 text-sm mb-4">質問ID: {question.id}</div>
+                  {/* <div className="text-blue-900 text-sm mb-4">質問ID: {question.id}</div> */}
                   {question.is_resolved && (
                     <div className="absolute top-8 right-2 font-semibold text-sm text-red-400">
                       <FontAwesomeIcon icon={faAward} className="mr-2 text-xl text-yellow-300" />解決済み

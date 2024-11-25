@@ -425,7 +425,7 @@ export default function QuestionForm({ initialTitle: propInitialTitle, initialBo
       <div className="mx-auto max-w-[1200px] ">
 
         <p className="guidance-message mx-auto my-10">
-          問題の内容や環境、再現方法、コードを詳しく書いて、適切なタグを選んで投稿してください。
+          問題の内容や環境、再現方法、コードを詳しく書いて、適切なカテゴリとタグを選んで投稿してください。
         </p>
 
         <Category

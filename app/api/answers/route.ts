@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import supabase from '../../lib/supabaseClient';
+import { revalidateTag } from 'next/cache';
 
 export async function GET(request: Request, { params }: { params: { questionId: string } }) {
   const { questionId } = params;
@@ -39,6 +40,8 @@ export async function POST(request: Request) {
     if (error) {
       throw new Error(error.message);
     }
+
+    revalidateTag('answers');
 
     return NextResponse.json(data, { status: 201 });
   } catch (err) {

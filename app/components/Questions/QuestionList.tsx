@@ -158,9 +158,9 @@ export default function QuestionList({ selectedTags, setSelectedTags }: Question
                 isDraft={false}
                 createdAt={question.created_at}
               >
-              <div className="text-blue-900 text-sm">
+              {/* <div className="text-blue-900 text-sm">
                 質問ID: {question.id}
-              </div>
+              </div> */}
               {question.is_resolved && (
                 <div className="absolute top-8 right-2 font-semibold text-sm text-red-400">
                   <FontAwesomeIcon icon={faAward} className="mr-2 text-xl text-yellow-300" />解決済み
