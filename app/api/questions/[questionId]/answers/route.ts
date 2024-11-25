@@ -51,9 +51,14 @@ export async function GET(request: Request, { params }: { params: { questionId: 
     });
 
     const sortedAnswers = answers.sort((a, b) => {
+
       if (a.is_best_answer) return -1;
       if (b.is_best_answer) return 1;
-      return 0;
+
+      const scoreA = a.votes_up - a.votes_down;
+      const scoreB = b.votes_up - b.votes_down;
+
+      return scoreB - scoreA;
     });
 
     const answerUsersData = answersData.map((answer) => ({

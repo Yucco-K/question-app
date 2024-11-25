@@ -128,9 +128,9 @@ export default function AnswerForm({
 
         setAnswerModalOpen(false);
 
-        setTimeout(() =>
-          window.location.reload()
-        , 1000);
+        // setTimeout(() =>
+        //   window.location.reload()
+        // , 1000);
 
       } else {
         const error = await response.json();

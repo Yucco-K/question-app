@@ -169,7 +169,7 @@ export default function Vote({ answerId, userId, answerUserId }: VoteProps) {
               voteType === 'up'
               ? 'text-red-600 scale-125'
               : upvoteCount >= 1
-              ? 'text-orange-600'
+              ? 'text-orange-500'
               : 'text-gray-400'
               } hover:bg-gray-100`}
             disabled={isLoading || userId === answerUserId}
@@ -185,6 +185,8 @@ export default function Vote({ answerId, userId, answerUserId }: VoteProps) {
             className={`px-1 py-1 rounded ${
               voteType === 'down'
               ? 'text-gray-800 scale-125'
+              : downvoteCount >= 1
+              ? 'text-gray-600'
               : 'text-gray-400'
             } hover:bg-gray-100`}
             disabled={isLoading || userId === answerUserId}

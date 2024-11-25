@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import supabase from '../../../lib/supabaseClient';
+import { revalidateTag } from 'next/cache';
 
 export async function POST(request: Request) {
   const formData = await request.formData();
@@ -34,6 +35,8 @@ export async function POST(request: Request) {
       .getPublicUrl(filePath);
 
       console.log('publicUrlData:', publicUrlData);
+
+    revalidateTag('userProfile');
 
     return NextResponse.json({ publicUrl: publicUrlData.publicUrl }, { status: 200 });
   } catch (error: any) {

@@ -67,9 +67,9 @@ export default function BestAnswer({ questionId, answerId }: BestAnswerProps) {
       setSuccess('ベストアンサーが設定または変更されました');
       setBestAnswerId(answerId);
       fetchBestAnswer();
-      setTimeout(() => {
-        window.location.reload();
-      } , 1000);
+      // setTimeout(() => {
+      //   window.location.reload();
+      // } , 1000);
 
     } catch (error) {
       console.error('ベストアンサーの設定中にエラーが発生しました:', error);

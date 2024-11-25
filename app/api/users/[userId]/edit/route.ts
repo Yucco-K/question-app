@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { supabaseAdmin as supabase } from '@/app/lib/supabaseAdmin';
+import { revalidateTag } from 'next/cache';
 
 export async function PUT(request: Request, { params }: { params: { userId: string } }) {
   const { userId } = params;
@@ -80,6 +81,8 @@ export async function PUT(request: Request, { params }: { params: { userId: stri
         return NextResponse.json({ error: 'プロフィール画像の更新に失敗しました。', message: error.message }, { status: 500 });
       }
 
+      revalidateTag('userProfile');
+
       return NextResponse.json(data, { status: 200 });
     }
 
@@ -142,6 +145,8 @@ export async function PUT(request: Request, { params }: { params: { userId: stri
       return NextResponse.json({ error: "プロフィール画像の削除に失敗しました。" }, { status: 500 });
     }
 
+    revalidateTag('userProfile');
+
     return NextResponse.json({ message: "プロフィール画像を削除しました。" }, { status: 200 });
   }
 
@@ -155,6 +160,10 @@ export async function DELETE(request: Request, { params }: { params: { userId: s
     console.error("auth.usersの削除に失敗しました:", authError);
     return NextResponse.json({ error: "auth.usersの削除に失敗しました。" }, { status: 500 });
   }
+
+  revalidateTag('userProfile');
+  revalidateTag('answers');
+  revalidateTag('questions');
 
 
   return NextResponse.json({ message: "アカウントが削除されました。" }, { status: 200 });

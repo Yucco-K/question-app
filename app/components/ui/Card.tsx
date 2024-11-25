@@ -167,7 +167,7 @@ export default function Card({
 
     if (data.success) {
       fetchBookmark();
-      window.location.reload();
+      // window.location.reload();
     }
   }
   setLoading(false);};
