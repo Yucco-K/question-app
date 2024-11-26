@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import supabase from '@/app/lib/supabaseClient';
+import { revalidateTag } from 'next/cache';
 
 export async function GET(request: Request, { params }: { params: { questionId: string } }) {
   try {
@@ -77,6 +78,8 @@ export async function PATCH(request: Request, { params }: { params: { questionId
     if (error) {
       return NextResponse.json({ error: 'Failed to set best answer', message: error.message }, { status: 500 });
     }
+
+    revalidateTag('*');
 
     return NextResponse.json({ message: 'ベストアンサーが正常に設定されました' }, { status: 200 });
   } catch (err) {

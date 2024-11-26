@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import supabase from '../../../lib/supabaseClient';
+import { revalidateTag } from 'next/cache';
 
 export async function GET(req: Request, { params }: { params: { commentId: string } }) {
   const { commentId } = params;
@@ -34,6 +35,8 @@ export async function PUT(req: Request, { params }: { params: { commentId: strin
     return NextResponse.json({ message: 'コメントの更新に失敗しました', error }, { status: 500 });
   }
 
+  revalidateTag('*');
+
   return NextResponse.json({ message: 'コメントが正常に更新されました', data });
 }
 
@@ -49,6 +52,8 @@ export async function DELETE(req: Request, { params }: { params: { commentId: st
   if (error) {
     return NextResponse.json({ message: 'コメントの削除に失敗しました', error }, { status: 500 });
   }
+
+  revalidateTag('*');
 
   return NextResponse.json({ message: 'コメントが正常に削除されました' });
 }

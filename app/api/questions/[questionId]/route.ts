@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import supabase from '@/app/lib/supabaseClient';
+import { revalidateTag } from 'next/cache';
 
 export async function GET(request: Request, { params }: { params: { questionId: string } }) {
   const { questionId } = params;
@@ -35,7 +36,6 @@ export async function GET(request: Request, { params }: { params: { questionId: 
     return NextResponse.json({ error: 'Question not found', message: questionError?.message || 'No question found with this ID.' }, { status: 404 });
   }
 
-  // 結果をクライアントに返す
   return NextResponse.json({ ...questionData, tags: tagData }, { status: 200 });
 }
 
@@ -92,6 +92,8 @@ export async function PUT(request: Request, { params }: { params: { questionId: 
     }
   }
 
+  revalidateTag('*');
+
   return NextResponse.json(questionData, { status: 200 });
 }
 
@@ -120,6 +122,8 @@ export async function DELETE(request: Request, { params }: { params: { questionI
   if (questionError) {
     return NextResponse.json({ error: `Failed to delete question with id ${questionId}`, message: questionError.message }, { status: 500 });
   }
+
+  revalidateTag('*');
 
   return NextResponse.json({ message: 'Question and related tags deleted successfully' }, { status: 200 });
 }

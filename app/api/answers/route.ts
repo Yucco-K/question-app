@@ -41,7 +41,7 @@ export async function POST(request: Request) {
       throw new Error(error.message);
     }
 
-    revalidateTag('answers');
+    revalidateTag('*');
 
     return NextResponse.json(data, { status: 201 });
   } catch (err) {

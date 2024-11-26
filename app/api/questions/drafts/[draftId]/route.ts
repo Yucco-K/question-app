@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import supabase from '@/app/lib/supabaseClient';
+import { revalidateTag } from 'next/cache';
 
 export async function GET(request: Request, { params }: { params: { draftId: string } }) {
   const { draftId } = params;
@@ -33,6 +34,8 @@ export async function PUT(request: Request, { params }: { params: { draftId: str
     return NextResponse.json({ error: 'Draft not found', message: error.message }, { status: 404 });
   }
 
+  revalidateTag('*');
+
   return NextResponse.json(data);
 }
 
@@ -47,6 +50,8 @@ export async function DELETE(request: Request, { params }: { params: { draftId: 
   if (error) {
     return NextResponse.json({ error: 'Draft not found', message: error.message }, { status: 404 });
   }
+
+  revalidateTag('*');
 
   return NextResponse.json({ message: 'Draft deleted successfully' }, { status: 200 });
 }

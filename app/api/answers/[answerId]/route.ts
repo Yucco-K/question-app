@@ -28,8 +28,7 @@ export async function PUT(request: Request, { params }: { params: { answerId: st
     return NextResponse.json({ error: 'Update failed', message: error.message }, { status: 500 });
   }
 
-    // 回答リストのキャッシュを再検証
-    revalidateTag('answers');
+    revalidateTag('*');
 
   return NextResponse.json({ message: 'Update successful', data }, { status: 200 });
 }
@@ -71,7 +70,7 @@ if (!existingAnswer || answerCheckError) {
     return NextResponse.json({ error: 'Failed to delete answer', message: error.message }, { status: 500 });
   }
 
-  revalidateTag('answers');
+  revalidateTag('*');
 
   return NextResponse.json({ message: 'Answer deleted successfully' }, { status: 200 });
 }

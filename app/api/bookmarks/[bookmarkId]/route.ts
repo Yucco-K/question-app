@@ -30,7 +30,7 @@ export async function PATCH(req: NextRequest, { params }: { params: { bookmarkId
       throw new Error(`ブックマークの更新に失敗しました: ${updateError.message}`);
     }
 
-    revalidateTag('bookmarks');
+    revalidateTag('*');
 
     return NextResponse.json({ success: true, data }, { status: 200 });
   } catch (error: any) {
@@ -54,7 +54,7 @@ export async function DELETE(req: NextRequest, { params }: { params: { bookmarkI
       throw new Error(`ブックマークの削除に失敗しました: ${error.message}`);
     }
 
-    revalidateTag('bookmarks');
+    revalidateTag('*');
 
     return NextResponse.json({ success: true, message: 'ブックマークが削除されました' }, { status: 200 });
   } catch (error: any) {

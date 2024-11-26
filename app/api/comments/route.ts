@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import supabase from '@/app/lib/supabaseClient';
+import { revalidateTag } from 'next/cache';
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
@@ -49,6 +50,8 @@ export async function POST(request: Request) {
   if (error) {
     return NextResponse.json({ error: 'Failed to insert comment', message: error.message }, { status: 400 });
   }
+
+  revalidateTag('*');
 
   return NextResponse.json({ message: 'コメントが投稿されました', commentId: data.id }, { status: 201 });
 }

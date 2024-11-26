@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import supabase from '@/app/lib/supabaseClient';
+import { revalidateTag } from 'next/cache';
 
 export async function GET(request: Request, { params }: { params: { voteId: string } }) {
   const { voteId } = params;
@@ -31,6 +32,8 @@ export async function PUT(request: Request, { params }: { params: { voteId: stri
     return NextResponse.json({ error: 'Vote not found', message: error.message }, { status: 404 });
   }
 
+  revalidateTag('*');
+
   return NextResponse.json(data);
 }
 
@@ -45,6 +48,8 @@ export async function DELETE(request: Request, { params }: { params: { voteId: s
   if (error) {
     return NextResponse.json({ error: 'Vote not found', message: error.message }, { status: 404 });
   }
+
+  revalidateTag('*');
 
   return NextResponse.json({ message: 'Vote deleted successfully' }, { status: 200 });
 }
@@ -62,6 +67,8 @@ export async function PATCH(request: Request, { params }: { params: { voteId: st
   if (error) {
     return NextResponse.json({ error: 'Vote not found', message: error.message }, { status: 404 });
   }
+
+  revalidateTag('*');
 
   return NextResponse.json(data);
 }

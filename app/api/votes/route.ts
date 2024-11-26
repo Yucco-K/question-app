@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import supabase from '../../lib/supabaseClient';
+import { revalidateTag } from 'next/cache';
 
 
 export async function POST(req: Request) {
@@ -16,6 +17,8 @@ export async function POST(req: Request) {
   if (insertError) {
     return NextResponse.json({ message: insertError.message }, { status: 500 });
   }
+
+  revalidateTag('*');
 
   return NextResponse.json({ message: '評価が送信されました' }, { status: 200 });
 }

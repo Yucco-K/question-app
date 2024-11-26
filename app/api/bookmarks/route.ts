@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import supabase from '@/app/lib/supabaseClient';
+import { revalidateTag } from 'next/cache';
 
 export async function GET(request: NextRequest) {
 
@@ -57,6 +58,8 @@ export async function POST(req: NextRequest) {
         throw new Error(`ブックマークの更新に失敗しました: ${error.message}`);
       }
 
+      revalidateTag('*');
+
       return NextResponse.json({ success: true, data }, { status: 200 });
     }
 
@@ -69,6 +72,8 @@ export async function POST(req: NextRequest) {
     if (error) {
       throw new Error(`ブックマークの挿入に失敗しました: ${error.message}`);
     }
+
+    revalidateTag('*');
 
     return NextResponse.json({ success: true, data }, { status: 201 });
   } catch (error: any) {

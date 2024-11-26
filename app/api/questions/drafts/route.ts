@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import supabase from '../../../lib/supabaseClient';
+import { revalidateTag } from 'next/cache';
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
@@ -134,6 +135,8 @@ export async function POST(request: Request) {
         throw new Error(tagRelationError.message);
       }
     }
+
+    revalidateTag('*');
 
     return NextResponse.json({ message: '下書きが保存されました。', draftId }, { status: 201 });
 
