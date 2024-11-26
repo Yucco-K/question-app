@@ -81,7 +81,7 @@ export async function PUT(request: Request, { params }: { params: { userId: stri
         return NextResponse.json({ error: 'プロフィール画像の更新に失敗しました。', message: error.message }, { status: 500 });
       }
 
-      revalidateTag('userProfile');
+      revalidateTag('*');
 
       return NextResponse.json(data, { status: 200 });
     }
@@ -100,6 +100,8 @@ export async function PUT(request: Request, { params }: { params: { userId: stri
         console.error('Userテーブルの更新に失敗:', error);
         return NextResponse.json({ error: 'ユーザー情報の更新に失敗しました。', message: error.message }, { status: 500 });
       }
+
+      revalidateTag('*');
 
       return NextResponse.json(data, { status: 200 });
     }
@@ -145,7 +147,7 @@ export async function PUT(request: Request, { params }: { params: { userId: stri
       return NextResponse.json({ error: "プロフィール画像の削除に失敗しました。" }, { status: 500 });
     }
 
-    revalidateTag('userProfile');
+    revalidateTag('*');
 
     return NextResponse.json({ message: "プロフィール画像を削除しました。" }, { status: 200 });
   }
@@ -161,10 +163,7 @@ export async function DELETE(request: Request, { params }: { params: { userId: s
     return NextResponse.json({ error: "auth.usersの削除に失敗しました。" }, { status: 500 });
   }
 
-  revalidateTag('userProfile');
-  revalidateTag('answers');
-  revalidateTag('questions');
-
+  revalidateTag('*');
 
   return NextResponse.json({ message: "アカウントが削除されました。" }, { status: 200 });
 }

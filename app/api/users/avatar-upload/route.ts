@@ -36,7 +36,7 @@ export async function POST(request: Request) {
 
       console.log('publicUrlData:', publicUrlData);
 
-    revalidateTag('userProfile');
+    revalidateTag('*');
 
     return NextResponse.json({ publicUrl: publicUrlData.publicUrl }, { status: 200 });
   } catch (error: any) {
