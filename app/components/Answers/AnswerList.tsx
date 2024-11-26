@@ -182,13 +182,11 @@ export default function AnswerList({ questionId, categoryId, answers: initialAns
                 )}
               >
 
-                {/* <div className="text-blue-900 text-sm mb-1">
+                <div className="text-blue-900 text-sm mb-1">
                   回答ID: {answer.id}
-                </div> */}
+                </div>
 
-                {answer.user_id !== userId && (
-                  <BestAnswer questionId={questionId} answerId={answer.id} />
-                )}
+                <BestAnswer questionId={questionId} answerId={answer.id} />
 
                 <div className="flex items-center mt-4">
                   <UserProfileImage userId={answer.user_id} />
@@ -236,7 +234,7 @@ export default function AnswerList({ questionId, categoryId, answers: initialAns
             );
           })
         ) : (
-            <p className='text-blue-900 text-center'>まだ回答がありません。</p>
+            <p className='text-blue-900 text-center'>この質問の初めての回答者になりませんか？</p>
         )}
       </div>
     </>

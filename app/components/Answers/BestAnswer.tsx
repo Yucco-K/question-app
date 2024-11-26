@@ -66,7 +66,8 @@ export default function BestAnswer({ questionId, answerId }: BestAnswerProps) {
 
       setSuccess('ベストアンサーが設定または変更されました');
       setBestAnswerId(answerId);
-      fetchBestAnswer();
+      setQuestionOwnerId(data.questionOwnerId);
+      // fetchBestAnswer();
       // setTimeout(() => {
       //   window.location.reload();
       // } , 1000);
@@ -83,7 +84,7 @@ export default function BestAnswer({ questionId, answerId }: BestAnswerProps) {
 
   useEffect(() => {
     fetchBestAnswer();
-  }, [questionId, answerId, userId, bestAnswerId]);
+  }, [questionId]);
 
   if (isLoading) return <p>読み込み中...</p>;
 
