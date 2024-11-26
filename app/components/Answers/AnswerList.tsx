@@ -182,9 +182,9 @@ export default function AnswerList({ questionId, categoryId, answers: initialAns
                 )}
               >
 
-                <div className="text-blue-900 text-sm mb-1">
+                {/* <div className="text-blue-900 text-sm mb-1">
                   回答ID: {answer.id}
-                </div>
+                </div> */}
 
                 <BestAnswer questionId={questionId} answerId={answer.id} />
 
