@@ -5,7 +5,7 @@ export default function PrivacyPolicyPage() {
         <h1 className="text-lg font-bold text-center mb-6">プライバシーポリシー</h1>
 
         <div className="bg-gray-100 text-gray-900 p-8 mb-6 text-center font-semibold">
-          ※このページはダミーページです。お問い合わせは送信されません。また、リロードするとログアウトします。
+          ※このページはダミーページです。お問い合わせは送信されません。<br/>また、リロードするとログアウトします。
         </div>
 
         <div className="space-y-12">

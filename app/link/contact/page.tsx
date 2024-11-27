@@ -25,7 +25,7 @@ export default function ContactPage() {
         <p className="text-center text-gray-600 mb-4">お問い合わせ</p>
 
         <div className="bg-gray-100 text-sm text-gray-900 p-3 mb-2 text-center font-semibold">
-          ※このページはダミーページです。お問い合わせは送信されません。また、リロードするとログアウトします。
+          ※このページはダミーページです。お問い合わせは送信されません。<br/>また、リロードするとログアウトします。
         </div>
 
         {submitted ? (
