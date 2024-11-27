@@ -375,7 +375,7 @@ export default function Card({
               <button onClick={toggleBookmark} className="absolute top-4 left-4">
 
                 {bookmarks.some(bookmark => bookmark.question_id === id && bookmark.is_bookmark) ? (
-                  <FontAwesomeIcon icon={faBookmark} className="text-lg text-blue-300" />
+                  <FontAwesomeIcon icon={faBookmark} className="text-lg text-blue-500" />
                 ) : (
                   <FontAwesomeIcon icon={faBookmark} className="text-lg text-gray-300" />
                 )}
