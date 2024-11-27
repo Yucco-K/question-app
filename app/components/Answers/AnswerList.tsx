@@ -236,7 +236,7 @@ export default function AnswerList({ questionId, categoryId, answers: initialAns
             );
           })
         ) : (
-            <p className='text-blue-900 text-center'>この質問の初めての回答者になりませんか？</p>
+            <p className='text-blue-900 text-center'>この質問の最初の回答者になりませんか？</p>
         )}
       </div>
     </>

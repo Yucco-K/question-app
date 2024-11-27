@@ -157,7 +157,7 @@ export default function EditUserProfile({ userId }: EditUserProfileProps) {
         autoClose: 3000,
       });
       fetchUserData();
-      // window.location.reload();
+      window.location.reload();
 
     } catch (err) {
       console.error((err as Error).message);
@@ -269,7 +269,7 @@ export default function EditUserProfile({ userId }: EditUserProfileProps) {
       })
       setIsEditingImage(false);
       fetchUserData();
-      // window.location.reload();
+      window.location.reload();
     } catch (err) {
       console.error((err as Error).message);
       toast.error('プロフィール画像の保存に失敗しました', {
