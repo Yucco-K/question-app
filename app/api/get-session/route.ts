@@ -1,3 +1,5 @@
+export const fetchCache = 'force-no-store';
+
 import supabase from '@/app/lib/supabaseClient';
 import { NextResponse } from 'next/server';
 import { extractTokensFromCookie } from '@/app/api/auth/utils';
