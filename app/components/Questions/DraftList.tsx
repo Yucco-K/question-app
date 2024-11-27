@@ -1,5 +1,7 @@
 'use client';
 
+export const fetchCache = 'force-no-store';
+
 import { useEffect, useState } from 'react';
 import styles from './QuestionList.module.css';
 import { useLoading } from '../../context/LoadingContext';

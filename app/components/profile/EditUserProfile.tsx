@@ -1,5 +1,7 @@
 'use client';
 
+export const fetchCache = 'force-no-store';
+
 import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import ButtonGroup from '@/app/components/ui/ButtonGroup';
@@ -155,7 +157,7 @@ export default function EditUserProfile({ userId }: EditUserProfileProps) {
         autoClose: 3000,
       });
       fetchUserData();
-      window.location.reload();
+      // window.location.reload();
 
     } catch (err) {
       console.error((err as Error).message);
@@ -267,7 +269,7 @@ export default function EditUserProfile({ userId }: EditUserProfileProps) {
       })
       setIsEditingImage(false);
       fetchUserData();
-      window.location.reload();
+      // window.location.reload();
     } catch (err) {
       console.error((err as Error).message);
       toast.error('プロフィール画像の保存に失敗しました', {

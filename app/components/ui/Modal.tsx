@@ -1,5 +1,7 @@
 'use client';
 
+export const fetchCache = 'force-no-store';
+
 import { ReactNode } from 'react';
 
 interface ModalProps {

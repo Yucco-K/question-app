@@ -1,5 +1,7 @@
 'use client';
 
+export const fetchCache = 'force-no-store';
+
 import React, { useCallback, useEffect, useState } from 'react';
 import Modal from '../ui/Modal';
 import ButtonGroup from '../ui/ButtonGroup';

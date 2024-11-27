@@ -1,5 +1,7 @@
 'use client';
 
+export const fetchCache = 'force-no-store';
+
 import { useState, useEffect } from 'react';
 import Notification from '../ui/Notification';
 import useAuth from '@/app/lib/useAuth';

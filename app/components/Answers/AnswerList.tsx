@@ -1,5 +1,7 @@
 'use client';
 
+export const fetchCache = 'force-no-store';
+
 import React, { useEffect, useState } from 'react';
 import Card from '../ui/Card';
 import DOMPurify from 'dompurify';

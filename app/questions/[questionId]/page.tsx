@@ -1,5 +1,7 @@
 'use client';
 
+export const fetchCache = 'force-no-store';
+
 import useAuth from '@/app/lib/useAuth';
 import QuestionDetail from '../../components/Questions/QuestionDetail';
 import { usePathname } from 'next/navigation';

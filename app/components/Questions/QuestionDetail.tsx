@@ -1,5 +1,7 @@
 'use client';
 
+export const fetchCache = 'force-no-store';
+
 import { SetStateAction, useCallback, useEffect, useState } from 'react';
 import styles from './QuestionDetail.module.css';
 import DOMPurify from 'dompurify';

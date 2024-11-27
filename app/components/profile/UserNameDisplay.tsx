@@ -1,9 +1,10 @@
 'use client';
 
+export const fetchCache = 'force-no-store';
+
 import React, { useEffect, useState } from 'react';
 import Notification from '../ui/Notification';
 import { useLoading } from '../../context/LoadingContext';
-import { set } from 'lodash';
 
 interface UserNameDisplayProps {
   userId: string;

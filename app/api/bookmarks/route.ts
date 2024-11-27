@@ -1,3 +1,5 @@
+export const fetchCache = 'force-no-store';
+
 import { NextRequest, NextResponse } from 'next/server';
 import supabase from '@/app/lib/supabaseClient';
 import { revalidateTag } from 'next/cache';

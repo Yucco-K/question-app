@@ -1,3 +1,5 @@
+export const fetchCache = 'force-no-store';
+
 import { useState, useEffect, JSX} from 'react';
 
 interface QuestionHeaderProps {

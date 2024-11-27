@@ -1,3 +1,5 @@
+export const fetchCache = 'force-no-store';
+
 import { useCallback, useEffect, useState } from 'react';
 import Card from '../ui/Card';
 import Notification from '../ui/Notification';

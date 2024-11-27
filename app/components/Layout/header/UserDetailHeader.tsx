@@ -1,3 +1,5 @@
+export const fetchCache = 'force-no-store';
+
 import { useState, useEffect, use} from 'react';
 import useAuth from '../../../lib/useAuth';
 import { useRouter } from 'next/navigation';

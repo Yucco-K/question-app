@@ -1,5 +1,7 @@
 'use client';
 
+export const fetchCache = 'force-no-store';
+
 import EditUserProfile from '@/app/components/profile/EditUserProfile';
 
 export default function EditUserProfilePage({ params }: { params: { userId: string } }) {

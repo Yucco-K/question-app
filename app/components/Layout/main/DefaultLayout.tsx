@@ -1,3 +1,4 @@
+export const fetchCache = 'force-no-store';
 
 export default function DefaultLayout({ children }: { children: React.ReactNode }) {
   return (

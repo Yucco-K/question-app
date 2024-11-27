@@ -1,5 +1,7 @@
 'use client';
 
+export const fetchCache = 'force-no-store';
+
 import { usePathname } from 'next/navigation';
 import DefaultLayout from './Layout/main/DefaultLayout';
 import QuestionsLayout from './Layout/main/QuestionsLayout';

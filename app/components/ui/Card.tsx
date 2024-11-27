@@ -1,5 +1,7 @@
 'use client';
 
+export const fetchCache = 'force-no-store';
+
 import { ReactNode, useEffect, useState } from 'react';
 import Notification from './Notification';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';

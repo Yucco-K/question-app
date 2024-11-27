@@ -1,3 +1,5 @@
+export const fetchCache = 'force-no-store';
+
 import { MouseEvent as ReactMouseEvent, useCallback, useEffect, useState } from 'react';
 import Card from '../ui/Card';
 import Notification from '../ui/Notification';
