@@ -308,7 +308,7 @@ export default function Card({
 
       <div className="relative border rounded-lg shadow-md overflow-hidden bg-white max-w-[1200px]">
         {isNewPost() && (
-          <div className="absolute top-10 right-4 ml-20 bg-yellow-100 text-yellow-500 px-3 py-1 rounded-b-md text-sm font-bold mt-10">
+          <div className="absolute left-20 top-4 text-yellow-500 px-1 py-1 rounded-b-md text-sm font-bold">
             NEW
           </div>
         )}
@@ -377,7 +377,7 @@ export default function Card({
                 {bookmarks.some(bookmark => bookmark.question_id === id && bookmark.is_bookmark) ? (
                   <FontAwesomeIcon icon={faBookmark} className="text-lg text-blue-300" />
                 ) : (
-                  <p className="transition transform hover:scale-110 duration-300 ease-in-out mx-1 my-2 rounded-md text-xs text-semibold">ブックマークに登録</p>
+                  <FontAwesomeIcon icon={faBookmark} className="text-lg text-gray-300" />
                 )}
               </button>
             )}
@@ -409,8 +409,7 @@ export default function Card({
               </div>
             )}
 
-
-            <h3 className="text-lg mt-8 mb-4">{title}</h3>
+            <h3 className="text-lg mt-8 mb-4 break-words whitespace-normal">{title}</h3>
 
               <>
               <div className="relative">

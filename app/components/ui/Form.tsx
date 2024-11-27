@@ -130,7 +130,7 @@ export default function Form({
             {titleLabel}
             <span className="text-sm text-gray-600">   ※ 必須 </span>
           </label>
-          <input
+          {/* <input
             type="text"
             placeholder={titlePlaceholder}
             value={title}
@@ -140,7 +140,19 @@ export default function Form({
               onTitleChange(newTitle);
             }}
             className="w-full border border-gray-300 px-3 py-2 text-md focus:outline-none focus:border-blue-600"
+          /> */}
+          <textarea
+            placeholder={titlePlaceholder}
+            value={title}
+            onChange={(e) => {
+              const newTitle = e.target.value;
+              setTitle(newTitle);
+              onTitleChange(newTitle);
+            }}
+            className="w-full border border-gray-300 px-3 py-2 text-md focus:outline-none focus:border-blue-600 resize-none"
+            rows={3}
           />
+
         </div>
       )}
         <div className="mb-4">

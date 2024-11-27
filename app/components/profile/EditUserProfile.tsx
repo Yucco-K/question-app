@@ -211,7 +211,6 @@ export default function EditUserProfile({ userId }: EditUserProfileProps) {
     }
   };
 
-
   const handleProfileImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (!files || files.length === 0) {
