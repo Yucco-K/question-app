@@ -206,10 +206,6 @@ export default function MyPage() {
     }
   };
 
-  // useEffect(() => {
-  //   if (!session) fetchUserData();
-  // }, [userId, session]);
-
 
   const fetchUserStatistics = async () => {
     try {
@@ -379,7 +375,7 @@ export default function MyPage() {
         </div>
 
       {isPostHistoryOpen && (
-        <div className="space-y-4 w-full lg:w-2/3 mx-auto">
+        <div className="space-y-4 w-full lg:w-2/3 mx-auto mt-4">
           {paginatedQuestions.length > 0 ? (
             <>
               {paginatedQuestions.map((question) => {
