@@ -5,7 +5,7 @@ export default function TermsPage() {
         <h1 className="text-lg font-bold text-center m-6">利用規約</h1>
 
         <div className="bg-gray-100 text-gray-900 p-4 mb-6 text-center font-semibold">
-          ※このページはダミーページです
+          ※このページはダミーページです。お問い合わせは送信されません。また、リロードするとログアウトします。
         </div>
 
         <div className="space-y-12">
