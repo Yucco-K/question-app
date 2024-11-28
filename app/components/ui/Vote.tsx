@@ -24,7 +24,16 @@ export default function Vote({ answerId, userId, answerUserId }: VoteProps) {
 
     const fetchVoteStatus = async () => {
       try {
-        const response = await fetch(`/api/votes?answerId=${answerId}&userId=${userId}`);
+
+        const response = await fetch(`/api/votes?answerId=${answerId}&userId=${userId}`, {
+          headers: {
+            'Cache-Control': 'no-cache, no-store, must-revalidate',
+            'Pragma': 'no-cache',
+            'Expires': '0',
+          },
+          cache: 'no-store',
+        });
+
         const data = await response.json();
         if (response.ok && data.vote) {
           setVoteType(data.vote.type);
@@ -53,7 +62,15 @@ export default function Vote({ answerId, userId, answerUserId }: VoteProps) {
 
     try {
 
-      const existingVoteResponse = await fetch(`/api/votes?answerId=${answerId}&userId=${userId}`);
+      const existingVoteResponse = await fetch(`/api/votes?answerId=${answerId}&userId=${userId}`, {
+        headers: {
+          'Cache-Control': 'no-cache, no-store, must-revalidate',
+          'Pragma': 'no-cache',
+          'Expires': '0',
+        },
+        cache: 'no-store',
+      });
+
       const existingVoteData = await existingVoteResponse.json();
 
       if (existingVoteResponse.ok && existingVoteData.vote) {
@@ -61,7 +78,15 @@ export default function Vote({ answerId, userId, answerUserId }: VoteProps) {
         if (existingVoteData.vote.type === type) {
           const deleteResponse = await fetch(`/api/votes/${existingVoteData.vote.id}`, {
             method: 'DELETE',
-          });
+
+          headers: {
+            'Cache-Control': 'no-cache, no-store, must-revalidate',
+            'Pragma': 'no-cache',
+            'Expires': '0',
+          },
+          cache: 'no-store',
+        });
+
           const deleteResult = await deleteResponse.json();
 
           if (deleteResponse.ok) {
@@ -78,9 +103,14 @@ export default function Vote({ answerId, userId, answerUserId }: VoteProps) {
             method: 'PATCH',
             headers: {
               'Content-Type': 'application/json',
+              'Cache-Control': 'no-cache, no-store, must-revalidate',
+              'Pragma': 'no-cache',
+              'Expires': '0',
             },
+            cache: 'no-store',
             body: JSON.stringify({ type }),
           });
+
           const updateResult = await updateResponse.json();
 
           if (updateResponse.ok) {
@@ -104,7 +134,11 @@ export default function Vote({ answerId, userId, answerUserId }: VoteProps) {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
+            'Cache-Control': 'no-cache, no-store, must-revalidate',
+            'Pragma': 'no-cache',
+            'Expires': '0',
           },
+          cache: 'no-store',
           body: JSON.stringify({ answer_id: answerId, user_id: userId, type, answer_user_id: answerUserId }),
         });
         const postResult = await postResponse.json();
