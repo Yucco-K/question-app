@@ -1,3 +1,5 @@
+export const fetchCache = 'force-no-store';
+
 import { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import TagSearch from '@/app/components/ui/TagSearch';

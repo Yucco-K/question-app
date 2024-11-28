@@ -1,5 +1,7 @@
 'use client';
 
+export const fetchCache = 'force-no-store';
+
 import { useEffect, useState } from 'react';
 import { useLoading } from '@/app/context/LoadingContext';
 import { toast } from 'react-toastify';

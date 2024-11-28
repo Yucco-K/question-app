@@ -1,5 +1,7 @@
 'use client';
 
+export const fetchCache = 'force-no-store';
+
 import React, { useEffect, useRef, useState } from 'react';
 import { Editor } from '@tinymce/tinymce-react';
 import { toast } from 'react-toastify';

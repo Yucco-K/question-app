@@ -1,5 +1,8 @@
+export const fetchCache = 'force-no-store';
+
 import { useEffect, useState } from 'react';
 import { FaTags } from 'react-icons/fa';
+
 
 export default function TagSearch({ onTagsSelected }: { onTagsSelected: (tags: string[]) => void }) {
   const [tags, setTags] = useState<string[]>([]);

@@ -1,5 +1,7 @@
 'use client';
 
+export const fetchCache = 'force-no-store';
+
 import ScrollToBottomButton from '@/app/components/ui/ScrollToBottomButton';
 import SortQuestions from '../../../components/ui/SortQuestions';
 

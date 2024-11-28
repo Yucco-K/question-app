@@ -31,7 +31,8 @@ export async function GET(request: Request) {
       const { data: bookmarkData, error: bookmarkError } = await supabase
         .from('Bookmark')
         .select('id')
-        .eq('question_id', question.id);
+        .eq('question_id', question.id)
+        .eq('is_bookmark', true); // is_bookmark が TRUE のものをフィルタリング
 
       if (bookmarkError) {
         console.error('ブックマークの取得エラー:', bookmarkError);

@@ -1,5 +1,7 @@
 'use client';
 
+export const fetchCache = 'force-no-store';
+
 import CategorySearchWithSelect from '../../../components/ui/CategorySearchWithSelect';
 import ScrollToBottomButton from '../../../components/ui/ScrollToBottomButton';
 
