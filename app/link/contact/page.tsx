@@ -24,8 +24,8 @@ export default function ContactPage() {
         <h1 className="text-xl font-bold text-center mb-3">CONTACT</h1>
         <p className="text-center text-gray-600 mb-4">お問い合わせ</p>
 
-        <div className="bg-gray-100 text-sm text-gray-900 p-3 mb-2 text-center font-semibold">
-          ※このページはダミーページです。お問い合わせは送信されません。<br/>また、リロードするとログアウトします。
+        <div className="bg-gray-100 text-gray-900 p-4 mb-6 text-left font-semibold leading-relaxed">
+          ※このページはダミーページです。<br/>お問い合わせは送信されません。<br/>また、このページでリロードするとログアウトします。
         </div>
 
         {submitted ? (
@@ -88,17 +88,17 @@ export default function ContactPage() {
 
         <div className="mt-8 text-center">
           <h2 className="text-sm font-semibold">メールアドレス</h2>
-          <p className="text-gray-700">support@engineers Q&A board.com</p>
+          <p className="text-gray-700">support@*********.jp</p>
         </div>
 
         <div className="mt-4 text-center">
           <h2 className="text-sm font-semibold">電話番号</h2>
-          <p className="text-gray-700">+81 123 456 789</p>
+          <p className="text-gray-700">+81 123 456 ***</p>
         </div>
 
         <div className="my-4 text-center">
           <h2 className="text-sm font-semibold">住所</h2>
-          <p className="text-gray-700">〒123-4567 東京都新宿区1-2-3</p>
+          <p className="text-gray-700">〒123-**** 東京都新宿区△-△-△</p>
         </div>
       </div>
     </div>

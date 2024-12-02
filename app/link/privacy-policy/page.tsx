@@ -4,8 +4,8 @@ export default function PrivacyPolicyPage() {
       <div className="w-full max-w-3xl mx-auto px-6 py-8 bg-white shadow-lg rounded-lg">
         <h1 className="text-lg font-bold text-center mb-6">プライバシーポリシー</h1>
 
-        <div className="bg-gray-100 text-gray-900 p-8 mb-6 text-center font-semibold">
-          ※このページはダミーページです。お問い合わせは送信されません。<br/>また、リロードするとログアウトします。
+        <div className="bg-gray-100 text-gray-900 p-4 mb-6 text-left font-semibold leading-relaxed">
+          ※このページはダミーページです。<br/>お問い合わせは送信されません。<br/>また、このページでリロードするとログアウトします。
         </div>
 
         <div className="space-y-12">
