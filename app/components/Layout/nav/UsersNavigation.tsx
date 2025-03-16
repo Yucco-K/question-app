@@ -39,7 +39,7 @@ export default function QuestionDetailNav() {
 								へ 戻る
 							</span>
 							<span
-								className="text-sm flex items-center text-orange-600"
+								className="text-sm flex items-center text-orange-400"
 								style={{ letterSpacing: "0.1em", marginLeft: "32px" }}
 							>
 								{" "}
