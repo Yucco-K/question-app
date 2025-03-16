@@ -43,7 +43,7 @@ export default function QuestionDetailNav() {
 								style={{ letterSpacing: "0.1em", marginLeft: "32px" }}
 							>
 								{" "}
-								**メール認証を停止中**
+								※ メール認証を停止中
 							</span>
 						</button>
 					</li>
