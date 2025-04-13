@@ -19,9 +19,9 @@ Authorization: Bearer {access_token}
 
 ```json
 {
-  "status": "success" | "error",
+  "status": "success",
   "data": {
-    // レスポンスデータ
+    "example": "value"
   },
   "message": "説明メッセージ（エラー時は必須）"
 }
@@ -31,14 +31,14 @@ Authorization: Bearer {access_token}
 
 ```json
 {
-	"status": "error",
-	"message": "エラーメッセージ",
-	"errors": [
-		{
-			"field": "エラーが発生したフィールド",
-			"message": "詳細なエラーメッセージ"
-		}
-	]
+  "status": "error",
+  "message": "エラーメッセージ",
+  "errors": [
+    {
+      "field": "エラーが発生したフィールド",
+      "message": "詳細なエラーメッセージ"
+    }
+  ]
 }
 ```
 
@@ -54,9 +54,9 @@ POST /auth/signup
 
 ```json
 {
-	"username": "string",
-	"email": "string",
-	"password": "string"
+  "username": "string",
+  "email": "string",
+  "password": "string"
 }
 ```
 
@@ -64,13 +64,13 @@ POST /auth/signup
 
 ```json
 {
-	"status": "success",
-	"data": {
-		"userId": "uuid",
-		"username": "string",
-		"email": "string",
-		"createdAt": "timestamp"
-	}
+  "status": "success",
+  "data": {
+    "userId": "uuid",
+    "username": "string",
+    "email": "string",
+    "createdAt": "timestamp"
+  }
 }
 ```
 
@@ -84,8 +84,8 @@ POST /auth/login
 
 ```json
 {
-	"email": "string",
-	"password": "string"
+  "email": "string",
+  "password": "string"
 }
 ```
 
@@ -93,16 +93,16 @@ POST /auth/login
 
 ```json
 {
-	"status": "success",
-	"data": {
-		"accessToken": "string",
-		"refreshToken": "string",
-		"user": {
-			"id": "uuid",
-			"username": "string",
-			"email": "string"
-		}
-	}
+  "status": "success",
+  "data": {
+    "accessToken": "string",
+    "refreshToken": "string",
+    "user": {
+      "id": "uuid",
+      "username": "string",
+      "email": "string"
+    }
+  }
 }
 ```
 
@@ -116,7 +116,7 @@ POST /auth/password-reset
 
 ```json
 {
-	"email": "string"
+  "email": "string"
 }
 ```
 
@@ -132,11 +132,11 @@ POST /questions
 
 ```json
 {
-	"title": "string",
-	"description": "string",
-	"categoryId": "uuid",
-	"tags": ["uuid"],
-	"isDraft": "boolean"
+  "title": "string",
+  "description": "string",
+  "categoryId": "uuid",
+  "tags": ["uuid"],
+  "isDraft": true
 }
 ```
 
@@ -144,21 +144,21 @@ POST /questions
 
 ```json
 {
-	"status": "success",
-	"data": {
-		"id": "uuid",
-		"title": "string",
-		"description": "string",
-		"userId": "uuid",
-		"categoryId": "uuid",
-		"tags": [
-			{
-				"id": "uuid",
-				"name": "string"
-			}
-		],
-		"createdAt": "timestamp"
-	}
+  "status": "success",
+  "data": {
+    "id": "uuid",
+    "title": "string",
+    "description": "string",
+    "userId": "uuid",
+    "categoryId": "uuid",
+    "tags": [
+      {
+        "id": "uuid",
+        "name": "string"
+      }
+    ],
+    "createdAt": "timestamp"
+  }
 }
 ```
 
@@ -171,49 +171,44 @@ GET /questions
 **クエリパラメータ**
 
 ```
-page: number (デフォルト: 1)
-limit: number (デフォルト: 10)
-category: uuid
-tag: uuid
-status: "resolved" | "unresolved"
-sort: "newest" | "popular"
+page=1&limit=10&category=uuid&tag=uuid&status=resolved&sort=newest
 ```
 
 **レスポンス**
 
 ```json
 {
-	"status": "success",
-	"data": {
-		"questions": [
-			{
-				"id": "uuid",
-				"title": "string",
-				"description": "string",
-				"user": {
-					"id": "uuid",
-					"username": "string"
-				},
-				"category": {
-					"id": "uuid",
-					"name": "string"
-				},
-				"tags": [
-					{
-						"id": "uuid",
-						"name": "string"
-					}
-				],
-				"answersCount": "number",
-				"createdAt": "timestamp"
-			}
-		],
-		"pagination": {
-			"currentPage": "number",
-			"totalPages": "number",
-			"totalItems": "number"
-		}
-	}
+  "status": "success",
+  "data": {
+    "questions": [
+      {
+        "id": "uuid",
+        "title": "string",
+        "description": "string",
+        "user": {
+          "id": "uuid",
+          "username": "string"
+        },
+        "category": {
+          "id": "uuid",
+          "name": "string"
+        },
+        "tags": [
+          {
+            "id": "uuid",
+            "name": "string"
+          }
+        ],
+        "answersCount": 0,
+        "createdAt": "timestamp"
+      }
+    ],
+    "pagination": {
+      "currentPage": 1,
+      "totalPages": 10,
+      "totalItems": 100
+    }
+  }
 }
 ```
 
@@ -229,7 +224,7 @@ POST /questions/{questionId}/answers
 
 ```json
 {
-	"content": "string"
+  "content": "string"
 }
 ```
 
@@ -237,14 +232,14 @@ POST /questions/{questionId}/answers
 
 ```json
 {
-	"status": "success",
-	"data": {
-		"id": "uuid",
-		"content": "string",
-		"questionId": "uuid",
-		"userId": "uuid",
-		"createdAt": "timestamp"
-	}
+  "status": "success",
+  "data": {
+    "id": "uuid",
+    "content": "string",
+    "questionId": "uuid",
+    "userId": "uuid",
+    "createdAt": "timestamp"
+  }
 }
 ```
 
@@ -258,12 +253,12 @@ PUT /questions/{questionId}/best-answer/{answerId}
 
 ```json
 {
-	"status": "success",
-	"data": {
-		"questionId": "uuid",
-		"bestAnswerId": "uuid",
-		"updatedAt": "timestamp"
-	}
+  "status": "success",
+  "data": {
+    "questionId": "uuid",
+    "bestAnswerId": "uuid",
+    "updatedAt": "timestamp"
+  }
 }
 ```
 
@@ -279,7 +274,15 @@ POST /answers/{answerId}/votes
 
 ```json
 {
-  "type": "upvote" | "downvote"
+  "type": "upvote"
+}
+```
+
+または
+
+```json
+{
+  "type": "downvote"
 }
 ```
 
@@ -293,13 +296,13 @@ POST /questions/{questionId}/bookmarks
 
 ```json
 {
-	"status": "success",
-	"data": {
-		"id": "uuid",
-		"questionId": "uuid",
-		"userId": "uuid",
-		"createdAt": "timestamp"
-	}
+  "status": "success",
+  "data": {
+    "id": "uuid",
+    "questionId": "uuid",
+    "userId": "uuid",
+    "createdAt": "timestamp"
+  }
 }
 ```
 
@@ -314,50 +317,44 @@ GET /search/questions
 **クエリパラメータ**
 
 ```
-q: string (検索キーワード)
-category: uuid
-tags: uuid[]
-status: "resolved" | "unresolved"
-page: number
-limit: number
-sort: "relevance" | "newest" | "popular"
+q=keyword&category=uuid&tags=uuid&status=unresolved&page=1&limit=10&sort=relevance
 ```
 
 **レスポンス**
 
 ```json
 {
-	"status": "success",
-	"data": {
-		"questions": [
-			{
-				"id": "uuid",
-				"title": "string",
-				"description": "string",
-				"user": {
-					"id": "uuid",
-					"username": "string"
-				},
-				"category": {
-					"id": "uuid",
-					"name": "string"
-				},
-				"tags": [
-					{
-						"id": "uuid",
-						"name": "string"
-					}
-				],
-				"relevanceScore": "number",
-				"createdAt": "timestamp"
-			}
-		],
-		"pagination": {
-			"currentPage": "number",
-			"totalPages": "number",
-			"totalItems": "number"
-		}
-	}
+  "status": "success",
+  "data": {
+    "questions": [
+      {
+        "id": "uuid",
+        "title": "string",
+        "description": "string",
+        "user": {
+          "id": "uuid",
+          "username": "string"
+        },
+        "category": {
+          "id": "uuid",
+          "name": "string"
+        },
+        "tags": [
+          {
+            "id": "uuid",
+            "name": "string"
+          }
+        ],
+        "relevanceScore": 0.95,
+        "createdAt": "timestamp"
+      }
+    ],
+    "pagination": {
+      "currentPage": 1,
+      "totalPages": 5,
+      "totalItems": 50
+    }
+  }
 }
 ```
 
@@ -380,3 +377,4 @@ sort: "relevance" | "newest" | "popular"
 ## バージョニング
 
 API のバージョンは、URL のパスに含まれます（例：`/api/v1/`）。
+
