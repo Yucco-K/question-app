@@ -4,6 +4,25 @@
 
 質問掲示板アプリは、ユーザーが自由に質問を投稿し、他のユーザーから回答を得ることができるプラットフォームです。知識共有を促進し、特定のトピックに関する議論を活発にすることを目的としています。
 
+### ユーザー動作フローの確認
+
+<table>
+  <tr>
+    <td>
+      <a href="https://youtu.be/3Ns9KQAvPH0">
+        <img src="https://img.youtube.com/vi/3Ns9KQAvPH0/0.jpg" alt="デモ動画⑤" width="320" />
+      </a>
+    </td>
+    <td width="32"></td>
+    <td>
+      <a href="https://youtu.be/Dn-cL688F88">
+        <img src="https://img.youtube.com/vi/Dn-cL688F88/0.jpg" alt="デモ動画⑥" width="320" />
+      </a>
+    </td>
+  </tr>
+</table>
+
+
 ### **主な特徴**
 
 - ユーザー登録・ログイン機能（Supabase 認証）
