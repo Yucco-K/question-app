@@ -21,18 +21,17 @@
   <tr>
     <td>
       <a href="https://youtu.be/3Ns9KQAvPH0">
-        <img src="https://img.youtube.com/vi/3Ns9KQAvPH0/0.jpg" alt="デモ動画⑤" width="320" />
+        <img src="https://img.youtube.com/vi/3Ns9KQAvPH0/0.jpg" alt="デモ動画⑤" width="240" />
       </a>
     </td>
-    <td width="32"></td>
+    <td width="24"></td> <!-- スペーサー -->
     <td>
       <a href="https://youtu.be/Dn-cL688F88">
-        <img src="https://img.youtube.com/vi/Dn-cL688F88/0.jpg" alt="デモ動画⑥" width="320" />
+        <img src="https://img.youtube.com/vi/Dn-cL688F88/0.jpg" alt="デモ動画⑥" width="240" />
       </a>
     </td>
   </tr>
 </table>
-
 
 ---
 
